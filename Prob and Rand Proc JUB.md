@@ -42,7 +42,7 @@ $A \cap B = \varnothing \ \Rightarrow \ P[A \cup B] = P[A] + P[B]$
 
 $P[A \cup B] = P[A] + P[B] - P[A \cap B]$
 
-![IMG_20220907_145154](./pics for conspects/PRP 22-09-07 1.jpg)
+![PRP 22-09-07 1](./pics for conspects/PRP 22-09-07 1.jpg)
 
 
 
@@ -114,7 +114,7 @@ It is the same as $P(A_1 \cup ... \cup A_n$) which limits to $\frac{1}{e} \appro
 
 $\Omega$ -- sample space 
 
-$A \subset \Omega$ -- set of favorable outcomes. $P(A) = \frac{\#A}{\#\Omega}$
+$A \subset \Omega$ -- set of favorable outcomes. $P(A) = \frac{\\#A}{\\#\Omega}$
 
 
 
