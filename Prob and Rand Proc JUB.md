@@ -1,4 +1,4 @@
-Daria Shutina, CS, $2^{nd}$ year
+Daria Shutina, CS, $`2^{nd}`$ year
 
 ------
 
