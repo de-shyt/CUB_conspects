@@ -114,7 +114,7 @@ It is the same as $P(A_1 \cup ... \cup A_n$) which limits to $\frac{1}{e} \appro
 
 $\Omega$ -- sample space 
 
-$A \subset \Omega$ -- set of favorable outcomes. $P(A) = \frac{\\#A}{\\#\Omega}$
+$A \subset \Omega$ -- set of favorable outcomes. $P(A) = \frac{amount \ of \ A}{amount \ of \ \Omega}$
 
 
 
@@ -363,7 +363,7 @@ Let $(\Omega, P)$ be a space. A function $X : \Omega \rightarrow R$
 
 #### Example 1: three coin throwings
 
-$X : \Omega \rightarrow \texttt{[\# of heads]} $
+$X : \Omega \rightarrow \texttt{amount of heads} $
 
 
 
@@ -1509,7 +1509,7 @@ $X$ -- the amount of heads.
 
 $E(X) = 24 \cdot \frac{1}{6} = 4$
 
-$P[\#head \geqslant 20] = \frac{E(X)}{20} = \frac{1}{5}$
+$P[amount \ of \ heads \geqslant 20] = \frac{E(X)}{20} = \frac{1}{5}$
 
 
 

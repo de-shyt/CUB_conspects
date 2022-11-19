@@ -789,7 +789,7 @@ $2 \Rightarrow 1:$   сделаем сжатие точек по $x_i$. Полу
 
 Построение за $O(n \log n)$ с помощью `mergeSort` (обычное ДО за $O(n)$). 
 
-Задача 1:  Время = $\underset{O(\log n)}{\# кусков} \cdot \underset{2 \textnormal{ } бинпоиска}{T(ответ \textnormal{ } в \textnormal{ } куске)} = O(\log^2 n)$ 
+Задача 1:  Время = $\underset{O(\log n)}{число \ кусков} \cdot \underset{2 \textnormal{ } бинпоиска}{T(ответ \textnormal{ } в \textnormal{ } куске)} = O(\log^2 n)$ 
 
 
 
