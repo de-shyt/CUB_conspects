@@ -18,7 +18,7 @@ Daria Shutina, CS, $2^{nd}$ year
 
 #### *Task 1*: Getting POSUDA from a STUDENT
 
-![image_2022-09-07_16-09-43](C:\Users\Daria\Downloads\Telegram Desktop\image_2022-09-07_16-09-43.png)
+<img src="./pics for conspects/ALG/ALG 22-09-07 1.png" alt="ALG 22-09-07 1" style="zoom:50%;" />
 
 
 

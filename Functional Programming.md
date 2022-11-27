@@ -331,7 +331,7 @@ data List a = Nil | Cons a (List a)   -- `Cons` -- конструктор.
 
 ### Способы задизайнить выражение
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220912105834371.png" alt="image-20220912105834371" style="zoom: 67%;" />
+<img src="./pics for conspects/FP/FP 22-09-12 1.png" alt="FP 22-09-12 1" style="zoom:50%;" />
 
 ***(2)*** :  вводим определение операции `Op`
 

@@ -44,6 +44,8 @@ Whereby meeting room: https://whereby.com/dbws-helpdesk
 
 
 
+## 22-09-06
+
 ### ISA Hierarchies 
 
 ISA means 'is a'
@@ -129,21 +131,23 @@ Some controversies in a scheme. They can be:
 
 ##### Notation variants
 
-![image-20220906104913507](C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220906104913507.png)
+<img src="./pics for conspects/DB/DB 22-09-06 1.png" alt="DB 22-09-06 1" style="zoom:50%;" />
 
 
 
 
 
 
+
+
+
+## 22-09-13
 
 #### UML
 
 Unified Modeling Language -- a graphical language that is used to visualize and construct schemes.
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913085445726.png" alt="image-20220913085445726" style="zoom: 67%;" />
-
-
+<img src="./pics for conspects/DB/DB 22-09-13 1.png" alt="DB 22--09-13 1" style="zoom:50%;" />
 
 
 
@@ -170,7 +174,7 @@ Unified Modeling Language -- a graphical language that is used to visualize and 
 
 *Relational database* is a set of relations 
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913090411239.png" alt="image-20220913090411239" style="zoom:50%;" />
+![DB 22-09-13 2](./pics for conspects/DB/DB 22-09-13 2.png)
 
 
 
@@ -247,7 +251,7 @@ PRIMARY KEY (sid,cid),
 FOREIGN KEY (sid) REFERENCES Students )
 ```
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913100818550.png" alt="image-20220913100818550" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-13 4.png" alt="DB 22-09-13 4" style="zoom:50%;" />
 
 First tuples in a table `Students` are created, then a tuple in `Enrolled` is created and connected to a tuple in `Students`. 
 
@@ -260,6 +264,10 @@ First tuples in a table `Students` are created, then a tuple in `Enrolled` is cr
 - What if a `Students` tuple is deleted? 
 
   *- Delete all `Enrolled` tuples that refer to it or disallow deletion of a `Students` tuple* 
+
+
+
+
 
 
 
@@ -288,6 +296,8 @@ When we a call a `DELETE` command in `Enrolled` table, the command `CASCADE` wil
 
 
 
+
+
 #### General constraints
 
 ```sql
@@ -311,15 +321,13 @@ If inserting a line was rejected, the error message wil be written into `CONSTRA
 
 
 
-## ER-model ➝ Relational Model
+### ER-model ➝ Relational Model
 
 We can create tables for entities and for relationships (`works_in` from the first example). 
 
 Relations between relationships and entities are created via `FOREIGN KEY`. 
 
-
-
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913103633141.png" alt="image-20220913103633141" style="zoom: 67%;" />
+<img src="./pics for conspects/DB/DB 22-09-13 5.png" alt="DB 22-09-13 5" style="zoom:70%;" />
 
 `eid` and `did_` are abstracts that are created to connect tables. We create them in order to be able to have 'one-to-many' relation. 
 
@@ -329,9 +337,9 @@ Relations between relationships and entities are created via `FOREIGN KEY`.
 
 
 
-## ISA Hierarchies ➝ Relational Model 
+### ISA Hierarchies ➝ Relational Model 
 
-![image-20220913120359317](C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913120359317.png)
+<img src="./pics for conspects/DB/DB 22-09-13 6.png" alt="DB 22-09-13 6" style="zoom:67%;" />
 
 
 

@@ -76,7 +76,7 @@ Memory is divided into two distinct areas:
 
 ### System and User modes
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220906143057722.png" alt="image-20220906143057722" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-09-06 1.png" alt="OS 22-09-06 1" style="zoom:70%;" />
 
 ***Library call*** -- actions in a program
 
@@ -210,7 +210,9 @@ The central processing unit (CPU) is connected to the main memory and other devi
 
 ### Stack frame 
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913142835997.png" alt="image-20220913142835997" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-09-08 2.png" alt="OS 22-09-08 2" style="zoom:67%;" />
+
+
 
 
 
@@ -268,7 +270,7 @@ In C/C++ it is a programmer's responsibility to ensure that buffers are never ov
 
 ### Interrupts
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913150058404.png" alt="image-20220913150058404" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-09-13 1.png" alt="OS 22-09-13 1" style="zoom:67%;" />
 
 An *interrupt vector* is a vector of interrupt pointers 
 
@@ -300,9 +302,7 @@ Processes <u>do not share</u> the memory with other processes.
 
 #### Process states
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913231446166.png" alt="image-20220913231446166" style="zoom: 67%;" />
-
-
+<img src="./pics for conspects/OS/OS 22-09-13 2.png" alt="OS 22-09-13 2" style="zoom:67%;" />
 
 
 
@@ -324,9 +324,7 @@ A **process control block** (PCB) is a <u>data structure</u> used by computer op
 
 PCBs are often organized in doubly-linked lists or tables and can be queued easily and efficiently using pointer operations. 
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913233245390.png" alt="image-20220913233245390" style="zoom:80%;" />
-
-
+<img src="./pics for conspects/OS/OS 22-09-13 3.png" alt="OS 22-09-13 3" style="zoom:67%;" />
 
 
 
@@ -336,9 +334,7 @@ PCBs are often organized in doubly-linked lists or tables and can be queued easi
 
 Processes and sub-processes are represented in a tree-like structure. A child process is able to obtain its resources directly from the operating system or from the resources of the parent process. 
 
-![image-20220913235206675](C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220913235206675.png)
-
-
+<img src="./pics for conspects/OS/OS 22-09-13 4.png" alt="OS 22-09-13 4" style="zoom:67%;" />
 
 **fork() system call** create a process by duplicating the parent and resources and then executes independently. 
 

@@ -43,7 +43,7 @@ chaika.konstantin.v@gmail.com
 
 ### Logic gate symbols 
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220912173953127.png" alt="image-20220912173953127" style="zoom:50%;" />
+<img src="./pics for conspects/CA/CA 22-09-05.png" alt="CA 22-09-05" style="zoom:50%;" />
 
 
 
@@ -55,7 +55,7 @@ chaika.konstantin.v@gmail.com
 
 ### Architecture Types
 
-![image-20220912160018350](C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220912160018350.png)
+<img src="./pics for conspects/CA/CA 22-09-12 1.png" alt="CA 22-09-12 1" style="zoom:50%;" />
 
 
 
@@ -77,7 +77,7 @@ chaika.konstantin.v@gmail.com
 
 ### I/O -- input/output
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220912160349322.png" alt="image-20220912160349322" style="zoom:50%;" />
+<img src="./pics for conspects/CA/CA 22-09-12 2.png" alt="CA 22-09-12 2" style="zoom:50%;" />
 
 
 
@@ -99,7 +99,7 @@ https://habr.com/ru/company/selectel/blog/542074/
 
 ### RISC vs CISC
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220912163950357.png" alt="image-20220912163950357" style="zoom:50%;" />
+<img src="./pics for conspects/CA/CA 22-09-12 3.png" alt="CA 22-09-12 3" style="zoom:50%;" />
 
 
 
