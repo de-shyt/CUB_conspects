@@ -42,7 +42,7 @@ $A \cap B = \varnothing \ \Rightarrow \ P[A \cup B] = P[A] + P[B]$
 
 $P[A \cup B] = P[A] + P[B] - P[A \cap B]$
 
-![PRP 22-09-07 1](./pics for conspects/PRP 22-09-07 1.jpg)
+![IMG_20220907_145154](./pics for conspects/PRP/PRP 22-09-07 1.jpg)
 
 
 
@@ -114,7 +114,7 @@ It is the same as $P(A_1 \cup ... \cup A_n$) which limits to $\frac{1}{e} \appro
 
 $\Omega$ -- sample space 
 
-$A \subset \Omega$ -- set of favorable outcomes. $P(A) = \frac{amount \ of \ A}{amount \ of \ \Omega}$
+$A \subset \Omega$ -- set of favorable outcomes. $P(A) = \frac{\#A}{\#\Omega}$
 
 
 
@@ -145,7 +145,7 @@ $0 \leqslant |T_1 - T_2| \leqslant \frac{1}{4}$
 
 $P = \frac{S_1}{S_0} = (1 - 0.75) \cdot 2 = \frac{1}{2}$
 
-<img src="./pics for conspects/PRP 22-09-16 time.png" alt="PRP 22-09-16 time" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-09-16 time.png" alt="PRP 22-09-16 time" style="zoom:50%;" />
 
 
 
@@ -167,7 +167,7 @@ Need to keep track of:
 
 $P = \frac{\int_0^\pi \frac{sin x}{2} dx}{\frac{1}{2} \pi} = \frac{-cos x |_0^\pi}{\pi} = \frac{2}{\pi}$ 
 
-<img src="./pics for conspects/PRP 22-09-16 needle.png" alt="image-20220916151433417" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-09-16 needle.png" alt="image-20220916151433417" style="zoom:50%;" />
 
 
 
@@ -217,7 +217,7 @@ $P[A|B] = \frac{P[A \cap B]}{P[B]}$, where $P[A|B]$ -- "A given B" -- probabilit
 
 $P[A] = P[A \cap B] + p[A \cap B^c] = P[A|B] \cdot P[B] + P[A|B^c] \cdot P[B^c]$
 
-<img src="./pics for conspects/PRP 22-09-21 1.png" alt="PRP 22-09-21 1" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-09-21 1.png" alt="PRP 22-09-21 1" style="zoom:50%;" />
 
 
 
@@ -319,7 +319,7 @@ $p_2 = p_3 \cdot \frac{1}{2} + p_1 \cdot \frac{1}{2}$
 
 $\Omega = B_1 \cup B_2$,   $B_1 \cap B_2 = \varnothing$
 
-<img src="./pics for conspects/PRP 22-09-23 1.png" alt="PRP 22-09-23 1" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-09-23 1.png" alt="PRP 22-09-23 1" style="zoom:50%;" />
 
 $P[B_1 | A ] = \frac{P[B_1 \cap A]}{P[A]} = \frac{P[A|B_1] \cdot P[B_1]}{P[A \cap B_1] + P[A \cup B_2]} =  \frac{P[A|B_1] \cdot P[B_1]}{P[A|B_1] \cdot P[B_1] + P[A|B_2] \cdot P[B_2]}$
 
@@ -363,7 +363,7 @@ Let $(\Omega, P)$ be a space. A function $X : \Omega \rightarrow R$
 
 #### Example 1: three coin throwings
 
-$X : \Omega \rightarrow \texttt{amount of heads} $
+$X : \Omega \rightarrow \texttt{[\# of heads]} $
 
 
 
@@ -548,7 +548,7 @@ Captures the density on the axis. There are no distinct points, so we use a deli
 $$
 f(x) = \lim \limits_{\epsilon \rightarrow 0} \frac{\texttt{mass} \in (x - \epsilon, x + \epsilon)}{2 \epsilon}
 $$
-<img src="./pics for conspects/PRP 22-09-30 1.png" alt="PRP 22-09-30 1" style="zoom: 67%;" />
+<img src="./pics for conspects/PRP/PRP 22-09-30 1.png" alt="PRP 22-09-30 1" style="zoom: 67%;" />
 
 $f(x) \geqslant 0, \ \forall x$
 
@@ -661,7 +661,7 @@ $t \geqslant b \ \Rightarrow \ \int \limits_{-\infty}^t f_x(x)dx = \frac{x}{b-a}
 
 #### Example 2: $Y = \sin X$ \todo
 
-<img src="./pics for conspects/PRP 22-10-07 1.png" alt="PRP 22-10-07 1" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-10-07 1.png" alt="PRP 22-10-07 1" style="zoom:50%;" />
 
 $P[-\frac{\pi}{4} \leqslant x \leqslant \frac{\pi}{4}] = \frac{\frac{\pi}{2}}{\pi} = 0.5$
 
@@ -811,7 +811,7 @@ Let $X$, $Y$ be random variables and $c$ a constant.
 
 Suppose n letters are placed in n envelopes. $X$ -- # of letters placed in the right envelope. Find $E(X)$. 
 
-<img src="./pics for conspects/PRP 22-10-21 1.png" alt="PRP 22-10-21 1" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-10-21 1.png" alt="PRP 22-10-21 1" style="zoom:50%;" />
 
 $E(X) = 0 \cdot \frac{1}{3} + 1 \cdot \frac{1}{2} + 3 \cdot \frac{1}{6} = 1$
 
@@ -885,7 +885,7 @@ $f(x) = \left \{ \begin{array}{l} \frac{1}{b - a}, \ a \leqslant x \leqslant b \
 
 $E(X) = \int \limits_{-\infty}^{+\infty} x f(x) dx = \int \limits_a^b \frac{x}{b - a} dx = \frac{x^2}{2(b-a)}|_{a}^b = \frac{b+a}{2}$
 
-<img src="./pics for conspects/PRP 22-10-28 1.png" alt="PRP 22-10-28 1" style="zoom:40%;" />
+<img src="./pics for conspects/PRP/PRP 22-10-28 1.png" alt="PRP 22-10-28 1" style="zoom:40%;" />
 
 
 
@@ -897,7 +897,7 @@ $f(x) = \left \{ \begin{array}{l} 2x, \ 0 \leqslant x \leqslant 1 \\ 0, \ \textn
 
 $E(X) = \int \limits_{-\infty}^{+\infty} x f(x) dx = \int \limits_0^1 2x dx = \frac{2x^3}{3}|_0^1 = \frac{2}{3}$
 
-<img src="./pics for conspects/PRP 22-10-28 2.png" alt="PRP 22-10-28 2" style="zoom:40%;" />
+<img src="./pics for conspects/PRP/PRP 22-10-28 2.png" alt="PRP 22-10-28 2" style="zoom:40%;" />
 
 
 
@@ -1067,7 +1067,7 @@ $E(X_1 ... X_n) = E(X_1) \cdot ... \cdot E(X_n)$
 
 *Proof:*
 
-<img src="./pics for conspects/PRP 22-11-02.png" alt="PRP 22-11-02" style="zoom:80%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-02.png" alt="PRP 22-11-02" style="zoom:80%;" />
 
 
 
@@ -1301,7 +1301,7 @@ $f_{X, Y}(x, y) = f_X(x) f_Y(y) = \left \{ \begin{array}{l} \lambda \beta e^{-(\
 
 $P[Y \leqslant x] = \int \limits_0^{+\infty} \int \limits_0^x \lambda \beta e^{-(\lambda x + \beta y)}dy dx = \int \limits_0^{+\infty} \lambda e^{-\lambda x} - \lambda e^{-(\lambda + \beta)x} dx = \frac{\beta}{\lambda + \beta}$
 
-<img src="./pics for conspects/PRP 22-11-09 1.png" alt="PRP 22-11-09 1" style="zoom:60%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-09 1.png" alt="PRP 22-11-09 1" style="zoom:60%;" />
 
 
 
@@ -1327,7 +1327,7 @@ $Z = \frac{Y}{X} \in [0, +\infty)$
 
 $F_Z(t) = P[Z \leqslant t] = P[Y \leqslant tX] = \left \{ \begin{array}{l} S_{triangle} = \frac{t}{2}, t < 1 \\ S_{trapezoid} = 1 - \frac{1}{2t}, t \geqslant 1 \end{array} \right .$
 
-<img src="./pics for conspects/PRP 22-11-09 3.png" alt="PRP 22-11-09 3" style="zoom:60%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-09 3.png" alt="PRP 22-11-09 3" style="zoom:60%;" />
 
 
 
@@ -1369,9 +1369,9 @@ $$
 
 Find prob. of $X$ give $Y$.
 
-<img src="./pics for conspects/PRP 22-11-09 4.png" alt="PRP 22-11-09 4" style="zoom:50%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-09 4.png" alt="PRP 22-11-09 4" style="zoom:50%;" />
 
-<img src="./pics for conspects/PRP 22-11-09 5.png" alt="PRP 22-11-09 5" style="zoom:60%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-09 5.png" alt="PRP 22-11-09 5" style="zoom:60%;" />
 
 
 
@@ -1387,7 +1387,7 @@ Determine the joint probability mass function of $N$ given $S$ and $S$ given $N$
 
 
 
-<img src="./pics for conspects/PRP 22-11-09 6.png" alt="PRP 22-11-09 6" style="zoom:80%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-09 6.png" alt="PRP 22-11-09 6" style="zoom:80%;" />
 
 
 
@@ -1431,7 +1431,7 @@ $E(X|Y=y) = \sum \limits_i x_i p_{X|Y}(x_i, y)$
 
 $p_{X, Y}(x, y)$ is defined by the table:
 
-<img src="./pics for conspects/PRP 22-11-11 1.png" alt="PRP 22-11-11 1" style="zoom: 67%;" />
+<img src="./pics for conspects/PRP/PRP 22-11-11 1.png" alt="PRP 22-11-11 1" style="zoom: 67%;" />
 
  
 
@@ -1509,7 +1509,7 @@ $X$ -- the amount of heads.
 
 $E(X) = 24 \cdot \frac{1}{6} = 4$
 
-$P[amount \ of \ heads \geqslant 20] = \frac{E(X)}{20} = \frac{1}{5}$
+$P[\#head \geqslant 20] = \frac{E(X)}{20} = \frac{1}{5}$
 
 
 

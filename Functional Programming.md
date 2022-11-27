@@ -642,7 +642,7 @@ f . g . h . e $ x    --    <=>    (f . g . h . e) x    <=>    f(g(h(e(x))))
 
 ### Associativity and priority. Function application 
 
-<img src="./pics for conspects/FP 22-09-19.jpg" alt="FP 22-09-19" style="zoom:50%;" />
+<img src="./pics for conspects/FP/FP 22-09-19.jpg" alt="FP 22-09-19" style="zoom:50%;" />
 
 
 
@@ -917,7 +917,7 @@ ghci> [(5,4,3),(10,8,6)]
 
 В `tail` на стеке ничего дополнительно не хранится. Сначала добавляем элемент, потом топимся в рекурсии $\Rightarrow$ `acc` обновляется во время вызова рекурсии. 
 
-<img src="./pics for conspects/FP 22-09-26 1.jpg" alt="FP 22-09-26 1" style="zoom: 67%;" />
+<img src="./pics for conspects/FP/FP 22-09-26 1.jpg" alt="FP 22-09-26 1" style="zoom: 67%;" />
 
 
 
@@ -961,7 +961,7 @@ rev' xs =
 
 **RecordWildCards** == pattern patching в unions. Вместо `..` можно подставить любое имя. 
 
-<img src="./pics for conspects/FP 22-09-26 2.png" alt="FP 22-09-26 2" style="zoom: 67%;" />
+<img src="./pics for conspects/FP/FP 22-09-26 2.png" alt="FP 22-09-26 2" style="zoom: 67%;" />
 
 
 
@@ -1492,7 +1492,7 @@ $BV(T)$ -- bound variables -- **связанные переменные** -- п�
 
 #### Пример
 
-<img src="./pics for conspects/FP 22-10-17 2.png" alt="FP 22-10-17 2" style="zoom:50%;" />
+<img src="./pics for conspects/FP/FP 22-10-17 2.png" alt="FP 22-10-17 2" style="zoom:50%;" />
 
 
 
@@ -1603,7 +1603,7 @@ $\Lambda^d ::= N |\Lambda^d \Lambda^d| \lambda \ . \ \Lambda^d$
 
 $s = \lambda f \ . \ \lambda g \ . \ \lambda x \ . \ f \ x \ (g \ x) = \lambda \ . \ \lambda \ . \ \lambda \ . \ 3 \ 1 \ (2 \ 1)$
 
-<img src="./pics for conspects/FP 22-10-17 1.png" alt="FP 22-10-17 1" style="zoom:50%;" />
+<img src="./pics for conspects/FP/FP 22-10-17 1.png" alt="FP 22-10-17 1" style="zoom:50%;" />
 
 
 

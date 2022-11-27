@@ -104,7 +104,7 @@ Memory is divided into two distinct areas:
 
 ### Operating System Architectures
 
-<img src="./pics for conspects/os_architectures.png" alt="os_architectures" style="zoom: 80%;" />
+<img src="./pics for conspects/OS/os_architectures.png" alt="os_architectures" style="zoom: 80%;" />
 
 ***Monolithic***: no structure, only mess. All services have the same privilege level. Hard to debug => non-reliable. Time and space efficient. 
 
@@ -180,7 +180,7 @@ Pointer to a function `f`.
 
 ### 	Computer architecture
 
-<img src="C:\Users\Daria\AppData\Roaming\Typora\typora-user-images\image-20220908162627032.png" alt="image-20220908162627032" style="zoom: 67%;" />
+<img src="./pics for conspects/OS/OS 22-09-08 1.png" alt="OS 22-09-08 1" style="zoom:67%;" />
 
 The central processing unit (CPU) is connected to the main memory and other devices using the system bus. The system bus consists of the data bus, an address bus, and a control bus. Data is carried over the data bus to/from the address carried over the address bus. The control bus signals the direction of the data transfer. 
 
@@ -200,7 +200,7 @@ The central processing unit (CPU) is connected to the main memory and other devi
 
 ### Memory segments 
 
-<img src="./pics for conspects/OS 22-09-08 segments.png" alt="OS 22-09-08 segments" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-09-08 segments.png" alt="OS 22-09-08 segments" style="zoom:50%;" />
 
 
 
@@ -316,7 +316,7 @@ Each process get a **process id** (pid). Also there is a hash table with pid's i
 
 A **process control block** (PCB) is a <u>data structure</u> used by computer operating systems to store all the information about a process. When a process is created (initialized or installed), the operating system creates a corresponding PCB.
 
-<img src="./pics for conspects/OS 22-09-13 PCB utlities.png" alt="OS 22-09-13 PCB utlities" style="zoom:80%;" />
+<img src="./pics for conspects/OS/OS 22-09-13 PCB utlities.png" alt="OS 22-09-13 PCB utlities" style="zoom:80%;" />
 
 
 
@@ -382,7 +382,7 @@ The **wait() system call** suspends execution until a child terminates (or a sig
 
 `fork()` lives in `<unistd.h>`
 
-![OS 22-09-15 fork](./pics for conspects/OS 22-09-15 fork.png)
+![OS 22-09-15 fork](./pics for conspects/OS/OS 22-09-15 fork.png)
 
 1. A new PCB is allocated in the kernel and linked to the other PCBs. 
 
@@ -449,7 +449,7 @@ int main(int argc, char* argv[]) {
 
 ### exec(): how it works 
 
-![OS 22-09-15 exec](./pics for conspects/OS 22-09-15 exec.png)
+![OS 22-09-15 exec](./pics for conspects/OS/OS 22-09-15 exec.png)
 
 The exec() system calls load a new process image. This means that the running program is replaced by another program. All memory segments are loaded from an executable file (text and data) or reset (heap and stack), and the thread of control is reset to start from the entry point.
 
@@ -592,7 +592,7 @@ https://www.geeksforgeeks.org/difference-between-process-and-thread/#:~:text=Pro
 
 A context switch is the process of storing the state of a process or thread, so that it can be restored and resume execution at a later point. 
 
-<img src="./pics for conspects/OS 22-09-20 1.png" alt="OS 22-09-20 1" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-09-20 1.png" alt="OS 22-09-20 1" style="zoom:50%;" />
 
 Making a switch is not productive. You make a context switch when you make a system call or wait for another process.
 
@@ -630,7 +630,7 @@ Tasks are in one of the states *running*, *interruptible*, *uninterruptible*, *s
 
 #### Bounded-Buffer Problem
 
-<img src="./pics for conspects/OS 22-09-20 2.png" alt="OS 22-09-20 2" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-09-20 2.png" alt="OS 22-09-20 2" style="zoom:50%;" />
 
 The problem is that both a producer and a consumer can write to `count` simultaneously. 
 
@@ -664,7 +664,7 @@ The simplest solution is to **disable interrupts** during critical section, so n
 
 Another solution is **Strict Alternation**. Two processes share a variable `turn`, which holds the values 0 and 1. It ensures mutual exclusion, but works only if  `turn = 0` is an atomic operation. 
 
-<img src="./pics for conspects/OS 22-09-20 3.png" alt="OS 22-09-20 3" style="zoom: 40%;" />
+<img src="./pics for conspects/OS/OS 22-09-20 3.png" alt="OS 22-09-20 3" style="zoom: 40%;" />
 
 
 
@@ -783,7 +783,7 @@ Semaphores do not guarantee a definite order of process execution, so processes 
 
 #### Example 1: Bounded-Buffer with Semaphores
 
-<img src="./pics for conspects/OS 22-09-22 1.png" alt="OS 22-09-22 1" style="zoom: 67%;" />
+<img src="./pics for conspects/OS/OS 22-09-22 1.png" alt="OS 22-09-22 1" style="zoom: 67%;" />
 
 `empty` counts empty buffer space. If it is equal to 0, we should wait for consumers to buy an item. 
 
@@ -803,7 +803,7 @@ When a consumer comes, he see that the mutex is locked, so he starts waiting, to
 
 #### Example 2: Readers / Writers with Semaphores
 
-<img src="./pics for conspects/OS 22-09-22 2.png" alt="OS 22-09-22 2" style="zoom:67%;" />
+<img src="./pics for conspects/OS/OS 22-09-22 2.png" alt="OS 22-09-22 2" style="zoom:67%;" />
 
 When the first reader comes (`++readcount == 1`), the writer cannot modify a text, so `down(&writer)` is invoked in the line 4 in the `reader()` function.
 
@@ -827,7 +827,7 @@ We can get a dead-lock if all philosophers get the right fork.
 
 The solution is use semaphores and check whether both left and right forks are free. In this case take forks and eat, otherwise do not take a fork. 
 
-<img src="./pics for conspects/OS 22-09-27 1.png" alt="OS 22-09-27 1" style="zoom: 67%;" />
+<img src="./pics for conspects/OS/OS 22-09-27 1.png" alt="OS 22-09-27 1" style="zoom: 67%;" />
 
 
 
@@ -1199,7 +1199,7 @@ Edge $P_i \rightarrow T_j \ \in E_c$ -- a process $P_i$ will request a resource 
 
 #### Example
 
-<img src="./pics for conspects/OS 22-10-06 1.png" alt="OS 22-10-06 1" style="zoom: 67%;" />
+<img src="./pics for conspects/OS/OS 22-10-06 1.png" alt="OS 22-10-06 1" style="zoom: 67%;" />
 
 $T_1 \rightarrow P_2$ means a resource of type $T_1$ is allocated to a process $P_1$. 
 
@@ -1245,7 +1245,7 @@ A resource allocation state is *safe* if the system can allocate resources to ea
 
 if the process is not able to get all resources it need, then the system rejects the process. 
 
-##### <img src="./pics for conspects/OS 22-10-06 2.png" alt="OS 22-10-06 2" style="zoom:50%;" />
+##### <img src="./pics for conspects/OS/OS 22-10-06 2.png" alt="OS 22-10-06 2" style="zoom:50%;" />
 
 $M$ is for a global maximum of resources for a definite process.
 
@@ -1259,7 +1259,7 @@ $N$ is for an amount of resources needed currently.
 
 ##### Example 1: The Banker’s algorithm
 
-<img src="./pics for conspects/OS 22-10-06 3.png" alt="OS 22-10-06 3" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-10-06 3.png" alt="OS 22-10-06 3" style="zoom:50%;" />
 
 
 
@@ -1404,7 +1404,7 @@ A *CPU scheduler* is a scheduler, which distributes CPU resources to processes (
 
 Notation:
 
-<img src="./pics for conspects/OS 22-10-11 3.png" alt="OS 22-10-11 3" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-10-11 3.png" alt="OS 22-10-11 3" style="zoom:50%;" />
 
 
 
@@ -1418,7 +1418,7 @@ A deterministic schedule $S$ for processes $P_1, ..., P_n$, tasks $T_1, ..., T_m
 
 A precedence graph $G = (T, E)$ is a directed acyclic graph which defines dependencies between tasks. An edge $T_i \rightarrow T_j$ means task $i$ should end before $T_j$ starts. 
 
-<img src="./pics for conspects/OS 22-10-11 1.png" alt="OS 22-10-11 1" style="zoom:60%;" />
+<img src="./pics for conspects/OS/OS 22-10-11 1.png" alt="OS 22-10-11 1" style="zoom:60%;" />
 
 
 
@@ -1428,7 +1428,7 @@ A precedence graph $G = (T, E)$ is a directed acyclic graph which defines depend
 
 ##### 2. Grantt diagrams \todo
 
-<img src="./pics for conspects/OS 22-10-11 2.png" alt="OS 22-10-11 2" style="zoom:60%;" />
+<img src="./pics for conspects/OS/OS 22-10-11 2.png" alt="OS 22-10-11 2" style="zoom:60%;" />
 
 For the left schedue: 
 
@@ -1552,7 +1552,7 @@ Benefits:
 
 
 
-## 22-10-19
+## 22-10-20
 
 ### Main Memory
 
@@ -1568,11 +1568,13 @@ Memory management of an operating system
 
 
 
+
+
 #### UMA and NUMA models 
 
-In *UMA models* all CPUs have access to the entire memory in the same way. This leads  to a high degree of contention on the memory system.
+UMA -- unified memory access. In *UMA models* all CPUs have access to the entire memory in the same way. This leads  to a high degree of contention on the memory system.
 
-In *NUMA models*  every CPU can access only a part of the memory directly . It has to interact with some other CPU to access other memory. 
+NUMA -- non-uniform memory access. In *NUMA models*  every CPU can access only a part of the memory directly . It has to interact with some other CPU to access other memory. NUMA model also implies that the process stays in the same CPU in order to execute effectively (it is called process affinity). 
 
 
 
@@ -1586,6 +1588,8 @@ In *NUMA models*  every CPU can access only a part of the memory directly . It h
 
 *Physical* addresses identify the physical location of a data element in memory. 
 
+The idea is to convert non-contiguous physical memory into contiguous logical memory. 
+
 
 
 
@@ -1598,17 +1602,52 @@ Most of the advanced computing systems have a *memory management unit* that maps
 
 Modern systems often randomize memory space mappings which makes it more difficult to hack program. 
 
-<img src="./pics for conspects/OS 22-10-19 1.png" alt="OS 22-10-19 1" style="zoom: 78%;" />
+<img src="./pics for conspects/OS/OS 22-10-19 1.png" alt="OS 22-10-19 1" style="zoom: 78%;" />
 
 
 
 
 
-#### Memory Partitioning \todo
+#### Memory Partitioning 
+
+<img src="./pics for conspects/OS/OS 22-10-19 3.png" alt="OS 22-10-19 3" style="zoom:50%;" />
+
+Memory space is often divided into several regions or partitions, some of them serve special purposes. 
 
 
 
-#### Swapping priciple \todo
+
+
+
+
+#### Swapping principle
+
+Swapping is a memory management technique in which any process can be temporarily swapped from main memory to a so-called *swap space* -- secondary memory. It is used to temporarily remove inactive programs from the main memory, so that it becomes available for other processes. 
+
+The purpose of the swapping is to access the data present in the hard disk and bring it to RAM so that the application programs can use it.
+
+Swapping is used only when data is not present in RAM.
+
+<img src="./pics for conspects/OS/OS 22-10-19 4.png" alt="OS 22-10-19 4" style="zoom:50%;" />
+
+
+
+
+
+Advantages of Swapping:
+
+- It helps the CPU to manage multiple processes within a single main memory.
+- It allows the CPU to perform several tasks simultaneously. Processes do not have to wait too long before their execution. 
+
+
+
+Disadvantages of Swapping:
+
+- It has a high price in particular if memory segments are large. 
+- If the computer system loses power, the user may lose all information related to the program.
+- If the swapping algorithm is not good, it can increase the number of page faults and decrease the overall processing performance.
+
+
 
 
 
@@ -1640,7 +1679,7 @@ Segments may be shared between processes, may grow or shrink; different segments
 
 #### Example: executing 6 processes 
 
-<img src="./pics for conspects/OS 22-10-19 2.png" alt="OS 22-10-19 2" style="zoom:68%;" />
+<img src="./pics for conspects/OS/OS 22-10-19 2.png" alt="OS 22-10-19 2" style="zoom:68%;" />
 
 
 
@@ -1680,23 +1719,29 @@ Two holes in list $i$ can be efficiently merged into a hole of size $2^{i+1}$ ad
 
 A hole in list $i$ can be efficiently split into two holes of size $2^{i-1}$ and added to a list $i-1$. 
 
-
-
-Memory can be represented as a binary tree where $1024$ is the root, $512$ and $512$ are children, etc. Merging two holes 
-
+Internal fragmentation can be costly, because only holes that are nearby each other can be merged.  
 
 
 
+Example:
+
+Memory can be represented as a non-complete binary tree where $1024$ is the root, $512$ and $512$ are children, etc. 
+
+<img src="./pics for conspects/OS/OS 22-10-19 5.png" alt="OS 22-10-19 5" style="zoom:70%;" />
 
 
 
-## Paging
+
+
+## 22-10-25
+
+### Paging
 
 source: [GeeksForGeeks](https://www.geeksforgeeks.org/paging-in-operating-system/)
 
 
 
-Paging is a memory management scheme that eliminates the need for contiguous allocation of physical memory. 
+Every process has int own logical address space. Paging is a memory management scheme which organizes that space and eliminates the need for contiguous allocation of physical memory. 
 
 There are:
 
@@ -1707,29 +1752,157 @@ There are:
 
 
 
-The mapping from virtual to physical addresses is done by the memory management unit (MMU) which is a hardware device and this mapping is known as paging.
+The mapping from virtual to physical addresses is done by the memory management unit (MMU) which is a hardware device and this mapping is known as a paging technique.
 
-The Physical Address Space is conceptually divided into a number of fixed-size blocks, called **frames**. The Logical address Space is also splitted into fixed-size blocks, called **pages**.
+The Physical Address Space is conceptually divided into a number of fixed-size blocks, called **frames**. 
 
-`Page Size = Frame Size`
+The Logical address Space is splitted into fixed-size blocks, called **pages**. Every page can have different access rights. Read-only pages can be shared between processes
+
+`Page Size = Frame Size` ($\Rightarrow$ mapping between physical and logical spaces is flexible). 
 
 
 
 
 
-### Address structure
+
+
+#### Address structure
 
 Logical address is divided into
 
 - **Page number (p):** Number of bits required to represent the page in Logical Address Space.
+
 - **Page offset (d):** Number of bits required to represent particular word in a page. Equal to `<logical address size> - p`. 
 
+  
 
-
-Physical address is divided into :
+Physical address is divided into
 
 - **Frame number (f):** Number of bits required to represent the frame of Physical Address Space.
+
 - **Frame offset (d):** Number of bits required to represent particular word in a frame. Equal to `<physical address size> - f`. 
+
+  
+
+<img src="./pics for conspects/OS/OS 22-10-25 1.png" alt="OS 22-10-25 1" style="zoom:70%;" />
+
+
+
+
+
+
+
+#### Pros and cons
+
+Advantages:
+
+- Not all pages of a logical address space must be loaded to physical memory to execute a process. 
+
+- Address translation must be very fast. 
+
+- Segment sizes can easily be extended by adding additional pages.
+
+  
+
+Disadvantages:
+
+- May cause internal fragmentation in physical address space. 
+- Page tables consume additional memory.
+- Access to pages not in physical memory causes a page fault.  
+
+
+
+
+
+
+
+#### What to do with a page fault? 
+
+A page fault will happen if a program tries to access a page that does not exist in physical memory (main memory). 
+
+Page faults are costly due to slow I/O operations. 
+
+The idea of fixing a page fault is to find a physical address in a page table, using the old logical address, change it and then refresh logical address. 
+
+1. MMU detects a page fault and raises an interrupt 
+2. Operating system saves the CPU registers (info about the current state of the process) and other data 
+3. The process is marked blocked and moved to the [secondary memory](####Swapping principle)
+4. Look for a free frame in the physical memory 
+5. The OS loads the process into the free frame 
+6. The logical address in updated in the process's page table 
+7. Rerun the process 
+
+<img src="./pics for conspects/OS/OS 22-10-25 2.png" alt="OS 22-10-25 2" style="zoom:70%;" />
+
+
+
+
+
+#### Extra comments
+
+- Try to ensure that the “essential” pages of a process are always in memory
+- Try to remove used frames which will not be used in the future
+- During page faults, other processes can execute
+- In the extreme case, the system is busy swapping pages into memory and does not do any other useful work (thrashing)
+- Page faults are costly due to slow I/O operations
+- Paging can be applied to page tables as well (multilevel paging)
+
+
+
+
+
+
+
+### Translation Lookaside Buffer (TLB)
+
+A TLB acts as a cache mapping logical addresses (p, d) to physical addresses (f , d).
+
+A page number extracted from a logical address is given to the TLB. The TLB returns either the associated frame number or signals to the operating system that there is no such a page. The operating system looks up the missing TLB entry, loads it into the TLB and restarts the instruction.
+
+If there is no TLB entry with the requested page, the CPU will signal an exception. The exception handler is then responsible for looking up the logical address in the process’s page table and updating it in the TLB. 
+
+
+
+
+
+
+
+
+
+## 22-10-29
+
+### Loading page strategies
+
+Determine when pages are loaded into memory. Most systems use demand paging, sometimes combined with pre-paging.
+
+- *swapping:* load complete address spaces (does not work for irtual memory)
+- *demand paging:* load pages when they are accessed for the first time 
+- *pre-paging:* load pages that are likely to be accessed in the future 
+- *page clustering:* load larger clusters of pages to optimize I/O operations 
+
+
+
+
+
+
+
+### Replacement Strategies (for secondary memory)
+
+Replacement strategies determine which pages are moved to secondary storage in order to free frames.
+
+- *First in first out (FIFO):* replace the page which is the longest time in memory
+
+- *Second chance (SC):* Like FIFO but skip pages that have been used since the last page fault
+
+- *Least frequently used (LFU):* Replace the page which has been used least frequently
+
+- *Least recently used (LRU):* Replace the page which has not been used for the longest period of time
+
+  <img src="./pics for conspects/OS/OS 22-10-29 1.png" alt="OS 22-10-29 1" style="zoom:80%;" />
+
+- *Belady’s optimal algorithm (BO):* Replace the page which will not be used for the longest period of time
+
+  <img src="./pics for conspects/OS/OS 22-10-29 2.png" alt="OS 22-10-29 2" style="zoom:80%;" />
 
 
 
@@ -1744,6 +1917,10 @@ Physical address is divided into :
 ## 22-11-01
 
 ### Signals
+
+Signals are a software equivalent of hardware interrupts. They interrupt the normal control flow, but do not carry any data except the signal number. 
+
+
 
 Basic signals are a part of the standard C library:
 
@@ -1858,7 +2035,7 @@ int main(void)
 
 ##### Signal delivery
 
-<img src="./pics for conspects/OS 22-11-01 1.png" alt="OS 22-11-01 1" style="zoom:70%;" />
+<img src="./pics for conspects/OS/OS 22-11-01 1.png" alt="OS 22-11-01 1" style="zoom:70%;" />
 
 Zombie processes -- processes that have completed their execution, but their entries are not removed from the process table.
 
@@ -1876,7 +2053,7 @@ If a parent process explicitly sets the action of the `SIGCHLD ` to `SIG_IGN`, t
 
 1. Implementations can merge multiple identical signals
 2. Signals do not carry any data / information except the signal number
-3. Variables modified by signals should be signal atomic
+3. Variables modified by signals should be signal atomic (type `sig_atomic_t`) to handle any possible race conditions
 4. `fork()` inherits signal functions
 5. `exec()` resets signal functions (for security reasons and because the process gets a new memory image)
 
@@ -1921,21 +2098,163 @@ int sa_flags;            /* flags to control behavior */
 
 In Linux and Unix-like systems, almost all resources are stored in files. 
 
-A **file descriptor** is a unique number for a file or other input/output resources (pipes, sockets). 
+A **file descriptor** is a unique number that leads to an open file. It is written into the file descriptor table. 
+
+Every process has its own file descriptor table --  an array of file descriptors. When a child process is created, it inherits file descriptors of the parent. 
 
 There are 3 standard file descriptors:
 
 - `0` == `stdin`
-
 - `1` == `stdout`
-
 - `2` == `stderror` 
 
 
 
-Every process has its own **file descriptor table** --  an array of file descriptors.
 
 
+
+
+
+
+
+
+## 22-11-03
+
+### Pipes
+
+Pipes are kernel objects that support unidirectional communication from the write end of a pipe to the read end of a pipe. In a simple way, a pipe gets the stdout of the first command and gives it as the stdin to the second command. 
+
+A pipe has **a write end** (sth is written into here) and **a read end** (sth is read from here). When the kernel creates a new pipe, it allocates two new file descriptors for the pipe's ends in the file descriptor table.
+
+
+
+#### Example
+
+<img src="./pics for conspects/OS/OS 22-11-01 2.png" alt="OS 22-11-01 2" style="zoom:80%;" />
+
+Shell has to create two pipes and needs to fork three child processes: for `ls`, `sort` and `head` commands. 
+
+After forking child processes and before doing the `exec()` calls, the shell has to arrange the file descriptors such that the stdout of the first process goes into the write end of the first pipe; the stdin of the second child process is the read end of the first pipe and the stdout of the second child process is the write end of the second pipe; the stdin of the third child process is the read end of the second pipe.
+
+Redirecting stdin and stdout is done via `dup2()` system call (see below). 
+
+
+
+
+
+
+
+### POSIX pipes 
+
+```c++
+#include <stdio.h>
+FILE *popen(const char *command, const char *type);
+int pclose(FILE *stream);
+```
+
+`popen()` and `pclose()` library functions are wrappers to open a pipe to a child process executing the given command. 
+
+
+
+```c++
+#include <unistd.h>
+int pipe(int fields[2]);  /* fields[0] = read end   */
+                          /* fields[1] = write end  */
+```
+
+`pipe()` creates a new pipe, then saves its read end and write end in `fields` array.  Ends of a pipe should be closed if they are unused, otherwise `EOF` cannot be reached. 
+
+
+
+```c++
+#include <unistd.h>
+int dup(int oldfd);
+int dup2(int oldfd, int newfd);
+```
+
+`dup2()` system call allocates a new file descriptor that refers to the same open file as the old descriptor. 
+
+
+
+
+
+#### Example (pipe + dup2 + fork)
+
+```c++
+pid_t pid;
+int fields[2];
+
+pipe(fields);  /* create a pipe */
+
+pid = fork()
+if (pid == 0) {
+    dup2(fields[1], STDOUT_FILENO);  /* make output go to a pipe */
+    close(fields[0]);                /* close unused read end */
+    char *args[] = {"ls", "-l", NULL};
+    execvp("curl", args);
+} 
+
+pid = fork()
+if (pid == 0) {
+    close(fields[1]);                /* close unused write end */
+    dup2(fields[0], STDIN_FILENO);  /* get input from a pipe */
+    char *args[] = {"echo", NULL};
+    execvp("echo", args);
+} 
+
+close(fields[0]);
+close(fields[1]);
+/* The write end in a parent process should be closed, so that a child process could recieve a EOF. Otherwise, the cild process will not terminate, it will wait for an input infinitely. */
+wait(NULL);
+```
+
+
+
+
+
+
+
+### Named pipes
+
+A traditional pipe is “unnamed” and lasts only as long as the process. A named pipe -- or FIFO -- can last as long as the system is up, beyond the life of the process. It can be deleted if no longer used.
+
+Usually a named pipe is a file. Processes attach to it and communicate with each other by reading from or writing to this file.
+
+```shell
+$ mkfifo pipe1 pipe2
+$ ls > pipe1 
+$ echo < pipe1 > pipe2
+```
+
+
+
+```c++
+int mkfifo(const char *pathname, mode_t mode); 
+```
+
+`mkfifo()` system call is used to create a named pipe. It creates a FIFO special file with name `pathname`.  `mode` specifies the file's permissions. 
+
+
+
+
+
+
+
+## 22-11-08
+
+### Sockets \todo
+
+ Socket API is a standard communication API provided by operating systems. It consists of: 
+
+- address formats for various network protocol families
+- functions to create, name, connect to and destroy sockets
+- functions to send and receive data 
+- functions to convert human readable names to addresses and vice versa
+- functions to multiplex I/O on several sockets 
+
+A socket itself is an endpoint of communication. Two processes communicating over a network should have two sockets -- one for each process. 
+
+A socket is identified by an IP-address concatenated with a port number.
 
 
 
@@ -1947,7 +2266,7 @@ Every process has its own **file descriptor table** --  an array of file descrip
 
 Files are persistent containers for the storage of data.
 
-Unix/Linux systems represent devices in the `/dev` file system. The `/dev` file system is a special file system exporting device information as it is known by the kernel. 
+Unix/Linux systems represent devices in the `/dev` file system. The `/dev` file system is a special file system exporting device information as it is known by the kernel. Files for devices that do not exist can be avoided, so the size of `/dev` is rather small. 
 
 The `/proc` file system is commonly used to expose information that the kernel maintains about running processes.
 
@@ -1959,11 +2278,11 @@ The `/proc` file system is commonly used to expose information that the kernel m
 
 ### Directories
 
-File system is represented as a tree. Files are leaves, directories are nodes. Name of leaves and nodes have to be unique. Absolute names are formed by concatenating directory and file names. 
+File system is represented as a tree. Files are leaves, directories are nodes. Names of leaves and nodes have to be unique. Absolute names are formed by concatenating nodes' names. 
 
 Applications tend to interact with the file system a lot and hence file systems have to be fast. To achieve fast access to frequently used data, file systems often use data caches residing in main memory. 
 
-On some file systems, files that were accidentally lost may be recovered. They may be located in special directories (e.g.  `lost+found` directory).<img src="./pics for conspects/OS 22-11-17 1.jpg" alt="OS 22-11-17 1" style="zoom:80%;" />
+On some file systems, files that were accidentally lost may be recovered. They may be located in special directories (e.g.  `lost+found` directory).<img src="./pics for conspects/OS/OS 22-11-17 1.jpg" alt="OS 22-11-17 1" style="zoom:80%;" />
 
 
 
@@ -1973,11 +2292,11 @@ On some file systems, files that were accidentally lost may be recovered. They m
 
 ### Mounting
 
-Mounting is the process by which an operating systems makes files and directories. It allows to build logical file system name spaces that span multiple devices. 
+Mounting is the process by which an operating system makes files and directories. It allows to build logical file system name spaces that span multiple devices. 
 
 A mount point is a location in the [partition](https://en.wikipedia.org/wiki/Disk_partitioning) used as a root filesystem. When the mounting process is completed, the user can access files and directories on [the medium](https://en.wiktionary.org/wiki/storage_medium) from there. 
 
-Unmounting is a process in which the operating systems cuts off all user access to files and directories on the mount point; writes remaining data to the storage device; refreshes [filesystem metadata](https://www.sciencedirect.com/topics/computer-science/file-system-metadata#:~:text=File%20system%20metadata%20includes%20the,in%20detail%20in%20Chapter%2030.) and and remove access to the device (thus making the storage device safe for removal). 
+Unmounting is a process in which the operating systems cuts off all user access to files and directories on the mount point; writes remaining data to the storage device; refreshes [filesystem metadata](https://www.sciencedirect.com/topics/computer-science/file-system-metadata#:~:text=File%20system%20metadata%20includes%20the,in%20detail%20in%20Chapter%2030.) and removes access to the device (thus making the storage device safe for removal). 
 
 
 
@@ -1987,13 +2306,32 @@ Unmounting is a process in which the operating systems cuts off all user access 
 
 ### File links 
 
-A **hard link** is a directory entry that associates a name with a file system object. The association is established when the link is created and fixed afterwards.
+Links make file system object accessible under several different names. File systems maintain an internal link count in order to keep track of how many hard links refer to a file system object. A file cannot be modified if it is used by another process. 
 
-A **soft link** or **symbolic link** is a directory entry storing a reference to a file system object in the form of an absolute or relative path. The reference is resolved at runtime.
+A **hard link** is a directory entry that associates a name with a file system object. 
 
-Links make file system object accessible under several different names. A file system object is accessible as long as there is at least one hard link to it. File systems maintain an internal link count in order to keep track of how many hard links refer to a file system object. 
+- One file can have multiple hard links. 
+- A file is accessible as long as there is at least one hard link to it. The amount of hard links can be found via `stat <filename>` command (field "Links")
+- Moving or renaming a hard link does not affect on others. 
+- Hard links cannot point to files from another file system. 
 
-`rm` command deletes not a file but a link.  When no links point to a file, it is overwritten by the filesystem. You still can find it via a magic id (index of a file, command `ls -ila`). The file cannot be overwritten while it is used by another process (`rm` does not work). 
+A **soft link** or **symbolic link** is a directory entry storing a reference to a file system object in the form of an absolute or relative path. 
+
+- Moving or renaming a file breaks a symlink.
+- Symlinks can reference to a file from another file system 
+- `readlink` command shows on what object the file references on. 
+
+
+
+`rm` command deletes not a file but a hard link.  When no hard links point to a file, it is overwritten by the filesystem. You still can find it via a magic id (*aka* inode *aka* index of a file, command `ls -ila` or `stat <filename>`). The file cannot be overwritten while it is used by another process (`rm` does not work). 
+
+
+
+
+
+
+
+#### Example: creating a hard link 
 
 ```shell
 $ touch a.txt      # file `b.txt` is not created yet 
@@ -2007,6 +2345,31 @@ total 8
 ```
 
 
+
+
+
+
+
+#### Example: creating a symlink
+
+```shell
+$ touch a.txt        # file `b.txt` is not created yet 
+$ ln -s a.txt b.txt  # symlink `b.txt` to `a.txt`
+$ ls -ila
+total 3252
+3670035 drwxr-xr-x  4 deshyt deshyt    4096 ноя 24 14:41  .
+3670018 drwxr-x--- 30 deshyt deshyt    4096 ноя 24 12:24  ..
+3706917 -rw-rw-r--  1 deshyt deshyt       0 ноя 24 14:41  a.txt
+3706855 lrwxrwxrwx  1 deshyt deshyt       5 ноя 24 14:41  b.txt -> a.txt
+```
+
+
+
+
+
+
+
+#### What is /etc/alternatives used for?
 
 In `/etc/alternatives` links between shell commands and `bin` files are stored. 
 
@@ -2033,7 +2396,7 @@ $ update-alternatives --remove c++ /usr/bin/aboba  # change the link
 
 ### Processes and Files 
 
-<img src="./pics for conspects/OS 22-11-17 2.jpg" alt="OS 22-11-17 2" style="zoom:80%;" />
+<img src="./pics for conspects/OS/OS 22-11-17 2.jpg" alt="OS 22-11-17 2" style="zoom:80%;" />
 
 
 
@@ -2048,6 +2411,201 @@ The relationship of file descriptor tables and the open file table:
 - Entries in the open file table may be shared among processes.
 
 
+
+
+
+
+
+
+
+## 22-11-22
+
+### File system implementation 
+
+#### Block allocation methods using Lists
+
+##### 1. Contiguous allocation
+
+Files stored as a contiguous block of data on the disk. A set of contiguous blocks is used for one file.  For every file, a tuple `<filename, start block, amount of blocks>` is stored in a file allocation table. 
+
+`+` easy to implement
+
+`+` access to a random block is easy to implement 
+
+`-` hard to find the needed amount of contiguous blocks 
+
+`-` hard to know the file size
+
+`-` external fragmentation (several blocks can be allocated, but not all of them together)
+
+
+
+
+
+##### 2. Linked list allocation
+
+Every data block contains a pointer (number) to the next data block. Every block can be individually allocated in the main memory. For every file, a tuple `<filename, start block, end block>` is stored in a file allocation table. 
+
+`+` no external fragmentation (blocks are allocated independently)
+
+`-` need to store pointers $\Rightarrow$ more memory is in use 
+
+`-` access to a random block is slow (because it's a list)
+
+
+
+
+
+##### 3. Linked list allocation using an index
+
+The linked list is maintained in an index array outside of the data blocks. For every file, a tuple `<filename, index of start block>` is stored in a file allocation table. 
+
+Each block which is reserved for a file has its own array of indexes. The indexes point to other data blocks. Thus, a set of reserved blocks can be considered as a tree. The depth of the tree is $\leqslant 3$. 
+
+`+` access to a random block is quick
+
+`+` no external fragmentation 
+
+`+` new blocks can be easily added 
+
+
+
+
+
+
+
+#### Block allocation method using index nodes (inodes)
+
+Index nodes are used specifically in linux filesystems. Each inode contains metadata that can be found via `stat` command.
+
+Index nodes store pointers to the first few disk blocks plus pointers to
+
+- an inode with data pointers
+- an inode with pointers to inodes
+- an inode with pointers to inodes with pointers to inodes
+
+Together, inodes form a tree. The depth of the tree is $\leqslant 3$. 
+
+
+
+
+
+##### Example 
+
+<img src="./pics for conspects/OS/OS 22-11-22 1.png" alt="OS 22-11-22 1" style="zoom:80%;" />
+
+Initial situation is:
+
+```c
+inode 0 : { 8 } // inode 0 refers to dnode 8
+inode i : undef // inode i has undefined content (i in {1..7})
+dnode 8 : { (".", 0), ("..", 0) } // dnode 8 has 2 directory entries to inode 0
+dnode i : undef // dnode i has undefined content (i in {9..15})
+```
+
+
+
+a) a file `/a` is created in the root directory/ It occupies 2 data blocks. 
+
+
+
+
+
+
+
+## 22-11-24
+
+### Design considerations
+
+#### 1. Device independence
+
+Space applications should work with as many similar devices as possible without requiring any changes. Some user space applications may want to exploit specific device characteristics
+
+
+
+#### 2. Efficiency
+
+Many applications are I/O bound and not CPU bound. 
+
+
+
+##### Buffering Schemes \todo
+
+
+
+#### 3. Error Reporting 
+
+Provide a consistent and meaningful way to report errors and exceptions.
+
+On POSIX systems, system calls report errors via special return values and a (thread) global variable `errno`. `errno` stores the last error code and does not get cleared when a system call completes without an error.
+
+Good error messages are 
+
+• clear, not ambiguous, concise, meaningful, relevant
+
+• indicate where the error was detected 
+
+• describe the necessary details of the action that failed 
+
+• avoiding jargon that not everyone will understand 
+
+• never mixed into regular output 
+
+• written to error or logging facilities
+
+• etc
+
+
+
+
+
+
+
+### Devices
+
+Block devices -- operate on *data blocks* of fixed size (i.e. hard disks). 
+
+Character devices -- operate on sequences of *bytes* of variable length (i.e. keyboards).  
+
+The type can be found out via `ll` command, for example. 
+
+`drwxr-xr-x` -- the first letter `d`=directory, `c`=character, `b`=block
+
+
+
+Every device is identified with:
+
+-  the type (block/character)
+- major device number -- identifies the responsible device driver  
+- minor device number --  identifies the device instance handled by the device driver
+
+
+
+```shell
+$ ll 
+brw-rw----   1 root   disk    259,     4 ноя 24 07:34 nvme0n1p4
+```
+
+type = block, major device number = 259, minor device number = 4.
+
+
+
+
+
+
+
+### Storage media
+
+1. Magnetic disks 
+   - data storage on rotating magnetic disks 
+   - division into tracks, sectors and cylinders 
+   - usually multiple read/write heads 
+   - Main drawback -- fragility. 
+2. Solid state disks (SSD)
+   - Data stored in solid-state memory (no moving parts). 
+   - Work faster than other types of the disk. 
+3. Optical disks 
+4. Magnetic tapes 
 
 
 

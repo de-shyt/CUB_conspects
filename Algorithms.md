@@ -253,7 +253,7 @@ for (int m = 1; m < (1 << n); ++m) {
 
 - занимает $\frac{N}{w}$ байт, где $w = 8$ -- машинное слово
 
-  <img src="./pics for conspects/ALG 22-09-21 2.png" alt="ALG 22-09-21 2" style="zoom:50%;" />
+  <img src="./pics for conspects/ALG/ALG 22-09-21 2.png" alt="ALG 22-09-21 2" style="zoom:50%;" />
 
 
 
@@ -265,7 +265,7 @@ for (int m = 1; m < (1 << n); ++m) {
 
 Решение за $O(2^{\frac{n}{2}}n)$
 
-<img src="./pics for conspects/ALG 22-09-21 1.jpg" alt="ALG 22-09-21 1" style="zoom:50%;" />
+<img src="./pics for conspects/ALG/ALG 22-09-21 1.jpg" alt="ALG 22-09-21 1" style="zoom:50%;" />
 
 
 
@@ -451,7 +451,7 @@ $h \leqslant \log_{\phi} n - \log_{\phi} c = O(\log n) $
 
 Точно знаем, что левое поддерево непустое. 
 
-<img src="./pics for conspects/ALG 22-09-28 1.png" alt="ALG 22-09-28 1" style="zoom:50%;" />
+<img src="./pics for conspects/ALG/ALG 22-09-28 1.png" alt="ALG 22-09-28 1" style="zoom:50%;" />
 
 
 
@@ -459,7 +459,7 @@ $h \leqslant \log_{\phi} n - \log_{\phi} c = O(\log n) $
 
 Нужно сделать два маленьких вращения: сначала поддерево с корнем $v.l$ влево, потом дерево с корнем $v$ вправо. 
 
-![ALG 22-09-28 2](./pics for conspects/ALG 22-09-28 2.png)
+![ALG 22-09-28 2](./pics for conspects/ALG/ALG 22-09-28 2.png)
 
 
 
@@ -540,7 +540,7 @@ aka *Treap* aka *Cartesian tree*  =  $\{ \ (x_1,y_1),.., (x_n, y_n) \ \}$.
 
 
 
-<img src="./pics for conspects/ALG 22-09-28 3.png" alt="ALG 22-09-28 3" style="zoom:50%;" />
+<img src="./pics for conspects/ALG/ALG 22-09-28 3.png" alt="ALG 22-09-28 3" style="zoom:50%;" />
 
 
 
@@ -564,7 +564,7 @@ Treap является RBST по координатам $x$
 
 Мержим деревья $a$ и $b$. Требование: $\forall x \in a \ \leqslant \ \forall y \in b$.
 
-<img src="./pics for conspects/ALG 22-09-28 4.png" alt="ALG 22-09-28 4" style="zoom:50%;" />
+<img src="./pics for conspects/ALG/ALG 22-09-28 4.png" alt="ALG 22-09-28 4" style="zoom:50%;" />
 
  
 
@@ -785,11 +785,11 @@ $2 \Rightarrow 1:$   сделаем сжатие точек по $x_i$. Полу
 
 Дерево отрезков сортированным массивов
 
-<img src="./pics for conspects/ALG 22-10-19 1.png" alt="ALG 22-10-19 1" style="zoom:50%;" />
+<img src="./pics for conspects/ALG/ALG 22-10-19 1.png" alt="ALG 22-10-19 1" style="zoom:50%;" />
 
 Построение за $O(n \log n)$ с помощью `mergeSort` (обычное ДО за $O(n)$). 
 
-Задача 1:  Время = $\underset{O(\log n)}{число \ кусков} \cdot \underset{2 \textnormal{ } бинпоиска}{T(ответ \textnormal{ } в \textnormal{ } куске)} = O(\log^2 n)$ 
+Задача 1:  Время = $\underset{O(\log n)}{\# кусков} \cdot \underset{2 \textnormal{ } бинпоиска}{T(ответ \textnormal{ } в \textnormal{ } куске)} = O(\log^2 n)$ 
 
 
 
@@ -803,13 +803,13 @@ $2 \Rightarrow 1:$   сделаем сжатие точек по $x_i$. Полу
 
 Разреженная таблица -- структура данных, позволяющая отвечать на запросы минимума на отрезке за $O(1)$ с препроцессингом за $ O(n \log ⁡n) $ времени и памяти.
 
-По сути, считаем минимуме на каждом отрезке длины $2^{k}$.
+По сути, считаем минимумы на каждом отрезке длины $2^{k}$.
 
 $dp[i][k] = \min \{ \ a_i, a_{i+1},..., a_{i + 2^k - 1} \ \}$
 
 ```c++
 for i = 0..n:
-    dp[i][0] = a[i]
+    dp[i][0] = parent[i]
 
 for k = 1..logn:
     for v = 0..n:
@@ -822,7 +822,7 @@ for k = 1..logn:
 
 Находим степень $j$ такую, что $2^j \leqslant r - l$. Тогда минимум на $[l , r]$ = $\texttt{min(dp[l][j], dp[x][j])}$  ($\texttt{x} = r - 2^j$).
 
-<img src="./pics for conspects/ALG 22-10-26 1.png" alt="ALG 22-10-26 1" style="zoom:80%;" />
+<img src="./pics for conspects/ALG/ALG 22-10-26 1.png" alt="ALG 22-10-26 1" style="zoom:80%;" />
 
 Чтобы запрос работал за $O(1)$, преподсчитаем степени двойки. Типа $\texttt{k = log[r - l]}$. 
 
@@ -854,7 +854,7 @@ isAncector(a, b) {
 
 
 
-### LCA
+#### LCA
 
 ```c++
 lca(v, u) {
@@ -866,9 +866,46 @@ lca(v, u) {
 		if (!isAncestor(tmp, u)) {      // если не прыгнули слишком высоко,
 			v = tmp                    // то меняем v
 		}
-	}
+	}	
+    return up[v][0]
 }
 ```
+
+
+
+
+
+
+
+### LA (level ancestor)
+
+Запрос `LA(v, k)` – подняться в дереве от вершины `v` на `k` шагов вверх.
+
+Уже умеем решать за $<n \log n, \log n>$ двоичными подъёмами. 
+
+
+
+#### Offline
+
+Пройдем дфсом и будем запоминать пройденный путь. Для вершины сохранен путь от корня, можно за $O(1)$ узнать предка на $k$-ом уровне. 
+
+
+
+#### Алгоритм Вишкина
+
+Работает за $<n, \log n>$. 
+
+Выпишем высоты Эйлерова обхода второго типа. Получим массив `height`. 
+
+Для запроса `LA(v, k)` знаем индекс `j` : `height[j] = v`. Найдем индес `max i`  :  `i <= j && height[i] = height[j] - k`. 
+
+<img src="./pics for conspects/ALG/ALG 22-11-02 4.png" alt="ALG 22-11-02 4" style="zoom:70%;" />
+
+
+
+
+
+
 
 
 
@@ -902,7 +939,7 @@ $\texttt{RMQ} \ \underset{1}{\rightarrow} \ \texttt{LCA} \ \underset{2}{\rightar
 
    Как построить за $O(n)$? Проходимся последовательно по массиву. В дереве будем всегда двигаться по самому правому пути (запоминать его конец). Если значение текущего элемента меньше, чем начало пути, то добавляем новую ветку справа от всех веток начала пути (теперь начало самого правого пути поменялось).
 
-   <img src="./pics for conspects/ALG 22-11-02 2.png" alt="ALG 22-11-02 2" style="zoom:50%;" />
+   <img src="./pics for conspects/ALG/ALG 22-11-02 2.png" alt="ALG 22-11-02 2" style="zoom:50%;" />
 
    
 
@@ -912,7 +949,7 @@ $\texttt{RMQ} \ \underset{1}{\rightarrow} \ \texttt{LCA} \ \underset{2}{\rightar
 
    - $LCA \in $ отрезку
 
-   <img src="./pics for conspects/ALG 22-11-02 1.png" alt="ALG 22-11-02 1" style="zoom:35%;" />
+   <img src="./pics for conspects/ALG/ALG 22-11-02 1.png" alt="ALG 22-11-02 1" style="zoom:35%;" />
 
    - $\forall i, \ i \in [l, r) \ : \ (i, a[i]) \in subtree(lca) \ \Rightarrow \ lca.value \leqslant a[i]$
 
@@ -928,7 +965,7 @@ $\texttt{RMQ} \ \underset{1}{\rightarrow} \ \texttt{LCA} \ \underset{2}{\rightar
 
    **(1)** Эйлеров обход второго типа (выписываем вершину и высоту)
 
-   <img src="./pics for conspects/ALG 22-11-02 3.png" alt="ALG 22-11-02 3" style="zoom:50%;" />
+   <img src="./pics for conspects/ALG/ALG 22-11-02 3.png" alt="ALG 22-11-02 3" style="zoom:50%;" />
 
 Получаем массив $\texttt{h}$, в котором разница между элементами $= \pm 1$. 
 
@@ -1049,29 +1086,277 @@ $e$ -- ребро минимального веса из разреза ( ${\sma
 
 Делаем так до тех пор, пока в $T$ не будут включены все вершинки
 
+Работает за $O(V^2 + E)$ на массиве, $O(E \log V)$ на бин куче, $O(V \log V + E)$ на Фиб. куче. 
+
 ```c++
-int Prim() {
-    std::vector<bool> used(n + 1, false);
-    std::vector<int> dist(n + 1, INF);
-    dist[1] = 0; // стартуем из 1
-    std::set<std::pair<int, int>> q;
-    q.insert(std::make_pair(0, 1));  // <distance, vertix>
-    int cost = 0;
-    while (!q.empty()) {
-        cost += q.begin()->first;
-        int u = q.begin()->second;
-        used[u] = true;
-        q.erase(q.begin());
-        for (int v = 1; v <= n; ++v) {
-            if (!used[v] && g[u][v] != -1 && g[u][v] < dist[v]) {
-                q.erase(std::make_pair(dist[v], v));
-                dist[v] = g[u][v];
-                q.insert(std::make_pair(dist[v], v));
-                parent[v] = u;
+int main() {
+    vector<vector<int>> g;
+    vector<bool> used(n, false);
+    vector<int> dist(n, INF), parent(n, -1);
+    dist[0] = 0;  // стартуем из 0
+    repeat(n) {
+        int v = -1;
+        for (int j = 0; j < n; ++j)
+            if (!used[j] && (v == -1 || dist[j] < dist[v]))
+                v = j;
+        if (dist[v] == INF) {
+            cout << "No MST!\n";
+            return 0;
+        }
+        used[v] = true;
+        for (int u = 0; u < n; ++u)
+            if (g[v][u] < dist[u]) {
+                dist[u] = g[v][u];  // в `dist` поддерживаем минимальное ребро от компоненты до вершинки 
+                parent[u] = v;
             }
+    }
+}
+```
+
+
+
+
+
+
+
+### Алгоритм Краскала
+
+Построение MST в связном графе 
+
+Строим мст с нуля. Сначала это пустой граф $T$. Сортируем рёбра по возрастанию, получаем массив `Edges`. 
+
+Добавляем ребро, если оно лежит между вершинкой $\in T$ и вершинкой $\notin T$.
+
+```c++
+std::vector<int> parent(n, -1);
+std::vector<int> rank(n, 0);  // ну типа высота дерева
+
+int find_set(int v) {
+    if (parent[v] == v) {
+        return v;
+    }
+    return parent[v] = find_set(parent[v]);
+}
+
+void union_set(int a, int b) {
+    int v_a = find_set(a);
+    int v_b = find_set(b);
+    if (v_a == v_b) {
+        return;
+    }
+    if (rank[v_a] < rank[v_b]) {
+        std::swap(v_a, v_b);
+    }
+    parent[v_b] = v_a;
+    if (rank[v_a] == rank[v_b]) {
+        ++rank[v_a];
+    }
+}
+
+int kraskal(std::set<std::pair<int, std::pair<int, int>>> &Edges) {
+    int cost = 0;
+    for (const auto &edge : Edges) {
+        int w = edge.first, u = edge.second.first, v = edge.second.second;
+        if (find_set(u) != find_set(v)) {
+            union_set(u, v);
+            cost += w;
         }
     }
     return cost;
 }
 ```
 
+`find_set()` за $O(\log n)$, потому что высота дерева (aka rank) не больше $\log n$.
+
+`union_set()` можно заставить работать за $O(1)$.
+
+
+
+
+
+#### Корректность алгоритма
+
+Рассмотрим разрез графа: $A \subset V$ && $B = V / A$. 
+
+Изначально $T = \{ \varnothing \}$. Будем набирать рёбра  в $T$. 
+
+$e$ -- ребро минимального веса, соединяющее $a \in A$ и $b \in B$. Рёбра меньшего веса находятся либо в $A$, либо в $B$ $\Rightarrow$ их нет смысла брать. Остальные рёбра между $A$ и $B$ имеют больший вес. Значит $e$ -- безопасное ребро, его можно добавить в $T$.
+
+Если полученное $T$ -- не дерево (т.е. не связно), то граф изначально был несвязный, противоречие. 
+
+$\left . \begin{array}{r} T - дерево \\ T \subseteq MST \end{array} \right \} \ \Longrightarrow \ T = MST$
+
+
+
+
+
+
+
+
+
+
+
+## 22-11-18
+
+### DSU
+
+DSU -- Система Непересекающихся Множеств
+
+Умеет:
+
+- `init(n)`  --  создать $n$ множеств из одного элемента 
+- `get(a)`  --  узнать уникальный идентификатор множества, в котором лежит $a$
+- `join(a, b)`  --  объединить множества, в которых лежат $а$ и $b$
+
+
+
+#### DSU на списках
+
+```c++
+vector<set> sets;
+vector<int> id;
+
+void init(int n) {   // O(n)
+    for (int i = 1..n) {
+        id[i] = i;
+        sets[i].insert(i);
+    }
+}
+
+int get(int a) {  // O(1)
+    return id[a];
+}
+
+void join(int a, int b) {   // O(n)
+    if (sets[a].size() < sets[b].size()) 
+        std::swap(a, b);
+    for (int x : sets[b]) {
+        id[x] = id[a];
+        sets[b].erase(x);
+        sets[a].insert(x);
+    }
+}
+```
+
+
+
+
+
+##### Th. (cуммарное время работы join) 
+
+Суммарное время работы всех `join` не больше $n \log n$. 
+
+
+
+*Док-во:*
+
+На каждом `join` кол-во множестве уменьшится вдвое $\Rightarrow$ соединять множества можно не больше $\log n$ раз $\Rightarrow$ все `join` работают за $O(n \log n)$. 
+
+
+
+
+
+
+
+#### DSU на деревьях 
+
+Базовая реализация: 
+
+```c++
+vector<int> p;
+
+void init(int n) {
+    for (int i = 1..n) {
+        p[i] = i;
+    }
+}
+
+int get(int a) {
+    return p[a] == a ? a : get(p[a]);
+}
+
+int join(int a, int b) {
+    pa = get(a);
+    pb = get(b);
+    p[pb] = pa;
+}
+```
+
+
+
+##### Оптимизации
+
+1. Сжатие путей -- перевешивание вершинок корню
+
+   ```c++
+   int get(int a) {
+       if (p[a] == a)
+           return a;
+       return p[a] = get(p[a]);
+   }
+   ```
+
+   
+
+2. Сохранение рангов для перевешивания меньшего дерева к большему.
+
+   Ранг вершины – глубина поддерева, если бы не было сжатия путей.
+
+   ```c++
+   vector<int> rank;
+   
+   void init(int n) {
+       for (int i = 1..n) {
+           p[i] = i;
+           rank[i] = 0;
+       }
+   }
+   
+   join(a, b) { // O(logn)
+       pa = get(a);
+       pb = get(b);
+       if (rank[pa] < rank[pb])
+       	std::swap(pa, pb);
+       p[pb] = pa;
+       if (rank[pa] == rank[pb])
+       rank[pa]++;
+   }
+   ```
+
+
+
+
+
+
+
+##### Th. (про размер поддерева)
+
+Если у $v$ ранг $k$, то её поддерево размера $\geqslant 2^k$
+
+
+
+*Док-во:*
+
+База: $k=0$. Размер дерева $=1$.
+
+Переход: 
+
+Чтобы получить дерево ранга $k+1$, нужны для дерева ранга $k$. Подвешиваем дерево с корнем $u$ к дереву с корнем $v$.
+
+$\textnormal{\small Новый \ размер \ дерева \ с \ корнем \ } v = \underbrace{\textnormal{\small старый \ размер \ дерева \ с \ корнем \ } v}_{\geqslant 2^k ({по \ предп. \ инд.})} + \underbrace{ \textnormal{\small размер \ дерева \ с \ корнем \ } u}_{\geqslant 2^k (по \ предп. инд.)} \geqslant 2^{k+1}$
+
+
+
+
+
+
+
+##### Th. (время работы join и get)
+
+`join` и `get` работают за $O(\log n)$. 
+
+
+
+*Док-во:*
+
+Работа `join` зависит от `get`. `get` работает за `rank(root)` $\leqslant O(\log n)$. 

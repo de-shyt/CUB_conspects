@@ -149,7 +149,7 @@ Unified Modeling Language -- a graphical language that is used to visualize and 
 
 ##### Class Model
 
-<img src="./pics for conspects/DB 22-09-13 classes.png" alt="DB 22-09-13 classes" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-13 classes.png" alt="DB 22-09-13 classes" style="zoom:50%;" />
 
 
 
@@ -373,7 +373,7 @@ We can add/retrieve both superclasses and subclasses. But there are lots of redu
 
 ### INTERSECT
 
-<img src="./pics for conspects/DB 22-09-20 1.png" alt="DB 22-09-20 1" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-20 1.png" alt="DB 22-09-20 1" style="zoom:50%;" />
 
 The upper option is more compact, while the lower one is more understandable and logical. 
 
@@ -407,7 +407,7 @@ WHERE NOT EXISTS
 
 `SELECT DISTINCT RATING` shows ratings that do not repeat. 
 
-<img src="./pics for conspects/DB 22-09-20 2.png" alt="DB 22-09-20 2" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-20 2.png" alt="DB 22-09-20 2" style="zoom:50%;" />
 
 
 
@@ -465,7 +465,7 @@ HAVING group-qualification
 
 #### Example
 
-<img src="./pics for conspects/DB 22-09-20 3.png" alt="DB 22-09-20 3" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-20 3.png" alt="DB 22-09-20 3" style="zoom:50%;" />
 
 
 
@@ -538,7 +538,7 @@ GROUP BY S.rating
 HAVING COUNT (*) > 1 AND EVERY (S.age <=60)
 ```
 
-<img src="./pics for conspects/DB 22-09-20 4.png" alt="DB 22-09-20 4" style="zoom: 49%;" />
+<img src="./pics for conspects/DB/DB 22-09-20 4.png" alt="DB 22-09-20 4" style="zoom: 49%;" />
 
 
 
@@ -636,7 +636,7 @@ $R_1 = \sigma_C(R_2)$,  where $C$ is a condition on attributes, $R_2$ is an init
 
 Selection is commutative: $\sigma_{c_1}(\sigma_{c_2}(x)) = \sigma_{c_2}(\sigma_{c_1}(x))$
 
-<img src="./pics for conspects/DB 22-09-27 1.png" alt="DB 22-09-27 1" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-27 1.png" alt="DB 22-09-27 1" style="zoom:50%;" />
 
 
 
@@ -648,7 +648,7 @@ $R_1 = \pi_{\textnormal{attr}(R_2)}$, where $\textnormal{attr}$ are some columns
 
 Projection is not commutative: $\pi_{name}(\pi_{login}(x)) \neq \pi_{login}(\pi_{name}(x))$
 
-<img src="./pics for conspects/DB 22-09-27 2.png" alt="DB 22-09-27 2" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-27 2.png" alt="DB 22-09-27 2" style="zoom:50%;" />
 
 
 
@@ -662,7 +662,7 @@ $R_3 = R_1 \times R_2$ -- pair each tuple $t_1 \in R_1$ with each tuple $t_2 \in
 
 If there is the same attibute $A$ in both $R_1$ and $R_2$, write $R_1.A$, $R_2.A$. 
 
-<img src="./pics for conspects/DB 22-09-27 3.png" alt="DB 22-09-27 3" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-27 3.png" alt="DB 22-09-27 3" style="zoom:50%;" />
 
 
 
@@ -672,7 +672,7 @@ If there is the same attibute $A$ in both $R_1$ and $R_2$, write $R_1.A$, $R_2.A
 
 $T = R \bowtie S$ -- connects two relations (using primary key, for example).
 
-<img src="./pics for conspects/DB 22-09-27 4.png" alt="DB 22-09-27 4" style="zoom:50%;" />
+<img src="./pics for conspects/DB/DB 22-09-27 4.png" alt="DB 22-09-27 4" style="zoom:50%;" />
 
 
 
@@ -919,7 +919,7 @@ Searching for “boston”, “university”.
 
 Query is given to parser in a form of a string. Then it is represented via relational algebra and executed. 
 
-<img src="./pics for conspects/DB 22-10-25 1.png" alt="DB 22-10-25 1" style="zoom:70%;" />
+<img src="./pics for conspects/DB/DB 22-10-25 1.png" alt="DB 22-10-25 1" style="zoom:70%;" />
 
 
 
@@ -941,7 +941,7 @@ $\bowtie$ -- conditions that need data from more than one table
 
 ##### Example
 
-<img src="./pics for conspects/DB 22-10-25 2.png" alt="DB 22-10-25 2" style="zoom:70%;" />
+<img src="./pics for conspects/DB/DB 22-10-25 2.png" alt="DB 22-10-25 2" style="zoom:70%;" />
 
 
 
@@ -951,7 +951,7 @@ $\bowtie$ -- conditions that need data from more than one table
 
 #### Physical query plan
 
-<img src="./pics for conspects/DB 22-10-25 3.png" alt="DB 22-10-25 3" style="zoom:70%;" />
+<img src="./pics for conspects/DB/DB 22-10-25 3.png" alt="DB 22-10-25 3" style="zoom:70%;" />
 
 
 
@@ -967,7 +967,205 @@ $\bowtie$ -- conditions that need data from more than one table
 
 
 
+## 22-11-22
 
+### NoSQL
+
+#### BASE
+
+Basically Available Soft-state Eventual Consistency
+
+Used instead of ACID
+
+Availability is <u>more important</u> than consistency. 
+
+
+
+
+
+#### CAP Th.
+
+2 of 3 points are guaranteed 
+
+- Consistency: all nodes have the same data anytime 
+- Availability: system allows operations all the time 
+- Partition-tolerance: system continues to work in spite of network partitions 
+
+
+
+### XML
+
+A markup language for transferring data 
+
+Example:
+
+```xml
+?xml version="1.0" encoding="ISO-8859-1"?>
+<catalog>
+    <cd country="USA">
+        <title>Empire Burlesque</title>
+        <artist>Bob Dylan</artist>
+        <price>10.90</price>
+    </cd>
+    <cd country="UK">
+        <title>Hide your heart</title>
+        <artist>Bonnie Tyler</artist>
+        <price>9.90</price>
+    </cd>
+    <cd country="USA">
+        <title>Greatest Hits</title>
+        <artist>Dolly Parton</artist>
+        <price>9.90</price>
+    </cd>
+</catalog>
+```
+
+
+
+
+
+
+
+#### Pattern expressions
+
+- absolute path: 
+
+  `/catalog/cd/tite |  /catalog/cd/artist`  --  returns all titles and artists  (the source xml for the example is above)
+
+- relative path:
+
+  `//title | //artist`  --  get all titles and all artists 
+
+- with condition:
+
+  `/catalog/cd[ price=10.90 ] ` --  all CDs in catalog with price 10.90
+
+- for labels(?):
+
+  `//cd/@country`  --  returns all cd countries 
+
+
+
+
+
+
+
+#### XQuery
+
+XQuery – retrieving information from XML data
+
+XPath – absolute or relative path in XML document 
+
+
+
+Example:
+
+1. "all book titles published after 1995"
+
+   ```xml
+   FOR $x IN document("bib.xml")/bib/book
+   WHERE $x/year > 1995
+   RETURN $x/title
+   ```
+
+   
+
+2. Aggregate functions
+
+   ```xml
+   FOR $p IN distinct(document("bib.xml")//publisher)
+   LET $b = document("bib.xml")/book[publisher = $p]
+   WHERE count($b) > 100
+   RETURN $p
+   ```
+
+   
+
+3. Qualifiers (some, any, every)
+
+   ```xml
+   FOR $b IN //book
+   WHERE EVERY $p IN $b//para SATISFIES contains($p, "sailing")
+   RETURN $b/title
+   ```
+
+
+
+
+
+
+
+### SPARQL
+
+Tuple looks like "$x_1 \ \ \ ... \ \ \ x_n .$"
+
+
+
+#### FOAF
+
+FOAF is a special vocabulary for describing people. it has different fields like `name`, `mbox`, `img`, etc. 
+
+Source: http://xmlns.com/foaf/0.1/
+
+
+
+
+
+**Example:**
+
+SQL query:
+
+```sql
+SELECT name, email
+FROM Person
+```
+
+
+
+RDF query:
+
+```SPARQL
+SELECT ?name ?email
+WHERE {
+    ?person rdf:type foaf:Person.
+    ?person foaf:name ?name.
+    ?person foaf:mbox ?email.
+} 
+```
+
+
+
+
+
+
+
+
+
+#### Example
+
+A tuple from a saved data: 
+
+```txt
+<http://example.org/book/book1>
+<http://purl.org/dc/elements/1.1/title>
+"SPARQL Tutorial" . 
+```
+
+ 
+
+XQuery:
+
+```
+SELECT ?title
+WHERE
+{
+    <http://example.org/book/book1>
+    <http://purl.org/dc/elements/1.1/title>
+    ?title .
+} 
+```
+
+We get `title "SPARQL Tutorial" . `
 
 
 
