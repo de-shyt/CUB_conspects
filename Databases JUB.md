@@ -1183,7 +1183,11 @@ We get `title "SPARQL Tutorial" . `
 
 
 
+## 22-11-29
 
+### Decision support systems (DSS)
+
+A decision support system is a computer program application used to improve a company's decision-making capabilities. It analyzes data and comes up with the best possible options available.
 
 
 
