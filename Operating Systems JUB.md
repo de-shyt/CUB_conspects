@@ -2501,9 +2501,162 @@ dnode i : undef // dnode i has undefined content (i in {9..15})
 
 
 
-a) a file `/a` is created in the root directory/ It occupies 2 data blocks. 
+a) a file `/a` is created in the root directory. It is filled with random data and occupies two blocks -- the $9$-th and the $10$-th. Assume that the size of a block is $\texttt{4k}$, the command is `dd bs=4k count=2 if=/dev/random /a`. 
+
+```shell
+  inode 0: { 8 }
+$ inode 1: { 9, 10 }
+  ...
+$ dnode 8: { (".", 0), ("..", 0), ("a", 1) }
+$ dnone 9: random data
+$ dnode 10: random data
+```
 
 
+
+b) a directory `/d` is created in the root directory and occupies the $11$-th block. The command is `mkdir /d`. 
+
+```shell
+  inode 0: { 8 }
+  inode 1: { 9, 10 }
+$ inode 2: { 11 }
+  ...
+$ dnode 8: { (".", 0), ("..", 0), ("a", 1), ("d", 2) }
+  dnone 9: random data
+  dnode 10: random data
+$ dnode 11: { (".", 2), ("..", 0) }
+```
+
+
+
+c) create a hard link, such that `/a` is also accessible as `/d/a`. The command is `ln /a /d/a`. 
+
+```shell
+  inode 0: { 8 }
+  inode 1: { 9, 10 }
+  inode 2: { 11 }
+  ...
+  dnode 8: { (".", 0), ("..", 0), ("a", 1), ("d", 2) }
+  dnone 9: random data
+  dnode 10: random data
+$ dnode 11: { (".", 2), ("..", 0), ("a", 1) }
+```
+
+
+
+d) remove a hard link on a file `/a`. The command is `rm /a`. 
+
+```shell
+  inode 0: { 8 }
+  inode 1: { 9, 10 }
+  inode 2: { 11 }
+  ...
+$ dnode 8: { (".", 0), ("..", 0), ("d", 2) }
+  dnone 9: random data
+  dnode 10: random data
+  dnode 11: { (".", 2), ("..", 0), ("a", 1) }
+```
+
+
+
+e) create a copy of `/d/a` in the file `/d/b`, which occupies the $12$-th and the $13$-th blocks. The command is `cp /d/a /d/b`. 
+
+```shell
+  inode 0: { 8 }
+  inode 1: { 9, 10 }
+  inode 2: { 11 }
+$ inode 3: { 12, 13 }
+  ...
+  dnode 8: { (".", 0), ("..", 0), ("d", 2) }
+  dnone 9: random data
+  dnode 10: random data
+$ dnode 11: { (".", 2), ("..", 0), ("a", 1), ("b", 3) }
+$ dnode 12: data copied from dnode 9
+$ dnode 13: data copied from dnode 10
+```
+
+
+
+f) create a symlink `/d/c` resolving to `/d/a`. The command is `ln -s /d/a /d/c`. 
+
+There are three options of doing it. 
+
+1. Write a path to the source file in dnode. `/d/c` occupies the $14$ block. 
+
+   ```shell
+     inode 0: { 8 }
+     inode 1: { 9, 10 }
+     inode 2: { 11 }
+     inode 3: { 12, 13 }
+   $ inode 4: { 14 }
+     ...
+     dnode 8: { (".", 0), ("..", 0), ("d", 2) }
+     dnone 9: random data
+     dnode 10: random data
+   $ dnode 11: { (".", 2), ("..", 0), ("a", 1), ("b", 3), ("c", 4) }
+     dnode 12: data copied from dnode 9
+     dnode 13: data copied from dnode 10
+   $ dnode 14: "/d/a"
+   ```
+
+   
+
+2. Write a path to the source file in inode. `/d/c` does not have a dnode. 
+
+   ```shell
+     inode 0: { 8 }
+     inode 1: { 9, 10 }
+     inode 2: { 11 }
+     inode 3: { 12, 13 }
+   $ inode 4: { "/d/a" }
+     ...
+     dnode 8: { (".", 0), ("..", 0), ("d", 2) }
+     dnone 9: random data
+     dnode 10: random data
+   $ dnode 11: { (".", 2), ("..", 0), ("a", 1), ("b", 3), ("c", 4) }
+     dnode 12: data copied from dnode 9
+     dnode 13: data copied from dnode 10
+   ```
+
+   
+
+3. Write a path to the source file in the directory itself:
+
+   ```shell
+     inode 0: { 8 }
+     inode 1: { 9, 10 }
+     inode 2: { 11 }
+     inode 3: { 12, 13 }
+     ...
+     dnode 8: { (".", 0), ("..", 0), ("d", 2) }
+     dnone 9: random data
+     dnode 10: random data
+   $ dnode 11: { (".", 2), ("..", 0), ("a", 1), ("b", 3), ("c", "/d/a") }
+     dnode 12: data copied from dnode 9
+     dnode 13: data copied from dnode 10
+   ```
+
+
+
+
+
+
+
+### Free space management \todo
+
+
+
+
+
+
+
+### Virtual file systems (VFS)
+
+A virtual file system is an abstract layer on top of a file system. It is used to hide differences between different OS. Thus, applications can access files without knowing what filesystem they are accessing. 
+
+VFS is an abstract interface between a kernel and a concrete file system. It is easy to add support for a new file by modifying the interface.  A concrete file system implements suitable functions, initializes structures with the function pointers (functions relate to a file access), and finally registers the structures in the kernel. 
+
+Concrete file systems may reside in user space or on remote systems. 
 
 
 
@@ -2515,17 +2668,47 @@ a) a file `/a` is created in the root directory/ It occupies 2 data blocks.
 
 #### 1. Device independence
 
-Space applications should work with as many similar devices as possible without requiring any changes. Some user space applications may want to exploit specific device characteristics
+User space applications should work with as many similar devices as possible without requiring any changes. Some user space applications may want to exploit specific device characteristics.
 
 
 
 #### 2. Efficiency
 
-Many applications are I/O bound and not CPU bound. 
+Many applications are I/O bound and not CPU bound. And I/O operations can be rather slow. 
 
 
 
-##### Buffering Schemes \todo
+##### Buffering schemes:
+
+The buffer is an area in the main memory used to store or hold the data temporarily. It acts as a temporary placeholder in order to keep everything running efficiently and without issues between running devices, programs, and processes. Buffering is done to deal with a speed mismatch between the producer and consumer of the data stream.
+
+Buffering schemes:
+
+- Unbuffered I/O: data is passed without any buffering from user space to the device 
+
+- Single buffer: data is buffered in user space before it is passed to the device 
+
+- Double buffer: there are two buffers in the OS. Data is buffered in user space, then again in kernel space before it is passed to the device 
+
+- Circular buffer: there are $n$ buffers in the OS. Data is buffered multiple times in order to improve efficiency or to avoid side effects (e.g. flickering in graphics systems) 
+
+
+
+##### I/O programming styles
+
+- programmed input/output:
+
+  The CPU copies data to/from the I/O device and blocks until I/O is complete
+
+- interrupt-driven input/output:
+
+  Interrupts drive the I/O process, the CPU can do other things while the device is busy
+
+- direct-memory-access input/output:
+
+  A DMA controller moves data in/out of memory and notifies the CPU when I/O is complete, the CPU does not need to process any interrupts during the I/O process
+
+
 
 
 
@@ -2561,7 +2744,7 @@ Good error messages are
 
 Block devices -- operate on *data blocks* of fixed size (i.e. hard disks). 
 
-Character devices -- operate on sequences of *bytes* of variable length (i.e. keyboards).  
+Character devices -- operate on *sequences of bytes* of variable length (i.e. keyboards).  
 
 The type can be found out via `ll` command, for example. 
 
@@ -2569,7 +2752,7 @@ The type can be found out via `ll` command, for example.
 
 
 
-Every device is identified with:
+Every device is identified by:
 
 -  the type (block/character)
 - major device number -- identifies the responsible device driver  
@@ -2578,11 +2761,15 @@ Every device is identified with:
 
 
 ```shell
-$ ll 
+$ ll /dev/
 brw-rw----   1 root   disk    259,     4 ноя 24 07:34 nvme0n1p4
 ```
 
-type = block, major device number = 259, minor device number = 4.
+$\texttt{type = } \textnormal{<the first letter>} \texttt{ = block}$
+
+$\texttt{major device number = 259}$
+
+$\texttt{minor device number = 4}$
 
 
 
@@ -2592,16 +2779,189 @@ type = block, major device number = 259, minor device number = 4.
 
 ### Storage media
 
-1. Magnetic disks 
-   - data storage on rotating magnetic disks 
-   - division into tracks, sectors and cylinders 
-   - usually multiple read/write heads 
-   - Main drawback -- fragility. 
-2. Solid state disks (SSD)
-   - Data stored in solid-state memory (no moving parts). 
-   - Work faster than other types of the disk. 
-3. Optical disks 
-4. Magnetic tapes 
+#### Likbez: tracks, sectors and cylinders
+
+A disk consists of several platters. A *sector* is a fragment of a platter. A *track* is a circle on a platter. Tracks located one above other on different platters form a *cylinder*.
+
+![OS 22-11-24 5](./pics for conspects/OS/OS 22-11-24 5.png)
+
+
+
+
+
+
+
+#### 1. Magnetic disks (HDD, floppy disks)
+
+- Data is stored on a rotating magnetic disk
+- Division into tracks, sectors and cylinders
+- [Non-volatile](https://www.computerscience.gcse.guru/glossary/non-volatile)
+
+
+
+Now about hard disk drives 
+
+An electromagnet in the read/write head charges the disk’s surface with either a positive or negative charge, this is how binary 1 or 0 is represented.
+
+The read/write head is then capable of detecting the magnetic charges left on the disk’s surface, this is how data is read.
+
+A circuit board carefully co-ordinates the rotating disk and swinging actuator arm to allow the read/write head to access any location very quickly.
+
+<img src="./pics for conspects/OS/OS 22-11-24 1.png" alt="OS 22-11-24 1" style="zoom:40%;" />
+
+`+`  fast read and write speeds
+
+`-`  fragility because of moving parts 
+
+`-`  noise because of moving parts 
+
+`-`  uses more power than SSD
+
+`-`  performance time is worse because of time spent on moving parts
+
+
+
+
+
+
+
+#### 2. Solid state disks (SSD)
+
+- Data stored in solid-state memory (no moving parts). 
+
+- Non-volatile
+
+  
+
+Millions of transistors wired in a series on a circuit board, thus there is an immediate access to data and no moving parts. 
+
+<img src="./pics for conspects/OS/OS 22-11-24 2.png" alt="OS 22-11-24 2" style="zoom:60%;" />
+
+`+`   extremely fast read and write speeds
+
+`+`  robust and reliable because of a solid state 
+
+`+`  uses less power than a HDD
+
+`+`  quiet
+
+`-`  limited amount of writes, because chips have a limited lifespan 
+
+
+
+
+
+
+
+#### 3. Optical disks (CD, DVD, Blu-ray)
+
+- Read-only vs. recordable vs. rewritable
+- Very robust and relatively cheap
+- Division into tracks, sectors and cylinders
+
+
+
+Binary data is stored as changes to the texture of the disc’s surface. These changes are located on a continuous spiral track, starting at the center of the disc.
+
+<img src="./pics for conspects/OS/OS 22-11-24 3.png" alt="OS 22-11-24 3" style="zoom:80%;" />
+
+
+
+
+
+
+
+#### 4. Magnetic tapes 
+
+- Used mainly for backups and archival purposes
+
+
+
+
+
+
+
+
+
+## 22-11-29 \todo
+
+### RAID
+
+RAID -- redundant array of independent disks -- a data storage virtualization technology that combines multiple disks into one or more logical units for data redundancy, performance improvement, or both. It is a way of storing the same data in different places on multiple hard disks or solid-state drives to protect data in the case of a drive failure. A RAID system consists of two or more drives working in parallel.
+
+The disks can combine into the array in different ways, which are known as RAID levels.
+
+
+
+#### RAID Level 0 (Striped disks)
+
+RAID 0 is taking a number of disks and merging them into one large volume. The volume is broken down into several data blocks. 
+
+`+`  I/O performance is greatly improved, since there are many I/O channels. 
+
+`+`  Easy to implement
+
+`-`  No redundancy. The loss of any individual disk will cause complete data loss. 
+
+
+
+#### RAID 1 (mirrored disks) \todo
+
+
+
+#### RAID 5(striped disks with single parity) \todo
+
+
+
+
+
+
+
+
+
+###  Storage Virtualization
+
+
+
+
+
+### Terminal Devices
+
+#### Traditional terminal in the past 
+
+<img src="./pics for conspects/OS/OS 22-11-29 1.png" alt="OS 22-11-29 1" style="zoom:70%;" />
+
+The terminal is a keyboard and a display which does not have a user interface. Character terminals were connected via serial lines to a device driver `tty`. `tty` represents the terminal to user space programs. 
+
+`curses` library is an example of a software library that provides abstractions for text-based user interfaces. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
