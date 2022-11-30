@@ -1618,9 +1618,9 @@ Memory space is often divided into several regions or partitions, some of them s
 
 #### Swapping principle
 
-Swapping is a memory management technique in which any process can be temporarily swapped from main memory to a so-called *swap space* -- secondary memory. It is used to temporarily remove inactive programs from the main memory, so that it becomes available for other processes. 
+Swapping is a memory management technique in which any process can be temporarily swapped from main memory to a so-called *swap space* -- secondary memory. The swap space is located on a disk. 
 
-The purpose of the swapping is to access the data present in the hard disk and bring it to RAM so that the application programs can use it.
+ Swapping is used to temporarily remove inactive programs from the main memory, so that it becomes available for other processes. The purpose of the swapping is to access the data present in the hard disk and bring it to RAM so that the application programs can use it.
 
 Swapping is used only when data is not present in RAM.
 
@@ -1814,7 +1814,7 @@ Disadvantages:
 
 #### What to do with a page fault? 
 
-A page fault will happen if a program tries to access a page that does not exist in physical memory (main memory). 
+A page fault will happen if a program tries to access a page that does not exist in physical memory. 
 
 Page faults are costly due to slow I/O operations. 
 
@@ -1851,7 +1851,7 @@ The idea of fixing a page fault is to find a physical address in a page table, u
 
 ### Translation Lookaside Buffer (TLB)
 
-A TLB acts as a cache mapping logical addresses (p, d) to physical addresses (f , d).
+A TLB acts as a cache mapping logical addresses (p, d) to physical addresses (f , d). Entries of a page table are saved in the TLB. 
 
 A page number extracted from a logical address is given to the TLB. The TLB returns either the associated frame number or signals to the operating system that there is no such a page. The operating system looks up the missing TLB entry, loads it into the TLB and restarts the instruction.
 
