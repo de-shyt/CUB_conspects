@@ -2883,19 +2883,21 @@ Binary data is stored as changes to the texture of the disc’s surface. These c
 
 
 
-## 22-11-29 \todo
+## 22-11-29
 
 ### RAID
 
-RAID -- redundant array of independent disks -- a data storage virtualization technology that combines multiple disks into one or more logical units for data redundancy, performance improvement, or both. It is a way of storing the same data in different places on multiple hard disks or solid-state drives to protect data in the case of a drive failure. A RAID system consists of two or more drives working in parallel.
+RAID -- redundant array of independent disks -- a data storage virtualization technology that combines multiple disks into one or more logical units for data redundancy, performance improvement, or both. It is a way of storing the same data in different places on multiple hard disks or solid-state drives to protect data in the case of a drive failure. 
 
-The disks can combine into the array in different ways, which are known as RAID levels.
+A RAID system consists of two or more drives working in parallel. The drives can combine into the array in different ways, which are known as RAID levels.
 
 
 
-#### RAID Level 0 (Striped disks)
+#### RAID Level 0 (striped disks)
 
 RAID 0 is taking a number of disks and merging them into one large volume. The volume is broken down into several data blocks. 
+
+<img src="../../Desktop/studying/JUB_conspects/pics for conspects/OS/OS 22-11-29 2.png" alt="OS 22-11-29 2" style="zoom:50%;" />
 
 `+`  I/O performance is greatly improved, since there are many I/O channels. 
 
@@ -2905,13 +2907,25 @@ RAID 0 is taking a number of disks and merging them into one large volume. The v
 
 
 
-#### RAID 1 (mirrored disks) \todo
+
+
+#### RAID 1 (mirrored disks) 
+
+It duplicates data across two disks in the array, providing full redundancy. Both disks are store exactly the same data, at the same time.
+
+`+`  Redundancy: data is not lost in case of loss of one disk
+
+`+` I/O performance time is improved: data can be read from any of disks  
+
+`-`  The total capacity of the array equals the capacity of the smallest disk
+
+
 
 
 
 #### RAID 5(striped disks with single parity) \todo
 
-
+RAID 5 requires the use of at least three drives.
 
 
 
