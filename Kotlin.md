@@ -584,6 +584,24 @@ fun <T> elvisLike(x: T, y: T & Any): T & Any = x ?: y
 
 
 
+##### Пример использования
+
+Если лямбда передается в функцию `f` последним аргументом, её тело можно написать в вызове `f` в фигурных скобках. 
+
+```kotlin
+fun func(val1: Int, 
+         val2: Int, 
+         myLambda: (Int, Int) -> Int) = myLambda(val1, val2)
+
+fun main() {
+    print(func(10, 20) { 
+        val1, val2 -> val1 + val2 
+    })
+}
+```
+
+
+
 ##### `inline` 
 
 говорит "вместо создания нового объекта скопируй функцию: просто подставь её реализацию".
@@ -1776,15 +1794,20 @@ class Counter {
 
 
 
-## 22-11-25 \todo
+## 22-11-25
 
-В синхронизированном программировании есть проблема: поток получает какой-то запрос, потом ждёт ответ от пользователя. Можно создавать дополнительные потоки, которые будут ждать пользователя вместо основного. но не понятно, сколько таких потокков понадобится. Для решения проблемы используется асинхронное программирование. 
+### Предисловие
 
-Суть асинхронного программирования: в функцию сразу передается инструкция, что делать после получения токена. При этом основной поток идёт дальше. 
+В синхронизированном программировании есть проблема: поток отправляет какой-то запрос, потом ждёт ответ от пользователя. Можно создавать дополнительные потоки, которые будут ждать пользователя вместо основного. Но не понятно, сколько таких потокков понадобится. Для решения проблемы используется асинхронное программирование. 
 
- 
+Суть асинхронного программирования: в функцию передается инструкция, что делать после получения токена. При этом основной поток идёт дальше. 
 
 ```kotlin
+fun preparePostAsync(callback: (Token) -> Unit) {  // тут `callback` -- функция 
+    // make request and return immediately 
+    // envoke callback later
+}
+
 fun postItem(item: Item) {
 	preparePostAsync { token ->
     	submitPostAsync(token, item) { post ->
@@ -1798,4 +1821,233 @@ fun postItem(item: Item) {
 
 Что происходит в `postItem`: 
 
-Вызывается функция `preparePostAsync`, возврающая токен. Этот токен передается в функцию `submitPostAsync` внутри лямбды, и т.д.
+Вызывается функция `preparePostAsync`, которой передается лямбда. Внутри лямбды токен передается в функцию `submitPostAsync`, внутри которой тоже вызывается лямбда. И т.д.
+
+Лесенка из скобочек на строках 11-14 называется $\texttt{Callback Hell}$. 
+
+
+
+
+
+
+
+### `Promise<T>`
+
+Сам по себе `callback` не работает в фоне. Нужно сообщать основному потоку, что данная функция будет работать на новом потоке, а основной поток может идти дальше. 
+
+Можно использовать интерфейс Promise. Тогда не будет необходимости, передавать инструкцию, что нужно делать с токеном. Операции промиса будут отложеными. 
+
+```kotlin
+fun preparePostAsync(): Promise<Token> { 
+    // make request and return a promise that is completed later 
+    return promise;
+}
+
+fun postItem(item: Item) {
+    preparePostAsync()
+    	.thenCompose { token -> submitPostAsync(token, item) }
+    	.thenAccept { post -> processPostAsync(post) }
+}
+```
+
+Что происходит в `postItem`:
+
+ `preparePostAsync()`  возвращает результат, завернутый в класс Promise. Методы этого класса вызываются внутри `postItem`. 
+
+`.thenCompose` вызывает функцию `submitPostAsync`, возвразающую `post`.
+
+`.thenAccept` принимает значение `post` и вызывает функцию `processPostAsync`. 
+
+
+
+Методы промисов создают новые промисы. Тратятся время и память. 
+
+
+
+
+
+
+
+### suspend
+
+Suspend у функции означает, что она может в какой-то момент приостановить исполнение. Другими словами, функция, которая может заблокировать поток, помечается suspend. 
+
+А ещё suspend функция моет быть вызвана либо внутри корутинов, либо внутри других suspend функций. 
+
+
+
+```kotlin
+suspend fun postItem(item: Item) {
+    val token = preparePost()
+    val post = submitPost(token, item)
+    processPost(post)
+}
+```
+
+Под капотом превращается в 
+
+```java
+Object postItem(Item item, Conitnuation<Post> cont) { ... }
+```
+
+где `Conitnuation<in T>` -- интерфейс, работающий как callback функция. 
+
+Всё, что в теле `postItem`, передаётся в  `cont` и работает параллельно с основным потоком. При этом функции внутри `postItem` <u>должны быть помечены suspend</u>, иначе компилятор не узнает, что во время исполнения этой функций можно уйти. 
+
+Вызовы внутри `cont` пронумерованы. Поле `cont.label` показывает, какая функция сейчас должна вызываться:
+
+```kotlin
+switch(cont.label) { 
+    case 0: // suspend call 0
+        cont.label = 1;
+        preparePost(cont);
+        break;
+    case 1: // suspend call 1
+        Token token = (Token) prevResult;
+        cont.label = 2;
+        submitPost(token, item, cont);
+    	break;
+    case 2: // suspend call 2
+        Post post = (Post) prevResult;
+        processPost(post);
+        break;
+}
+```
+
+Это не large switch, а state machine. Запоминает, на каком вызове остановилась и какой результат был последний. После последнего кейса идёт спать. 
+
+
+
+
+
+
+
+### Coroutine scoupe 
+
+#### Способ раз, немодный 
+
+Используем `runBlocking`, создающий coroutine scope. Означает, что то, что внутри `runBlocking`, работает, как callback функция. 
+
+```kotlin
+fun main() = runBlocking { // this: CoroutineScope
+    launch { // launch a new coroutine and continue
+        delay(1000L) // non-blocking delay for 1 second
+        println("World!")
+    }
+    println("Hello") // main coroutine continues while the previous one is delayed
+}
+```
+
+`launch ` -- это Coroutine Builder. `lauch` работает, как suspend функция: параллельно запускает то, что внутри, а основной поток идёт дальше. По дефолту, второй поток запускается сразу. 
+
+`launch` и `delay` не могут быть вызваны внутри мейна, потому что мейн не помечен suspend. 
+
+
+
+
+
+##### Пример
+
+Тип `Job` взят из стандартной библиотеки `kotlin.coroutines`. 
+
+```kotlin
+val jobs: List<Job> = List(1_000_000) {
+    launch(Dispatchers.Default 
+        + CoroutineName("#$it")
+    	+ CoroutineExceptionHandler { context, error ->
+        	println("${context[CoroutineName]?.name}: $error")
+        },
+        CoroutineStart.LAZY
+    ) {
+    delay(Random.nextLong(1000))
+    if (it % 10 == 0) { throw Exception("No comments") }
+    println("Hello from coroutine $it!")
+    }
+}
+
+jobs.forEach { it.start() }
+```
+
+Считаем, что вызов `jobs` происходит в coroutine scope. 
+
+Что делает `lauch`: сначала поток спит, потом либо печатает своё имя, либо кидает исключение. Исключение обрабаывается штукой `CoroutineExceptionHandler`. 
+
+`CoroutineStart.LAZY` -- запуск потока откладывается, пока не будет вызван метод `start()` в строке 15. 
+
+
+
+
+
+#### Способ два, модный 
+
+Используем интерфейс `CoroutineScope`. У него есть `CoroutineContext`, отвечающий за элементы внутри скоупа. Элементом может быть что угодно: функция, объект, имя объекта, и т.д. 
+
+У одного `CoroutineScope` может быть несколько `CoroutineContext`. 
+
+```kotlin
+public interface CoroutineScope {
+	public val coroutineContext: CoroutineContext
+}
+
+public interface CoroutineContext {
+	public operator fun <E : Element> get(key: Key<E>): E?
+    ...
+    public interface Element : CoroutineContext {
+        public val key: Key<*>
+        ...
+    }
+}
+```
+
+Можно сказать, что в `CoroutineContext` хранится мапа `<Key<Element>, Element>`. 
+
+
+
+
+
+
+
+### Тип Job 
+
+Наследуется от `Element`, чтобы быть частью `CoroutineContext`. 
+
+По конвенции, во всех контекстах должен быть `Job`.
+
+```kotlin
+public interface Job : CoroutineContext.Element {
+    public companion object Key : CoroutineContext.Key<Job>
+    public fun start(): Boolean
+    public fun cancel(cause: CancellationException? = null)
+    public val children: Sequence<Job>
+    ...
+}
+```
+
+Генерируется ключ `Key`, который будет общим для всех инстансов `Job`.
+
+`start()`, чтобы запустить корутину, если она была `CoroutineStart.LAZY`. Возвращает `false`, если корутина уже запущена или уже отработала. 
+
+
+
+Между интерфейсами `Job` есть иерархия. Джоб-родитель ждёт своих джоб-детей, прежде чем завершить работу. 
+
+Пример: вот есть `runBlocking{}`. У него свой `Job`. Мы внутри запускаем `launch` и создаём корутину. У корутины будет уже свой `Job`, являющийся ребёнком первого `Job`. 
+
+
+
+
+
+
+
+#### Job state
+
+<img src="./pics for conspects/KOT/KOT 22-11-25 1.png" alt="KOT 22-11-25 1" style="zoom:60%;" />
+
+По умолчанию, корутина запускается сразу после создания. Чтобы отложить запуск, используется флаг `CoroutineStart.LAZY`. 
+
+$\texttt{Active:}$ корутина еще не дошла до последнего кейса в state machine. 
+
+$\texttt{Completing:}$ корутина закончила работу, но её дети нет. 
+
+$\texttt{Cancelling:}$ у какого-то ребенка произошла ошибка или вылетел exception, и корутина отменяет остальных детей и отменяется сама. 
+
