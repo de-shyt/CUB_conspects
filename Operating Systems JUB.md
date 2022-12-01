@@ -1916,6 +1916,8 @@ Replacement strategies determine which pages are moved to secondary storage in o
 
 Signals are a software equivalent of hardware interrupts. They interrupt the normal control flow, but do not carry any data except the signal number. 
 
+On linux, all possible signals and corresponding numbers can be seen via `kill -l` command. 
+
 
 
 Basic signals are a part of the standard C library:
@@ -2256,6 +2258,22 @@ A socket is identified by an IP-address concatenated with a port number.
 
 
 
+### TCP/IP
+
+Transmission Control Protocol (TCP) defines how applications create a communication channel and manages how a message is broken down into packets and reassembled at the destination. 
+
+IP defines how to address and route a packet to ensure it has reached the destination. 
+
+
+
+
+
+
+
+
+
+
+
 ## 22-11-17
 
 ### Files on linux
@@ -2464,6 +2482,8 @@ Each block which is reserved for a file has its own array of indexes. The indexe
 
 `+` new blocks can be easily added 
 
+`-` array of indexes $\Rightarrow$ more memory in use 
+
 
 
 
@@ -2581,7 +2601,7 @@ f) create a symlink `/d/c` resolving to `/d/a`. The command is `ln -s /d/a /d/c`
 
 There are three options of doing it. 
 
-1. Write a path to the source file in dnode. `/d/c` occupies the $14$ block. 
+1. Write a path to the source file in dnode. `/d/c` occupies the $14$-th block. 
 
    ```shell
      inode 0: { 8 }
@@ -2642,9 +2662,31 @@ There are three options of doing it.
 
 
 
-### Free space management \todo
+### Free space management
+
+There are 4 approaches to managing free space on a disk: bit vector(bit map), linked list, grouping and counting. But we consider only two of them. 
 
 
+
+#### 1. Bit vector or bit map
+
+Each block is represented by one bit. The bit = 1 $\Rightarrow$ the block is free. 
+
+`+`  easy to implement 
+
+`+`  takes little extra space
+
+
+
+#### 2. Linked list 
+
+Free blocks from a linked list. The beginning of the list is stored in a variable. 
+
+`+`  no wastage of space. We just maintain valid links, but we do not create extra structures. 
+
+`-`  blocks have pointers $\Rightarrow$ more space in use 
+
+`-` random access is slow, since it is a linked list 
 
 
 
@@ -2891,6 +2933,10 @@ RAID -- redundant array of independent disks -- a data storage virtualization te
 
 A RAID system consists of two or more drives working in parallel. The drives can combine into the array in different ways, which are known as RAID levels.
 
+Redundancy is about adding extra components in order to cope with situations when one of the components fails. 
+
+
+
 
 
 #### RAID Level 0 (striped disks)
@@ -2923,9 +2969,25 @@ It duplicates data across two disks in the array, providing full redundancy. Bot
 
 
 
-#### RAID 5(striped disks with single parity) \todo
+#### RAID 5(striped disks with single parity)
 
-RAID 5 requires the use of at least three drives.
+RAID 5 requires the use of at least three drives. In case of a disk failure, data can be restored thanks to parity. 
+
+
+
+**Parity**
+
+Imagine we have $\texttt{A = 10111011}$ and $\texttt{B = 10010110}$. 
+
+The $i$-th bit of the parity is equal to $\texttt{XOR}$ of $i$-th bits of $\texttt{A}$ and $\texttt{B}$:   $\texttt{P = 00101101}$. This is even parity -- sum of bits on the $i$-th place is even. Odd parity: sum of bits on the $i$-th place is odd. 
+
+
+
+Disks are filled in such a way that data blocks $\texttt{A}_\texttt{i}$ and $\texttt{A}_\texttt{j}$ and its parity are saved in different disks. If one of disks is lost, data can be restored from the other disks. 
+
+If two disks fail, data is lost. 
+
+<img src="./pics for conspects/OS/OS 22-11-29 3.png" alt="OS 22-11-29 3" style="zoom:42%;" />
 
 
 
@@ -2934,6 +2996,21 @@ RAID 5 requires the use of at least three drives.
 
 
 ###  Storage Virtualization
+
+A *physical volume* is a disk raw partition as seen by the operating system (hard disk partition, raid array, storage area network partition).
+
+A *volume group* pools several physical volumes into one logical unit.
+
+A *logical volume* resides in a volume group and provides a block device, which can be used to create a file system. Logical volumes  decouple the logical storage layout from the physical storage layout.
+
+*Logical Volume Manager* (LVM) is a device mapper framework that provides logical volume management for the *Linux* kernel.
+
+<img src="./pics for conspects/OS/OS 22-11-29 4.png" alt="OS 22-11-29 4" style="zoom:70%;" />
+
+- It is easy and efficient to resize logical volumes. The size of volumes can be increased as needed. Of course, after resizing the volume, the embedded file system must be resized as well to take advantage of the additional capacity.
+- It is possible to take snapshots of logical volumes. Any writes to data blocks after the snapshot go into newly allocated blocks (copy-on-write). This feature of logical volume management systems can be used to make efficient consistent backups of logical volumes with extremely short interruptions to create the snapshot.
+
+
 
 
 
@@ -2951,6 +3028,116 @@ The terminal is a keyboard and a display which does not have a user interface. C
 
 
 
+#### In our days
+
+Terminals understand different sets of control sequences (escape sequences) to control curser positioning or clearing of the display. 
+
+Traditionally, terminals had different (often fixed) numbers of rows and columns they could display.
+
+Unix systems use `tty` drivers for terminals. In *raw mode*, all received characters are sent to an application. In *cooked mode*, a terminal interprets received characters (e.g. recognize control characters) and buffer input lines before sending them to the application. In *cbreak mode*, a terminal interprets characters but does not buffer them. 
+
+To display settings of a current terminal, use a command `stty -a`. 
+
+$\texttt{TERM}$ environment variable selects which terminal to use. To display characteristics of a current terminal, use a command `infocmp -L $TERM`. 
+
+Communication over the network can be done through the terminal (e.g. ssh). 
+
+
+
+
+
+#### Using `curses` library
+
+Use `gcc a.c -o a -lcurses` to compile the code. 
+
+```c
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <curses.h>
+
+static void cleanup()
+{
+    endwin();
+}
+
+int main(void)
+{
+    const char *spin[] = { "o<", "o-", NULL };
+    const char *msg = "Hello, world!";
+    WINDOW *win;
+    int c, y, x, my, mx;
+
+    win = initscr() // determines the terminal type and initializes all curses data structures
+    
+    if (win == NULL) { 
+		fprintf(stderr, "Error initialising ncurses.\n");
+		exit(EXIT_FAILURE);
+    }
+    atexit(cleanup);
+
+    cbreak(); // puts the tty (pty) into cbreak mode
+    noecho(); // turns off the automatic echoing of typed characters
+    nodelay(stdscr, TRUE); // makes the getch() function for reading characters non-blocking
+    curs_set(0); // set position of a curser 
+    my = LINES/2, mx = COLS/2 - strlen(msg)/2;
+
+    for (y = 0; y < my; y++) {
+        mvaddstr(y, mx, msg); // moves the curser and then writes string = `msg`
+        refresh(); // refresh the picture on the screen 
+        napms(100); // sleep 
+        move(y, mx); 
+        clrtoeol(); // clear everything from a curser to the end of a line 
+    }
+    
+    mvaddstr(my, mx, msg);
+    refresh();
+    
+    for (x = 0; (c = getch()) == ERR && x < (int) (mx + strlen(msg)); x++) {
+        mvaddstr(my, x, spin[x%2]);
+        refresh(); 
+        napms(100);
+        mvaddch(my, x, ' ');
+    }
+    
+    for (y = my; y < LINES; y++) {
+        mvaddstr(y, x, "oo");
+        refresh(); 
+        napms(100);
+        move(y, x); 
+        clrtoeol();
+    }
+    
+    delwin(win);
+
+    return EXIT_SUCCESS;
+}
+
+```
+
+
+
+
+
+
+
+### Pseudo Terminal Devices
+
+*Terminal emulators* are programs that provide a command-line interface within a window.*Xterm* is the standard terminal emulator of the X Window System. Other terminal emulators are gnome-terminal, lxterm, etc. 
+
+In short, a terminal emulator creates a window and launches a shell (or other program). It communicates with the shell and subprocesses via a *pseudo-terminal* (pty). 
+
+Now a more detailed view. When the emulator is open, it allocates a pty. A pty acts like a traditional terminal but does not have hardware components. It is a pair of endpoints (character device files) which establish communication between processes. The endpoints are called a master and a slave. The master is connected to a terminal emulator and the slave is connected to a process. Usually, the master is `/dev/pts/ptmx` and the slave is `/dev/pts/<number>`. 
+
+Every pty has a name. It can be found out by calling `ptsname()`. 
+
+Once the emulator has opened the master device, it opens a shell (or other program, it's up to the user who invoked the emulator): forks a process, opens the slave pty device on file descriptors $0, 1, 2$ (stdin, stdout, stderr), then executes a shell program (or other program). 
+
+<img src="./pics for conspects/OS/OS 22-11-29 6.png" alt="OS 22-11-29 6" style="zoom:80%;" />
+
+A *display server* is a program which is responsible for the input and output coordination of its clients. The display server provides the framework for a graphical environment so that you can use mouse and keyboard to interact with applications.
+
+The keyboard is connected to a display server. From the display server data comes to the xterm. 
 
 
 
@@ -2962,8 +3149,35 @@ The terminal is a keyboard and a display which does not have a user interface. C
 
 
 
+## 22-12-01
+
+### How SSH works
+
+SSH is about connecting to a remote host. 
+
+`sshd` is the OpenSSH server process. It listens to incoming connections using the SSH protocol and acts as the server for the protocol. 
+
+The client sends a request for connection, the server denies or accepts it and create a socket. 
+
+The server creates a pty for the client and launches a shell program (maybe because the client is a terminal emulator, but it is not 100% verified).
+
+If there are special settings in the client's terminal emulator (e.g. $\texttt{TERM=dumb}$), they will be passed to a corresponding emulator on the server.  
+
+<img src="./pics for conspects/OS/OS 22-11-29 7.png" alt="OS 22-11-29 7" style="zoom:90%;" />
 
 
+
+
+
+
+
+
+
+### Virtualization
+
+Virtualization has already been seen in some components: virtual memory (about paging), virtual block devices (LVM and RAID), virtual terminal devices (pty). 
+
+Now we are talking about running multiple operating systems on one computer concurrently. The basic idea is to virtualize a hardware, but something else can be virtualized. 
 
 
 
