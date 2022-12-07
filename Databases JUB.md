@@ -1191,3 +1191,105 @@ A decision support system is a computer program application used to improve a co
 
 
 
+
+
+
+
+
+
+
+
+
+
+## Preparing for an exam
+
+[Database design](https://peter-baumann.org//Courses/Databases+WebServices/Slides/10_db-design.pdf) 
+
+ER models, inheritance 
+
+
+
+[relational model](https://peter-baumann.org//Courses/Databases+WebServices/Slides/20_rel-model.pdf) 
+
+primaty, foreign keys 
+
+
+
+[sql](https://peter-baumann.org//Courses/Databases+WebServices/Slides/30_sql.pdf)
+
+group by, nested queries
+
+aggregate functions 
+
+
+
+[relational algebra](https://peter-baumann.org//Courses/Databases+WebServices/Slides/35_relational-algebra.pdf)
+
+selection $\sigma$, projection $\pi$, cross-product $\times$ 
+
+
+
+
+
+[query processing](https://peter-baumann.org//Courses/Databases+WebServices/Slides/50_query-processing.pdf)
+
+logical query tree, forget about physical query plan 
+
+Heruistic, cost-based optimization -- be able to explain the idea 
+
+
+
+[application development](https://peter-baumann.org//Courses/Databases+WebServices/Slides/55_db-app-dev.pdf)
+
+
+
+[3-tier architectures](https://peter-baumann.org//Courses/Databases+WebServices/Slides/65_3-tier-architectures.pdf)
+
+
+
+[webservice protocols](https://peter-baumann.org//Courses/Databases+WebServices/Slides/68_web-service-protocols.pdf) 
+
+GPPD, etc
+
+
+
+[normal forms](https://peter-baumann.org//Courses/Databases+WebServices/Slides/70_nf+physical-design.pdf) 
+
+Functional Dependencies, B+ tree, cheat sheet slide 23 
+
+
+
+[transactions](https://peter-baumann.org//Courses/Databases+WebServices/Slides/80_transactions.pdf)
+
+ACID, teo-phase locking protocol: how it works and why it is good
+
+Write-Ahead Logging (WAL)
+
+
+
+[security](https://peter-baumann.org//Courses/Databases+WebServices/Slides/a0_security.pdf)
+
+
+
+[Nosql](https://peter-baumann.org//Courses/Databases+WebServices/Slides/e0_nosql.pdf)
+
+the idea is that n-dimensional database is better the pairs of `<key, value>`
+
+
+
+[wrap-up](https://peter-baumann.org//Courses/Databases+WebServices/Slides/z0_wrapup.pdf)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
