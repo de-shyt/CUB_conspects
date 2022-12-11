@@ -1,12 +1,6 @@
-Daria Shutina, CS, $2^{nd}$ year
-
-------
-
-
-
-
-
 # Probability and Random Processes
+
+*Author: Daria Shutina*
 
 
 

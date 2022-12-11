@@ -1,12 +1,6 @@
-Daria Shutina, CS, $2^{nd}$ year
-
-------
-
-
-
-
-
 # Databases and Web Services
+
+*Author: Daria Shutina*
 
 
 

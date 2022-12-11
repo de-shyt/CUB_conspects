@@ -1,12 +1,10 @@
-Daria Shutina, CS, $2^{nd}$ year
-
-------
-
-
-
 
 
 # Algorithms and Data Structures 
+
+*Author: Daria Shutina*
+
+
 
 [TOC]
 

@@ -1,12 +1,8 @@
- Daria Shutina, CS, $2^{nd}$ year
-
-------
-
-
-
-
-
 # Kotlin
+
+*Author: Daria Shutina*
+
+
 
 [TOC]
 

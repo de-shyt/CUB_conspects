@@ -1,12 +1,6 @@
-Daria Shutina, CS, $2^{nd}$ year
-
-------
-
-
-
-
-
 # Computer Artichecture
+
+*Author: Daria Shutina*
 
 
 
