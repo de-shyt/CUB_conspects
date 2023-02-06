@@ -78,7 +78,7 @@ FA accepts a string $1101$, for example, since it starts in $q_1$ and finishes i
 
 
 
-#### Example 2: finding FA /todo
+#### Example 2: finding FA
 
 We consider a language $L = \{ w \ | \ w \ contains \ 001 \ as \ substring\}$. The alphabet is $\{ 0, 1 \}$. 
 
@@ -89,7 +89,7 @@ The idea is that we will have $4$ states:
 - $q_{00}$ -- we have 00
 - $q_{001}$ -- we have $001$ and we neep to stop. 
 
-/todo нужна картинка 
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 7.png" alt="ACC 23-02-06 7" style="zoom:60%;" />
 
 
 
