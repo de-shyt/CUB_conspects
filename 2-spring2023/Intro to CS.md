@@ -185,7 +185,7 @@ class Eq a where
 
 
 
-##### Creating an instance of Eq
+###### Creating an instance of Eq
 
 ```haskell
 -- custom type
@@ -204,9 +204,16 @@ instance Eq Weekday where
 
 ```haskell
 -- lists
+-- we create an instance of a list and also put a constraint on a type `a`
 instance Eq a => Eq [a] where
 	[] == [] = True
 	(x:xs) == (y:ys) = x == y && xs == ys
 	_ == _ = False
 ```
+
+
+
+
+
+
 
