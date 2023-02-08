@@ -125,5 +125,88 @@ map :: (a -> b) -> Tree a -> Tree b
 map f Empty = Empty
 map f (Leaf x) = Leaf (f x)
 map f (Branch x l r) = Branch (f x) (map f l) (map f r)
+
+foldr :: (a -> b -> b) -> b -> Tree a -> b
+foldr _ z Empty = z
+foldr f z (Leaf x) = f x z
+foldr f z (Branch x l r) = foldr f (f x (foldr f z r)) l
+
+foldl :: (a -> b -> b) -> b -> Tree a -> b
+foldl _ z Empty = z
+foldl f z (Leaf x) = f x z
+foldl f z (Branch x l r) = foldr f (f x (foldl f z l)) r
+```
+
+
+
+#### Typeclasses
+
+Typeclasses describe a set of types that have a common interface and behavior. A type belonging to a typeclass implements the functions and behavior defined by the typeclass. 
+
+Let us look at the expression:
+
+```haskell
+(Eq a) => a -> a -> Bool 
+```
+
+Everything before the symbol `=>` is a *class constraint*. 
+
+
+
+
+
+##### Usage of a constraint in a function declaration
+
+We want to check whether the element is in the given list. We put a constraint on a type `a` -- it should be an instance of `Eq` typeclass. 
+
+```haskell
+elem :: Eq a => a -> [a] -> Bool
+elem _ [] = False
+elem y (x:xs) = y == x || elem y xs
+```
+
+
+
+
+
+##### Eq
+
+```haskell
+class Eq a where
+	(==) :: a -> a -> Bool
+	(==) a b = not (a /= b) -- default implementation
+	(/=) :: a -> a -> Bool
+	(/=) a b = not (a == b) -- default implementation
+```
+
+`a` is an instance of typeclass `Eq`. It can overload operators `==` and `/=` of use a default version. 
+
+
+
+
+
+##### Creating an instance of Eq
+
+```haskell
+-- custom type
+data Weekday = Mon | Tue | Wed | Thu | Fri | Sat | Sun
+
+instance Eq Weekday where
+	Mon == Mon = True
+	Tue == Tue = True
+	Wed == Wed = True
+	Thu == Thu = True
+	Fri == Fri = True
+	Sat == Sat = True
+	Sun == Sun = True
+	_ == _ = False
+```
+
+```haskell
+-- lists
+instance Eq a => Eq [a] where
+	[] == [] = True
+	(x:xs) == (y:ys) = x == y && xs == ys
+	_ == _ = False
 ```
 

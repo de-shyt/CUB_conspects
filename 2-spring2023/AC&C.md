@@ -93,6 +93,24 @@ The idea is that we will have $4$ states:
 
 
 
+#### Example 3: finding a FA for a union of RLs
+
+$M_1 = (S, \Sigma_1, \delta_1, q_{1}^0, , F_1)$
+
+$M_2 = (T, \Sigma_2, \delta_2, q_2^0, F_2)$
+
+We can finds a new FA for $M = (Q, \Sigma, \delta, q_0, F)$ where
+
+$Q = S \times T$
+
+$\Sigma = \Sigma_1 \cap \Sigma_2$ 
+
+$\delta((s, t), a) = (\delta_s(s, a), \delta_t(t, a))$ 
+
+$q_0 = (s_0, t_0)$
+
+$F = F_1 \times F_2$
+
 
 
 
