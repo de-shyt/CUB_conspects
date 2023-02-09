@@ -18,6 +18,14 @@ Course link: https://peter-baumann.org/Courses/SoftwareEngineering/index.php
 
 
 
+**Timetable:**
+
+- Tuesdays 8:15 -- helpdesk online
+- Tuesdays 9:45 -- lectures offline
+- Thursdays 11:15 -- helpdesk online
+
+
+
 **Project:**
 
 A group of 4-5 people submit a design doc, then there are 2-week phases: 

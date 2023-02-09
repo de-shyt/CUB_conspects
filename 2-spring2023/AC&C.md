@@ -10,6 +10,25 @@
 
 ## 23-02-06
 
+### Org stuff
+
+**Timetable:**
+
+- Mondays 14:15 lectures offline. Moodle quiz in the beginning of each lecture
+- Wednesdays 14:15 lectures offline 
+- Thursdays 17:15 consultations online. Need to book 
+
+
+
+**Grade:**
+
+- 100% exam
+- bonus 0.33 (5%) if 50% of quizes and 50% of homeworks are done
+
+
+
+
+
 ### von Neumann architecture
 
 <img src="./pics for conspects/ACC 23-02-06 1.png" alt="ACC 23-02-06 1" style="zoom:67%;" />
@@ -30,6 +49,16 @@ the input as a string of symbols, has no memory, and generates an output that is
 
 
 
+### Deterministic finite automata
+
+Deterministic means that an input symbol $a$ leads from state $q$ to exactly one possible state $q'$. 
+
+The vizualization of the input computation is a chain.
+
+
+
+
+
 #### Definitions
 
 <img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 2.png" alt="ACC 23-02-06 2" style="zoom:50%;" />
@@ -42,13 +71,13 @@ What is an *accept state*? Imagine we have an input. We go from one state to ano
 
 
 
-FA accepts a string if it starts in a start state, uses inly iterations of $\delta$ and finishes in one of final states. 
+FA accepts a string if it starts in a start state, uses only transitions of $\delta$ and finishes in one of final states. 
 
 <img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 5.png" alt="ACC 23-02-06 5" style="zoom:50%;" />
 
 
 
-A *computation of FA on a string* is a sequence of states such that it starts in a start state and uses only iterations of $\delta$. 
+A *computation of FA on a string* is a sequence of states such that it starts in a start state and uses only transitions of $\delta$. 
 
 
 
@@ -145,7 +174,7 @@ $n$ is not fixed, so we have a problem with choosing a transition function.
 
 
 
-### Th (unoin operation of RLs)
+### Th 1.1 (unoin operation of RLs)
 
 The class of regular languages is closed under the union operation:
 
@@ -185,7 +214,7 @@ $F = F_1 \times F_2$
 
 
 
-### Th. (concatenation operation of RLs)
+### Th. 1.2 (concatenation operation of RLs)
 
 The class of regular languages is closed under the concatenation operation.
 
@@ -198,6 +227,148 @@ $A_1, A_2$ are RLs $\Rightarrow$ $A_1 \textopenbullet A_2$ is a RL.
 
 
 
+
+
+
+## 23-02-13
+
+### Nondeterministic finite automata
+
+In contrast to deterministic FAs, nondeterministic FAs allow several successor states (or even none) for a given fixed input. An NFA adds more flexibility to the computation. 
+
+- There can be several transitions with the same symbol 
+-  There can also be no transition for some symbol
+- There can be additional label $\epsilon$. It is like a special symbol (i.e., an empty string). Every alphabel has its own $\epsilon$ (provided that it has special symbols), 
+
+The vizualization of the computation is a tree.
+
+
+
+
+
+#### Definitions
+
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 3.png" alt="ACC 23-02-13 3" style="zoom:67%;" />
+
+In the transition functin definition, $P(Q)$ means a set of states, since in NFA we can get from one state to several (or zero) states. 
+
+
+
+NFA *accepts* a given input string, if there exists a computation branch in a tree that ends in an accept state; otherwise it *rejects* it.
+
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 4.png" alt="ACC 23-02-13 4" style="zoom:67%;" />
+
+
+
+A *computation brance of NFA on a string* is a sequence of states such that it starts in a start state and uses only transitions of $\delta$. 
+
+A computation branch is *accepting* if the last state after all transitions is an element of $F$; otherwise, it is a *rejecting* branch. 
+
+
+
+
+
+#### Example of NFA
+
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 1.png" alt="ACC 23-02-13 1" style="zoom:67%;" />
+
+Finally, we can to the conclusion that $L(N_1) = \{ \ w \ | \ w \textnormal{ contains either 101 or 11 as a substring} \ \}$. 
+
+
+
+
+
+#### Creating a tree for an input
+
+Let us consider an input $010110$ for the STD from the example above. The tree will be:
+
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 2.png" alt="ACC 23-02-13 2" style="zoom:67%;" />
+
+$q_1 \rightarrow q_3$ is $1 + \epsilon$ that is equal to $1$. 
+
+
+
+
+
+
+
+### Th 2.1 (equivalence between NFA and FA)
+
+$\forall NFA \ \ N \ \ \exists FA \ \ M \ \ : \ \ L(M) = L(N)$.
+
+In other words, all languages that can be recognized by an NFA, can also be recognized by some FA.
+
+
+
+*Proof:*
+
+We have an NFA $N = (Q, \Sigma, \delta, q_0, F)$ and we want to construct a deterministic FA $M = (Q', \Sigma, \delta', q_0', F')$. 
+
+- $Q'$ includes subsets of $Q$ that are outcomes of $\delta$:  $Q' = P(Q)$. 
+
+- $\delta'$ get a success if one of considered gates gets a success:   $\delta' = \bigcup \limits_{r \in R} \delta(r, a), \ \forall R \in Q', a \in \Sigma$. 
+
+-  $q_0' = \{ q_0 \}$. The start state becomes a set, because $Q'$ consists of sets. 
+
+- $F' = \{ \ R \in Q' \ | \ R \textnormal{ contains an accept state of } N \ \}$
+
+
+
+We do not have $\epsilon$ in FA. What to do with $\epsilon$-transitions?
+
+Let us create a set $E(R) = \{ \ q \in Q \ | \ \exists \{s_i \}_{0..m} \ : \ s_0 \in R \ \and \ s_m = q \ \and \ s_{i+1} \in \delta(s_i, \epsilon) \ \}$. 
+
+A set $R$ is a state for FA: $R \in Q'$. 
+
+A set $E(R)$ is a set of states for NFA: $E(R) \in Q$. It consists of such states that can be reached from $R$ only via $\epsilon$-transitions.
+
+It is obvious that $R \in E(R)$:  $\delta(r, \epsilon) = r, \ \forall r \in R$. Thus, we can modify our function $\delta'$: $\delta'(R, a) = \bigcup \limits_{r \in R} E(\delta(r, a)), \ \forall R \in Q', a \in \Sigma$. As we can see, a set of values for $\delta'$ can become only larger.
+
+ Also, we need to modify the start state: $q_0 = E(\{ q_0 \})$. 
+
+
+
+
+
+
+
+### Corollary 2.1 (relation between RL and NFA)
+
+Language is regular $\Leftrightarrow$ some NFA recognizes it.
+
+
+
+*Proof:*
+
+Language is regular $\Leftrightarrow$ $\exists$ FA that recognizes it $\underset{\textnormal{\scriptsize Th 2.1}}{\Leftrightarrow}$ $\exists$ NFA that recognizes it.
+
+
+
+
+
+
+
+### Th 2.2 (star operation of RLs)
+
+The class of regular languages is closed under the star operation:
+
+$A$ is a RL $\Rightarrow$ $A^{*}$ is an RL.
+
+
+
+*Proof:*
+
+Remainder: $A^* = \{ \ x_1 x_2...x_k\ \ : \ k \geqslant 0 \ \and \ x_i \in A, \forall i \ \}$.
+
+We have an NFA $N_1 = (Q_1, \Sigma, \delta_1, q_1, F_1)$ that recognizes $A$. We want to construct an NFA $N = (Q, \Sigma, \delta, q_0, F)$ such that it recognizes $A^*$. 
+
+In the STD we $\color{red}{\textnormal{connect final states with the start state}}$ via $\epsilon$-transitions, thus we get a concatenation of elements. Also, there is also an empty string  $\epsilon$ as an input in $A^{*}$, so we choose a new start state by adding $\color{blue}{\textnormal{a new state}}$ to the initial start state:
+
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 6.png" alt="ACC 23-02-13 6" style="zoom:80%;" />
+
+- $Q = \{q_0 \} \ \cup \ Q_1$
+- $F = \{ q_0 \} \ \cup F_1$
+- $\forall q \in Q, a \in \Sigma_{\epsilon} \ :$<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 7.png" alt="ACC 23-02-13 7" style="zoom:53%;" />
 
 
 

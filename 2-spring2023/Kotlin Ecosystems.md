@@ -14,11 +14,11 @@
 
 #### Homeworks
 
-If homework is given at date DATE, the sorft deadline is DATE + 2 weeks and the hard deadline is at DATE + 3 weeks. 
+If homework is given at date DATE, the soft deadline is DATE + 2 weeks and the hard deadline is at DATE + 3 weeks. 
 
-Some homewrks will be connected to each other, so it is bad to skip one of them. 
+Some homeworks will be connected to each other, so it is bad to skip one of them. 
 
-Homeworks will appear after lectures. `git push` to a seperate branch, then open a PR. 
+Homeworks will appear after lectures. `git push` to a separate branch, then open a PR. 
 
 
 
@@ -29,6 +29,79 @@ To pass the course you have to score ≥ 45 points.
 To get A+ you have to score ≥ 95 points. 
 
 There are 130 points you can score in this course: 74 for home assignments, 44 for quizzes, 12 for the test.
+
+
+
+
+
+### Cold flows 
+
+#### Main idea
+
+Ordinary threads work in the way that, first, the user sends the request, then they get the answer from the server. Kotlin flows simplify this scheme for the user. Data is "preloaded" to the user. 
+
+<img src="./pics for conspects/KOT 23-02-09 1.png" alt="KOT 23-02-09 1" style="zoom:60%;" />
+
+This type of flows is called "cold", because they are created on demand and emit data only when they are being observed. 
+
+Flows should be used in a Coroutine Scope. 
+
+
+
+
+
+#### Flow builder 
+
+```kotlin
+class UserMessageDataSource(
+    private val messageApi: MessagesApi,
+    private val refreshIntervalMs: Long = 5000
+) {
+    val latestMessages: Flow<List<Message>> = flow {
+        while(true) { // in order to infinitely fetch messages
+            val userMessages = messageApi.fetchLatestMessages()
+            emit(userMessages) // emit the result to the flow
+            delay(refreshIntervalMs) // wait
+        }
+    }
+}
+```
+
+The code inside `while(true)` cycle is called *the producer block*. 
+
+
+
+
+
+#### Modifying flows 
+
+`flow.map`, `flow.filter` and `flow.catch`
+
+```kotlin
+val userMessages: Flow<MessagesUiModel> =
+    UserMessageDataSource.latestMessages
+        .map { it. toUiModel() }
+        .filter { it.containsImportantNotifications() }
+        .catch { e ->
+            analytics.log("Error loading reserved event")
+            if (e is IllegalArgumentException) throw e
+            else emit(emptyList())
+        }
+```
+
+
+
+
+
+#### Observing flows 
+
+`flow.collect`
+
+```kotlin
+userMessages.collect { listAdapter.submitList(it) }
+```
+
+Every time `flow.collect` is called on `userMessages`, a new flow will be created. And its producer block will start refreshing messages from the API at its own interval (ничево не понятно)
 
 
 

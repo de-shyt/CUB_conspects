@@ -10,11 +10,30 @@
 
 ## 23-02-02
 
+### Org stuff
+
+**Grade:**
+
+- 100% exam
+- bonus 10% via homeworks
+
+
+
+
+
+
+
+### Now the lecture starts
+
 Approaches to solving a problem:
 
 - iteration:  $x_0 = c; \ x_n = f(x_{n-1})$ 
 - interpolation -- choose a function which is the closest to the initial function
 - integration -- use integrals
+
+
+
+
 
 
 
