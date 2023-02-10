@@ -8,7 +8,7 @@
 
 
 
-### Haskell cheat sheet
+## Haskell cheat sheet
 
 A function that takes a Number (Integer, Double, Rational) and returns a Number
 
@@ -19,7 +19,7 @@ f x = x^2
 
 
 
-#### Lists
+### Lists
 
 ```haskell
 concat [[1..3],[4..7],[8..10]]
@@ -37,7 +37,7 @@ elem 5 [1..10]  -- if `5` is in the list
 
 
 
-#### Strings
+### Strings
 
 ```haskell
 head "foo"  -- 'f'
@@ -48,7 +48,7 @@ init "foo"  -- "fo"
 
 
 
-#### map, filter, zip, zipWith
+### map, filter, zip, zipWith
 
 ```haskell
 map (\x -> x * 2 + 1) [1..3] -- [3, 5, 7]
@@ -62,7 +62,7 @@ zipWith (\a b -> (show a) ++ [b]) [1..] "hi"  -- [ "1h", "2i" ]
 
 
 
-#### foldl, foldr
+### foldl, foldr
 
 ```haskell
 foldl (-) 0 [1..3]  -- ((0 - 1) - 2) - 3 = -6
@@ -71,7 +71,7 @@ foldr (-) 0 [1..3]  -- 1 - (2 - (3 - 0)) = 2
 
 
 
-#### quickSort
+### quickSort
 
 ```haskell
 import Data.List
@@ -85,7 +85,7 @@ quickSort (x:xs) = quickSort smaller ++ [x] ++ quickSort larger
 
 
 
-#### Datatypes
+### Datatypes
 
 ```haskell
 data EmployeeInfo = Employee String Int Double [String] deriving (Show)
@@ -108,7 +108,7 @@ increaseAge person = person { age = age person + 1 }
 
 
 
-#### Binary tree
+### Binary tree
 
 ```haskell
 data Tree a = Empty
@@ -139,7 +139,7 @@ foldl f z (Branch x l r) = foldr f (f x (foldl f z l)) r
 
 
 
-#### Typeclasses
+### Typeclasses
 
 Typeclasses describe a set of types that have a common interface and behavior. A type belonging to a typeclass implements the functions and behavior defined by the typeclass. 
 
@@ -155,7 +155,7 @@ Everything before the symbol `=>` is a *class constraint*.
 
 
 
-##### Usage of a constraint in a function declaration
+#### Usage of a constraint in a function declaration
 
 We want to check whether the element is in the given list. We put a constraint on a type `a` -- it should be an instance of `Eq` typeclass. 
 
@@ -169,7 +169,7 @@ elem y (x:xs) = y == x || elem y xs
 
 
 
-##### Eq
+#### Eq
 
 ```haskell
 class Eq a where
@@ -185,7 +185,7 @@ class Eq a where
 
 
 
-###### Creating an instance of Eq
+##### Creating an instance of Eq
 
 ```haskell
 -- custom type
@@ -210,6 +210,64 @@ instance Eq a => Eq [a] where
 	(x:xs) == (y:ys) = x == y && xs == ys
 	_ == _ = False
 ```
+
+
+
+
+
+#### Ord
+
+It is an extension of `Eq`, so `Ord` is a subclass of `Eq`.
+
+Default implementation:
+
+```haskell
+data Ordering = LT | EQ | GT
+
+instance Eq Ordering where
+    LT == LT = True
+    EQ == EQ = True
+    GT == GT = True
+    _ == _ = False
+
+class (Eq a) => Ord a where
+    (<), (<=), (>=), (>) :: a -> a -> Bool
+    compare :: a -> a -> Ordering
+    max, min :: a -> a -> a
+    
+    compare x y | x == y = EQ 
+                | x <= y = LT
+                | otherwise = GT
+                
+    x <= y = compare x y /= GT 
+    x < y = compare x y == LT 
+    x >= y = compare x y /= LT
+    x > y = compare x y == GT 
+    
+    max x y | x <= y = y
+    		| otherwise = x
+    
+    min x y | x <= y = x 
+   			| otherwise = y
+```
+
+
+
+
+
+#### Functor
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
