@@ -1,6 +1,10 @@
+![CUB](./2-fall2022/pics for conspects/CUB.png)
+
+
+
 # CUB conspects
 
-Here you can find conspects of lectures in Constructor University. 
+Here you can find conspects of lectures in Computer Science program in Bremen.
 
 
 
