@@ -3154,7 +3154,19 @@ SSH is about connecting to a remote host.
 
 `sshd` is the OpenSSH server process. It listens to incoming connections using the SSH protocol and acts as the server for the protocol. 
 
-The client sends a request for connection, the server denies or accepts it and create a socket. 
+The client sends a request for connection via `ssh <user>@<host>` command:
+
+```shell
+ssh student@127.0.0.1
+```
+
+If you need to specify the port you want to connect to, you can use `-p` flag:
+
+```shell
+ssh student@127.0.0.1 -p 8090
+```
+
+The server denies the connection or accepts it and create a socket. 
 
 The server creates a pty for the client and launches a shell program (maybe because the client is a terminal emulator, but it is not 100% verified).
 
@@ -3162,7 +3174,13 @@ If there are special settings in the client's terminal emulator (e.g. $\texttt{T
 
 <img src="./pics for conspects/OS/OS 22-11-29 7.png" alt="OS 22-11-29 7" style="zoom:90%;" />
 
+**How to turn on the ssh server?** Use the following command:
 
+```shell
+sudo /usr/sbin/sshd -p 8090 -D
+```
+
+`-p` flag is used to specify the port in with ssh server will run. 
 
 
 
