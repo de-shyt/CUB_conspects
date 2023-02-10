@@ -106,7 +106,7 @@ If you do not understand the organizational environment where a system is used, 
 
 
 
-### Emergent Properties /todo
+### Emergent Properties
 
 Emergent Properties are the result of various system components working together, they do not belong to an individual component. 
 

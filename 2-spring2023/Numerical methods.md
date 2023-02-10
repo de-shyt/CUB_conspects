@@ -178,6 +178,10 @@ For a real number $x \in R$ we can write: $x = \sum \limits_{i=1}^{+\infty} a_{-
 - To convert from base $b$ to base $10$, we perform the dolowwing computation:
 
   $y_b = \overline{a_n...a_0}_b = \sum \limits_{i=0}^n a_n b^n = x_{10}$
+  
+- Conversion $2 \rightarrow 8$: three digits with base $2$ represent one digit with base $8$
+
+- Conversion $2 \rightarrow 16$: four digits with base $2$ represent one digit with base $16$
 
 
 
@@ -242,8 +246,9 @@ Euclid’s algorithm converts $x_{10}$ to $y_b$.
 
 ###  Horner’s scheme
 
-- no division by large number 
-- no need in finding the amount of digits for $y_b$ (*aka* $n$ in euclid's algorithm)
+- no division by large numbers
+- no need in finding the amount of digits for $y_b$ (*aka* $n$ in Euclid's algorithm)
+- applicable to real numbers, but needs a condition when we need to stop if representation with new base is infinite 
 
 
 
@@ -263,6 +268,118 @@ Euclid’s algorithm converts $x_{10}$ to $y_b$.
 
 
 
+
+
+
+## 23-02-10
+
+### Number normalization
+
+$x = 0.a_1 a_2 \ldots a_k \cdot b^n$ with $a_i \in \{ 0, \ldots, b-1 \}$.
+
+$a_1, \ldots, a_k$ are digits. 
+
+$b$ is the base. 
+
+$k$ is called *precision*. This is the actual amount of digits. 
+
+$\overline{a_1 \ldots a_k}$ is called *mantissa*. $a_1 \neq 0$.
+
+$n$ is called *exponent*. This is the distance from the current position of the floating point. $n >0 \Rightarrow$ move right, otherwise move left. 
+
+
+
+This form is called *normalization*. It makes representation of a number unique. 
+
+
+
+
+
+#### Examples
+
+$ 0.099 \ \Leftrightarrow \ 0.99 \cdot 10^{-1}$. We do not save leading zeros in the mantissa. 
+
+$32.213 \ \Leftrightarrow \ 0.32213 \circ 10^2 $.
+
+$1.101 \ \Leftrightarrow \ 0.1101 \circ 2^1$.
+
+
+
+
+
+### Single precision
+
+There are $4$ bytes = $32$ bits.
+
+$1$ bit is for the sign of the number. 
+
+$1$ bit for the sign of the exponent.
+
+$7$ bits for for the exponent. 7-bit largest number is $\underbrace{1 \ldots 1_2}_{7} = 127$.  $2^{127}\approx 10^{38}$, so we have numbers from $-10^{38}$ to $10^{38}$.
+
+$23$ bits for mantissa. Actually, we are "able" to store $24$ bits of a number, because, as we know, $a_1 \neq 0$ $\Rightarrow$ it is always equal to $1$ at base $b = 2$ $\Rightarrow$ it can be omitted. 
+
+
+
+We can have a better representation using *double precision* ($8$ bytes = $64$ bits).
+
+
+
+
+
+
+
+### Problems with double numbers
+
+#### Example 1: sum of numbers
+
+Adding numbers is commutative, but not always associative: $z + (y + w) \neq (z+y) + w$.
+
+For example, let us take $x = y = 0.00000033 = 0.33 \cdot 10^{-6}$, $z = 0.00000034 = 0.34 \cdot 10^{-6}$, $w = 1.000000 = 0.1 \cdot 10^1$. 
+
+$((x + y) + z) + w = 0.1 \cdot 10^{-5} + 0.1 \cdot 10^1 = 1.000001$
+
+$x + (y + (z + w)) = 1.000000$, since $z+w$ can have only $7$ significant digits in the mantissa. 
+
+
+
+Thus, it would be better to add numbers in increasing order of their size.
+
+
+
+
+
+#### Example 2: subtraction of numbers
+
+Let us compute $x - \sin x$ with $x$ close to $0$. For example, $x = \frac{1}{15}$.
+
+$x = 0.6666666667 \cdot 10^{-1}$
+
+$\sin x = 0.6661729492 \cdot 10^{-1}$
+
+$x - \sin x = 0.0004937175 \cdot 10^{-1} = 0.4937175000 \cdot 10^{-4}$.
+
+Three zeros at the end of the mantissa mean  a precision loss.
+
+Thus, it would be better to avoid subtracting numbers of similar size. 
+
+
+
+The better idea is to use the Taylor series:
+
+$\sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \ldots$
+
+
+
+
+
+
+
+### Th. (about the lost of precision during subtraction)
+
+Let $x, y$ be normalized floating point numbers with $x > y > 0$ and base $b = 2$. 
+
+If $\exists p, q \in N_0 \ : \ 2^{-p} \leqslant 1 - \frac{y}{x} \leqslant 2^{-q}$, then at most $p$ and at least $q$ significant bits (digits at base $2$) are lost during subtraction. 
 
 
 
