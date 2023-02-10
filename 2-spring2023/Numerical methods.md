@@ -89,15 +89,13 @@ For $x, x + h \in [a, b] \ \ f(x + h) = \sum \limits_{k = 0}^n \frac{f^{(k)}(x)}
 
 ## 23-02-03
 
-### Mean value theorem \todo
+### Mean value theorem 
 
 For $n = 0$ $f(x) = f(c) + f'(\xi_x) (x - c)$
 
 $x := b, \ c := a \ \Rightarrow \ f(b) = f(a) + f'(\xi_x) (b - a) \ \Rightarrow \ f'(\xi_x) = \frac{f(b) - f(a)}{b - a}$
 
-\todo картинка график 
-
-
+<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/NM 23-02-03 1.png" alt="NM 23-02-03 1" style="zoom:80%;" />
 
 
 
@@ -158,6 +156,107 @@ $|\frac{0,1^{2(n+1)}}{(2(n+1))!}| \ \underset{n \rightarrow \infty}{\rightarrow}
 
 
 ## 23-02-09
+
+### Base representation
+
+Every number $x \in N$ can be written in the folowing form as a unique expansion with the resect to the base $b$, where $b \in N / \{ 0 \}$, using digits $a_i$:
+
+$x = \sum \limits_{i=0}^n a_i b^i$.
+
+For a real number $x \in R$ we can write: $x = \sum \limits_{i=1}^{+\infty} a_{-i} b^{-i}$.
+
+
+
+**General remarks:**
+
+- A number with simple representation in one base may be complicated to represent in another base:
+
+  $0.1_{10} = (0.0001100110011 \ldots)_2$
+
+- $b=2$ is binary, $b=8$ is octal, $b=16$ is hexadecimal
+
+- To convert from base $b$ to base $10$, we perform the dolowwing computation:
+
+  $y_b = \overline{a_n...a_0}_b = \sum \limits_{i=0}^n a_n b^n = x_{10}$
+
+
+
+
+
+#### Example
+
+$b = 2; \ 1011_2 = 1 \cdot 2^0 + 1 \cdot 2^1 + 0 \cdot 2^2 + 1 \cdot 2^3 = 11_{10}$
+
+
+
+
+
+###  Euclid’s algorithm
+
+Euclid’s algorithm converts $x_{10}$ to $y_b$.
+
+1. Input $x_{10}$
+
+2. Determine $\min n \ : \ x < b^{n+1}$
+
+3. for $i:= n \ \textnormal{to} \ 0$ do:
+
+   $a_i = x \texttt{ div } b^i$
+
+   $x = x \texttt{ mod } b^i$
+
+4. Output result $\overline{a_n a_{n-1} \ldots a_0} = y_b$.
+
+
+
+**Problems:**
+
+1. Step 2 is inefficient
+2. Division by large numbers can be problematic
+
+
+
+
+
+#### Example
+
+1. $13_{10} \longrightarrow y_2$
+
+2. $\min n = 3 \ : \ 13 < 2^{4}$
+
+3. $i =3; \ \ a_3 = 1, \ x = 5$
+
+   $i = 2; \ \ a_2 = 1, \ x = 1$
+
+   $i = 1; \ \ a_1 = 0, \ x = 1$
+
+   $i = 0; \ \ a_0 = 1, \ x = $
+
+4. $\overline{a_3 a_2 a_1 a_0} = 1101_2$
+
+
+
+
+
+
+
+###  Horner’s scheme
+
+- no division by large number 
+- no need in finding the amount of digits for $y_b$ (*aka* $n$ in euclid's algorithm)
+
+
+
+1. Input $x_{10}$. $i:= 0$.
+
+2. ```c++
+   while (x > 0) {
+       a[i++] = x % b;
+       x /= b;
+   }
+   ```
+
+3. $\overline{a_n a_{n-1} \ldots a_0} = y_b$
 
 
 
