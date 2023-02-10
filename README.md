@@ -1,4 +1,4 @@
-![CUB](./2-fall2022/pics for conspects/CUB.png)
+![CUB](./2-fall2022/'pics for conspects'/CUB.png)
 
 
 
