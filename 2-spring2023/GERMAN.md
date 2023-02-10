@@ -34,6 +34,6 @@ Was ist deine Lieblingsfarbe? - What is your favorite color?
 
 Es gefallt mir -- I like it
 
-<img src="./pics for conspects/GER 23-02-01 1.png" alt="GER 23-02-01 1" style="zoom:80%;" />
+<img src="./pics for conspects/GER/GER 23-02-01 1.png" alt="GER 23-02-01 1" style="zoom:80%;" />
 
  

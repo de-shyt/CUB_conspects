@@ -31,7 +31,7 @@
 
 ### von Neumann architecture
 
-<img src="./pics for conspects/ACC 23-02-06 1.png" alt="ACC 23-02-06 1" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 1.png" alt="ACC 23-02-06 1" style="zoom:67%;" />
 
 Our nowadays computers are based on the von Neumann computer architecture. 
 
@@ -61,7 +61,7 @@ The vizualization of the input computation is a chain.
 
 #### Definitions
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 2.png" alt="ACC 23-02-06 2" style="zoom:50%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 2.png" alt="ACC 23-02-06 2" style="zoom:50%;" />
 
 A transition function can be described via *state transition diagram* (STD) or *state transition table*. 
 
@@ -73,7 +73,7 @@ What is an *accept state*? Imagine we have an input. We go from one state to ano
 
 FA accepts a string if it starts in a start state, uses only transitions of $\delta$ and finishes in one of final states. 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 5.png" alt="ACC 23-02-06 5" style="zoom:50%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 5.png" alt="ACC 23-02-06 5" style="zoom:50%;" />
 
 
 
@@ -91,7 +91,7 @@ $L(M)$ -- *the language of machine M* -- is the set of <u>all</u> strings that a
 
 #### Example 1: a STD 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 3.png" alt="ACC 23-02-06 3" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 3.png" alt="ACC 23-02-06 3" style="zoom:67%;" />
 
 $Q = \{ q_1, q_2, q_3 \}$;   $\Sigma = \{ 0, 1 \}$;   $F = \{ q_2 \}$.
 
@@ -99,7 +99,7 @@ $q_1$ is a start state.
 
 $\delta$ can be described with a table: 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 4.png" alt="ACC 23-02-06 4" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 4.png" alt="ACC 23-02-06 4" style="zoom:67%;" />
 
 FA accepts a string $1101$, for example, since it starts in $q_1$ and finishes in $q_2$.
 
@@ -118,7 +118,7 @@ The idea is that we will have $4$ states:
 - $q_{00}$ -- we have 00
 - $q_{001}$ -- we have $001$ and we neep to stop. 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 7.png" alt="ACC 23-02-06 7" style="zoom:60%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 7.png" alt="ACC 23-02-06 7" style="zoom:60%;" />
 
 
 
@@ -166,7 +166,7 @@ $n$ is not fixed, so we have a problem with choosing a transition function.
 
 #### Regular operations
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-06 6.png" alt="ACC 23-02-06 6" style="zoom:50%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-06 6.png" alt="ACC 23-02-06 6" style="zoom:50%;" />
 
 
 
@@ -248,7 +248,7 @@ The vizualization of the computation is a tree.
 
 #### Definitions
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 3.png" alt="ACC 23-02-13 3" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-13 3.png" alt="ACC 23-02-13 3" style="zoom:67%;" />
 
 In the transition functin definition, $P(Q)$ means a set of states, since in NFA we can get from one state to several (or zero) states. 
 
@@ -256,7 +256,7 @@ In the transition functin definition, $P(Q)$ means a set of states, since in NFA
 
 NFA *accepts* a given input string, if there exists a computation branch in a tree that ends in an accept state; otherwise it *rejects* it.
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 4.png" alt="ACC 23-02-13 4" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-13 4.png" alt="ACC 23-02-13 4" style="zoom:67%;" />
 
 
 
@@ -270,7 +270,7 @@ A computation branch is *accepting* if the last state after all transitions is a
 
 #### Example of NFA
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 1.png" alt="ACC 23-02-13 1" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-13 1.png" alt="ACC 23-02-13 1" style="zoom:67%;" />
 
 Finally, we can to the conclusion that $L(N_1) = \{ \ w \ | \ w \textnormal{ contains either 101 or 11 as a substring} \ \}$. 
 
@@ -282,7 +282,7 @@ Finally, we can to the conclusion that $L(N_1) = \{ \ w \ | \ w \textnormal{ con
 
 Let us consider an input $010110$ for the STD from the example above. The tree will be:
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 2.png" alt="ACC 23-02-13 2" style="zoom:67%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-13 2.png" alt="ACC 23-02-13 2" style="zoom:67%;" />
 
 $q_1 \rightarrow q_3$ is $1 + \epsilon$ that is equal to $1$. 
 
@@ -364,11 +364,11 @@ We have an NFA $N_1 = (Q_1, \Sigma, \delta_1, q_1, F_1)$ that recognizes $A$. We
 
 In the STD we $\color{red}{\textnormal{connect final states with the start state}}$ via $\epsilon$-transitions, thus we get a concatenation of elements. Also, there is also an empty string  $\epsilon$ as an input in $A^{*}$, so we choose a new start state by adding $\color{blue}{\textnormal{a new state}}$ to the initial start state:
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 6.png" alt="ACC 23-02-13 6" style="zoom:80%;" />
+<img src="./pics for conspects/ACC/ACC 23-02-13 6.png" alt="ACC 23-02-13 6" style="zoom:80%;" />
 
 - $Q = \{q_0 \} \ \cup \ Q_1$
 - $F = \{ q_0 \} \ \cup F_1$
-- $\forall q \in Q, a \in \Sigma_{\epsilon} \ :$<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/ACC 23-02-13 7.png" alt="ACC 23-02-13 7" style="zoom:53%;" />
+- $\forall q \in Q, a \in \Sigma_{\epsilon} \ :$<img src="./pics for conspects/ACC/ACC 23-02-13 7.png" alt="ACC 23-02-13 7" style="zoom:53%;" />
 
 
 

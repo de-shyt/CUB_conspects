@@ -171,7 +171,7 @@ The matrix have the form of $\begin{pmatrix} 1 & 0 & \ldots & t_1 \\ 0 & 1 & \ld
 
 $\begin{pmatrix} t_1 \\ \ldots \\ t_n \end{pmatrix}$ is an addition of a constants to the initial coordinates. 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/RIS 23-02-10 1.png" alt="RIS 23-02-10 1" style="zoom:67%;" />
+<img src="./pics for conspects/RIS/RIS 23-02-10 1.png" alt="RIS 23-02-10 1" style="zoom:67%;" />
 
 
 
@@ -183,7 +183,7 @@ The matrix has a form of $\begin{pmatrix} s_1 & 0 & \ldots & 0 & 0 \\0 & s_2 & \
 
 $s_1, ..., s_n$ are scalars for the initial coordinates. 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/RIS 23-02-10 2.png" alt="RIS 23-02-10 2" style="zoom:67%;" />
+<img src="./pics for conspects/RIS/RIS 23-02-10 2.png" alt="RIS 23-02-10 2" style="zoom:67%;" />
 
 
 

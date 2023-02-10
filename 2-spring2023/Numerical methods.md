@@ -95,7 +95,7 @@ For $n = 0$ $f(x) = f(c) + f'(\xi_x) (x - c)$
 
 $x := b, \ c := a \ \Rightarrow \ f(b) = f(a) + f'(\xi_x) (b - a) \ \Rightarrow \ f'(\xi_x) = \frac{f(b) - f(a)}{b - a}$
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/NM 23-02-03 1.png" alt="NM 23-02-03 1" style="zoom:80%;" />
+<img src="./pics for conspects/NM/NM 23-02-03 1.png" alt="NM 23-02-03 1" style="zoom:80%;" />
 
 
 

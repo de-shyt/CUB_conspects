@@ -80,7 +80,7 @@ public class Main {
 
 ### Переменные
 
-<img src="./pics for conspects/JA 23-02-04 1.png" alt="JA 23-02-04 1" style="zoom:67%;" />
+<img src="./pics for conspects/JA/JA 23-02-04 1.png" alt="JA 23-02-04 1" style="zoom:67%;" />
 
 
 
@@ -220,7 +220,7 @@ s2 = new String("aboba");
 
 сурс: http://www.unicode.org/glossary/
 
-<img src="./pics for conspects/JA 23-02-04 2.png" alt="JA 23-02-04 2" style="zoom:67%;" />
+<img src="./pics for conspects/JA/JA 23-02-04 2.png" alt="JA 23-02-04 2" style="zoom:67%;" />
 
 Символы за пределами плоскости 0 называются surrogate pair. Состоят из двух code-юнитов: первый -- high surrogate, второй -- low surrogate. 
 
@@ -287,7 +287,7 @@ byte c = (byte) x;
 
 #### Расширяющее
 
-<img src="./pics for conspects/JA 23-02-04 3.png" alt="JA 23-02-04 3" style="zoom:67%;" />
+<img src="./pics for conspects/JA/JA 23-02-04 3.png" alt="JA 23-02-04 3" style="zoom:67%;" />
 
 Откуда потеря точности? У `double` есть ограничение на целую часть: она не может быть больше $10^{15}$, потому что чисел после запятой может быть и бесконечное количество. А `long` может быть больше $10^{15}$. 
 
@@ -295,7 +295,7 @@ byte c = (byte) x;
 
 #### Сжимающее
 
-<img src="./pics for conspects/JA 23-02-04 4.png" alt="JA 23-02-04 4" style="zoom:67%;" />
+<img src="./pics for conspects/JA/JA 23-02-04 4.png" alt="JA 23-02-04 4" style="zoom:67%;" />
 
 
 
@@ -482,7 +482,7 @@ Arrays.sort(ints);
 
  `static` у метода означает, что метод относится к самому типу, а не к инстансу этого типа. То есть статический метод будет общим у всех инстансов. 
 
-<img src="../../../Desktop/studying/JUB_conspects/2-spring2023/pics for conspects/JA 23-02-07 1.png" alt="JA 23-02-07 1" style="zoom:67%;" />
+<img src="./pics for conspects/JA/JA 23-02-07 1.png" alt="JA 23-02-07 1" style="zoom:67%;" />
 
 В статическом методе не передается ссылка на текущий объект `this` (он же общий), поэтому внутри него нет доступа к нестатическим объектам или нестатическим полям. 
 

@@ -10,7 +10,7 @@
 
 Professor Kinga Lipskoch
 
-<img src="./pics for conspects/ADS 23-02-02 1.png" alt="ADS 23-02-02 1" style="zoom:50%;" />
+<img src="./pics for conspects/ADS/ADS 23-02-02 1.png" alt="ADS 23-02-02 1" style="zoom:50%;" />
 
 
 
@@ -38,7 +38,7 @@ Domain name: vpnasa.jacobs-university.de (Jacobs VPN)
 
 **Tutorials:**
 
-<img src="./pics for conspects/ADS 23-02-02 2.png" alt="ADS 23-02-02 2" style="zoom:50%;" />
+<img src="./pics for conspects/ADS/ADS 23-02-02 2.png" alt="ADS 23-02-02 2" style="zoom:50%;" />
 
 
 

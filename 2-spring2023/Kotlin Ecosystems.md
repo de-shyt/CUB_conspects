@@ -40,7 +40,7 @@ There are 130 points you can score in this course: 74 for home assignments, 44 f
 
 Ordinary threads work in the way that, first, the user sends the request, then they get the answer from the server. Kotlin flows simplify this scheme for the user. Data is "preloaded" to the user. 
 
-<img src="./pics for conspects/KOT 23-02-09 1.png" alt="KOT 23-02-09 1" style="zoom:60%;" />
+<img src="./pics for conspects/KOT/KOT 23-02-09 1.png" alt="KOT 23-02-09 1" style="zoom:60%;" />
 
 This type of flows is called "cold", because they are created on demand and emit data only when they are being observed. 
 
