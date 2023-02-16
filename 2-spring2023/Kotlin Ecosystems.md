@@ -203,19 +203,157 @@ plugins {
 
 
 
+## 23-02-15
+
+### Exceptions
+
+Errors were basically functions that return special error values. Thus, they signaled that something bad has happened. Another way was to set some global variable (i.e. `errno`). You have to handle errors even if you do not care about them. 
+
+Exceptions stop the program ad go to the top of the call stack. 
+
+Do not use exceptions for control flows. 
 
 
 
 
 
+#### Usage of `throw`
+
+```kotlin
+fun main() {
+    try {
+        throw Exception("An exception", RuntimeException("A cause"))
+    } catch (e: Exception) {
+        println("Message: ${e.message}")
+        println("Cause: ${e.cause}")
+        println("Exception: $e")
+        e.printStackTrace()
+    } finally {
+        println("Finally always executes")
+    }
+}
+```
 
 
 
 
 
+#### Under the JVM hood
+
+An exception is thrown. JVM stop the work and looks for smth which is called an exception table. If it does not find an appropriate exception in the exception table, it levels up and looks for another exception table. 
+
+Finally, if JVM does not find anything in exception tables, it goes to exception handler. 
 
 
 
 
 
+#### Custom exceptions
 
+```kotlin
+class MyException(val op: String, vararg val args: Int)
+    : RuntimeException("Problem with $op for args $args")
+    
+fun test() {
+    try {
+        doSomething()
+    } catch (e: MyException) {
+        println("Maybe retry with ${e.op}?")
+    } catch (e: Error) {
+        println("Error happened! $err")
+    } catch (e: Throwable) {
+        println("Wtf?")
+        throw t
+    }
+}
+```
+
+
+
+
+
+#### (Un)checked exceptions
+
+In Java exceptions can be unchecked (Error/RuntimeException) and checked (the rest). 
+
+In Kotlin all exceptions are unchecked. 
+
+
+
+
+
+### Testing
+
+#### Principles
+
+1. Testing demonstrates the presence of defects, but it does not prove that there are none of them. 
+
+2. Testing involves concrete program executions 
+
+3. The earlier the better. The cost of repair grows exponentially. 
+
+   
+
+
+
+#### How to find a bug
+
+1. Run the software
+2. Run the reference model
+3. Compare the results
+
+
+
+
+
+#### Unit testing \todo
+
+Each non-trivial function has its own block of tests. The tests should run fast and one test should check a small part of the model. 
+
+`JUnit5` framework is the most popular way to test Java and Kotlin programs. There are a lot of annotations to customize tests: `@BeforeEach`, ``
+
+
+
+```
+dependencies {
+    ...
+    testImplementation()
+}
+
+tasks.test {
+
+}
+```
+
+TODO дописать со слайда 
+
+
+
+Kotlin program
+
+```kotlin
+class MyTests {
+    @Test
+    @Tag("main")
+    @DisplayName("Check if the calculator works correctly")
+    fun testCalculatr() {
+        Assertions.assertEquales(
+            3, 
+            myCalculator(1, 2, "+"),
+            "Failed for `1 + 2`"
+        )
+    }
+}
+
+class MyParameterizedTests {
+    companion object {
+        @JvmStatic
+        fun calcInputs() = listOf(
+            Arguments.of(1, 2, "+", 3),
+            Arguments.of(2, 3, "-", -1)
+        )
+    }
+}
+```
+
+TODO дописать код

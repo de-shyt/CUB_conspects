@@ -263,6 +263,227 @@ class (Eq a) => Ord a where
 
 ## Part 1
 
+### Maze solving algorithms
+
+We can imagine that a maze is a graph. The cells are vertexes of the graph. If you can get from one cell to another, then there is an edge between the corresponding vertexes. 
+
+More formally, for a maze $M$ we have a tuple $M = (T, S, X)$ where 
+
+- $T = (V, E)$ is a graph with the vertexes $V$ and edges $E$;
+- $S \in V$ is the start node;
+- $X \in V$ is the exit node.
+
+
+
+We want to find a solution for the maze $\Leftrightarrow$ we want to build a spanning tree. 
+
+
+
+#### Kruskal's algorithm
+
+We want to build an MST $T$ in the connected graph $G$. 
+
+Initially, $T$ is an empty graph and every vertex forms a subset of a size 1. 
+
+Edges of $G$ are sorted in an increasing order. We consider an edge and add it to the answer, if it connects vertexes from different subsets. Then two subsets are merged into one subset. 
+
+```c++
+std::vector<int> parent(n, -1);
+std::vector<int> rank(n, 0);  // ну типа высота дерева
+
+int find_set(int v) {
+    if (parent[v] == v) {
+        return v;
+    }
+    return parent[v] = find_set(parent[v]);
+}
+
+void union_set(int a, int b) {
+    int v_a = find_set(a);
+    int v_b = find_set(b);
+    if (v_a == v_b) {
+        return;
+    }
+    if (rank[v_a] < rank[v_b]) {
+        std::swap(v_a, v_b);
+    }
+    parent[v_b] = v_a;
+    if (rank[v_a] == rank[v_b]) {
+        ++rank[v_a];
+    }
+}
+
+int kraskal(std::set<std::pair<int, std::pair<int, int>>> &Edges) {
+    int cost = 0;
+    for (const auto &edge : Edges) {
+        int w = edge.first, u = edge.second.first, v = edge.second.second;
+        if (find_set(u) != find_set(v)) {
+            union_set(u, v);
+            cost += w;
+        }
+    }
+    return cost;
+}
+```
+
+
+
+Total compexity is $O(\log n)$. 
+
+
+
+
+
+### String search algorithms
+
+We need a program to find a (relatively short) string in a (possibly long) text.
+
+
+
+**Problem formalization**
+
+$\Sigma$ is an alphabet. $k = |\Sigma|$.
+
+$\Sigma ^*$ is a set of all words that can be created out of $\Sigma$. 
+$$
+\Sigma^0 = \{ \epsilon \} \\
+\Sigma^1 = \Sigma \\
+\Sigma^i = \{ wv \ : \ w \in \Sigma^{i-1} \ \and \ v \in \Sigma \}, \ i > 1 \\
+\Sigma = \bigcup \limits_{i \geqslant 0} \Sigma^i
+$$
+$t \in \Sigma^*$ is a text and $p \in \Sigma^*$ is a pattern. 
+
+$|t| = n, \ |p| = m, \ n > m$.
+
+We need to find the first occurrence of $p$ in $t$.
+
+
+
+
+
+#### Naive String Search
+
+Check <u>at each position</u> whether the pattern matches. 
+
+Lowercase characters indicate comparisons that were skipped.
+
+Total complexity is $O(nm)$.
+
+
+
+##### Example
+
+<img src="./pics for conspects/ICS/ICS 23-02-14 1.png" alt="ICS 23-02-14 1" style="zoom:67%;" />
+
+
+
+
+
+#### Boyer-Moore algorithm
+
+The idea is to compare the pattern right to left instead left to right. If there is a mismatch, try to move the pattern as much as possible to the right.
+
+
+
+##### Bad character rule
+
+$s := $`AABBCAABDCEEE`, $p:=$ `ABBC`.
+
+We begin to compare the first alignment from right to left. `B` from `s` and `C` from `p` mismatch, so `B` is called a *bad character*. 
+
+There are two cases of a bad character:
+
+1. The bad character is in $p$. Then we move $p$ till the bad character matches with some letter from $p$.
+
+   <img src="./pics for conspects/ICS/ICS 23-02-14 2.png" alt="ICS 23-02-14 2" style="zoom:70%;" />
+
+   
+
+2. The bad character is not in $p$. Then we move $p$ so that it starts from the position which has not been considered yet. 
+
+   <img src="./pics for conspects/ICS/ICS 23-02-14 3.png" alt="ICS 23-02-14 3" style="zoom:70%;" />
+
+
+
+
+
+###### Implementation
+
+For the bad character rule, we need a function that takes the bad character and returns the number of alignments that can be skipped. We can pre-compute all possible skips and store the skips in a two-dimensional table. The table can be seen as a function that maps the unmatched character and the position in the pattern to the number of alignments that can be skipped. 
+
+For example, $p:=$ `NEED`. The complete table is shown on the left of the picture. The behaviour is the same for letters which are not present in $p$, so we can make the table shorter, like on the right of the picture. 
+
+<img src="./pics for conspects/ICS/ICS 23-02-14 5.png" alt="ICS 23-02-14 5" style="zoom:67%;" />
+
+
+
+**Example using the table:**
+
+```asciiarmor
+s = D D D D D D D
+p = N E E D
+    0 1 2 3
+
+
+1)   D  D  D [D]  D  D  D
+     N  E  E [D]
+
+D:D --> matched 
+
+
+2)   D  D [D] D  D  D  D
+     N  E [E] D
+
+D:E --> table[D][2] = 2 
+    --> 2 alignments are skipped.
+
+
+3)   D  D  D  D  D  D [D]
+              N  E  E [D]
+              
+              
+4) etc.
+```
+
+
+
+
+
+### Landau notations
+
+$f(n) = O(g(n)) \ \Leftrightarrow \exists C \in R, n_0 \ : \ f(n) < C \cdot g(n), \forall n \geqslant n_0$.
+
+$f(n) = \Omega(g(n)) \ \Leftrightarrow \ \exists C \in R, n_0 \ : \ f(n) > C \cdot g(n), \forall n \geqslant n_0$.
+
+$f(n) = \Theta(g(n)) \ \Leftrightarrow \ \exists C_1, C_2 \in R, n_0 \: \ C_1 \cdot g(n) < f < C_2 \cdot g(n), \forall n \geqslant n_0$.
+
+
+
+
+
+#### Th. (Landau Set Ranking)
+
+The commonly used Landau Sets establish a ranking such that
+$$
+O(1) \subset O(\log n) \subset O(n) \subset O(n \log n) \subset O(n^2) \subset O(n^k) \subset O(I^n)
+$$
+for all $k > 2$ and $I > 1$. 
+
+
+
+
+
+#### Th. (Landau Set Computation Rules)
+
+1. $\left . \begin{array}{l} k \neq 0 \\ f = O(g) \end{array} \right \} \ \Rightarrow \ kf = O(g)$
+
+   
+
+2. $\left . \begin{array}{l} f_1 = O(g_1) \\ f_2 = O(g_2) \end{array} \right \} \ \Rightarrow \ f_1 + f_2 = O(\max(g_1, g_2))$
+
+   
+
+3. $\left . \begin{array}{l} f_1 = O(g_1) \\ f_2 = O(g_2) \end{array} \right \} \ \Rightarrow \ f_1 f_2 = O(g_1 g_2)$
 
 
 
@@ -270,6 +491,13 @@ class (Eq a) => Ord a where
 
 
 
+### (Non)determinism or randomness
+
+A *deterministic algorithm* is an algorithm which, given a particular input, will always produce the same output, with the execution always passing through the same sequence of states.
+
+A *nondeterministic algorithm* is an algorithm that can exhibit different behaviors on the same input. 
+
+A *randomized algorithm* is a (nondeterministic) algorithm that employs a degree of randomness as part of its logic. Random number generators often use algorithms to produce so called *pseudo random numbers* -- sequences of numbers that “look” random but that are not really random (since they are calculated using a deterministic algorithm).
 
 
 
