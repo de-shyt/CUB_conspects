@@ -189,6 +189,8 @@ $s_1, ..., s_n$ are scalars for the initial coordinates.
 
 
 
+
+
 ### Linear independence
 
 $I$ is a set of indexes. 
@@ -199,10 +201,6 @@ The system $\{ v_i \}_{i \in I}$ is *linearly dependent*, if one of the statemen
 2. $\forall \{ a_i \} \in R \ : \ \Sigma a_i v_i = 0 \ \Rightarrow \ a_i = 0, \forall i \in I$.
 
 
-
-*Proof that $1 \Leftrightarrow$ 2*:
-
- 
 
 
 
@@ -292,7 +290,7 @@ $\mathcal{A} v_2 = \lambda_2 v_2 \ \Rightarrow \ v_2 = \begin{pmatrix} 1 \\ 1 \e
 
 
 
-#### Diagonolize
+#### Diagonolization
 
 Typically an $n \times n$ matrix has $n$ different eigenvalues and $n$ associated eigenvectors. 
 
@@ -321,6 +319,22 @@ $\det \mathcal{A} = \det D = \lambda_1 \cdot \ldots \cdot \lambda_n$.
 
 
 
+
+
+
+## 23-02-14
+
+### Vector math
+
+<img src="./pics for conspects/RIS/RIS 23-02-14 1.png" alt="RIS 23-02-14 1" style="zoom:67%;" />
+
+$a_x = a \cos \theta, \ a_y = a \sin \theta$
+
+$a = sqrt{a_x^2 + a_y^2}$
+
+$\theta = \arctan \frac{a_y}{a_x}$
+
+<img src="./pics for conspects/RIS/RIS 23-02-14 2.png" alt="RIS 23-02-14 2" style="zoom:77%;" />
 
 
 
