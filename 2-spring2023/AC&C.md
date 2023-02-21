@@ -376,3 +376,160 @@ In the STD we $\color{red}{\textnormal{connect final states with the start state
 
 
 
+
+
+## 23-02-20
+
+### Reqular expressions
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 1.png" alt="ACC 23-02-20 1" style="zoom:67%;" />
+
+$R \ \cup \ \varnothing \ = \ R$
+
+$R \ \circ \ \epsilon \ = \ R$
+
+
+
+$L((\Sigma \Sigma)^*) = \{ w \ | \ w \textnormal{ is a string if even (and 0) length} \}$.
+
+
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 2.png" alt="ACC 23-02-20 2" style="zoom:67%;" />
+
+
+
+### Lemma 3.1
+
+If a language is described by a regular expression, then it is regular.
+
+
+
+*Proof:* 
+
+We need to build an NFA $N$ which recognizes $L(R)$:  $L(N) = L(R)$.
+
+A regular expression consists of six elementary cases. If we are able to build an NFA for each case, then we will show that construction of the required NFA is possible. 
+
+The cases are:
+
+- $\forall a \in \Sigma \ : \ a$ is accepted by some NFA:<img src="./pics for conspects/ACC/ACC 23-02-21 1.png" alt="ACC 23-02-21 1" style="zoom:50%;" />
+
+- $\epsilon$ is accepted by some NFA:<img src="./pics for conspects/ACC/ACC 23-02-21 2.png" alt="ACC 23-02-21 2" style="zoom:50%;" />
+
+- $\varnothing$ is accepted by some NFA $\Leftrightarrow$ Some NFA recognizes an empty language. 
+
+  The NFA is:<img src="./pics for conspects/ACC/ACC 23-02-21 3.png" alt="ACC 23-02-21 3" style="zoom:50%;" />
+
+- $R_1 \cup R_2$ is accepted by some NFA. It is true, since the class of regular languages is closed under the union operation ([Th. 1.1](###Th 1.1 (unoin operation of RLs)))
+
+- The same is for $R_1 \circ R_2$ and $R^{*}$ ([Th. 1.2](###Th. 1.2 (concatenation operation of RLs)) and [Th. 2.2](###Th 2.2 (star operation of RLs)))
+
+We have an NFA $\Rightarrow$ we can build an FA ([Th. 2.1](###Th 2.1 (equivalence between NFA and FA))) $\Rightarrow$ the given language is regular. 
+
+
+
+
+
+
+
+### Example: building an NFA
+
+$R = (\textcolor{blue}{ab} \ \cup \ \textcolor{blue}{a})^{\textcolor{red}{*}}$. Build an NFA that recognizes $L(R)$. 
+
+Build seperate branches for $\textcolor{blue}{blue}$ pieces, then connect finish points with "pseudo-start" point to implemet $\textcolor{red}{*}$. 
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 3.png" alt="ACC 23-02-20 3" style="zoom:67%;" />
+
+
+
+
+
+### GNFA: generalized nondeterministic finite automaton
+
+#### Definition
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 4.png" alt="ACC 23-02-20 4" style="zoom:67%;" />
+
+
+
+#### Example
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 5.png" alt="ACC 23-02-20 5" style="zoom:67%;" />
+
+A GNFA is an NFA, such that we associate to each transition a *regular expression* instead of a symbol of the alphabet.
+
+The start state and the accept state are distinct. We require that each state, which is not the start or the accept state, has transitions to <u>all</u> other states, including itself. For the start state, there exist outgoing transitions to all other states, but no incoming connections. The accept state has only incoming connections that come from all states. 
+
+
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 6.png" alt="ACC 23-02-20 6" style="zoom:67%;" />
+
+
+
+
+
+
+
+
+
+### Th. 3.1 (equivalence between FA and GNFA)
+
+For each FA $M$, there is a GNFA $G$, such that $L(G) = L(M)$.
+
+
+
+*Proof:*
+
+We have an FA $M = (Q, \Sigma, \delta, q_0, F)$. We want to construct an GNFA $G = (Q', \Sigma, \delta', q_{start}, q_{accept})$ such that $L(G) = L(M)$. 
+
+We add states $q_{start}$ and $q_{accept}$. $Q' = Q \cup \{ q_{start}, \ q_{accept}\}$
+
+$q_{start}$ has an $\epsilon$-transition to $q_0$. 
+
+$q_{accept}$ gets $\epsilon$-transitions from all $q \in F$. 
+
+<img src="./pics for conspects/ACC/ACC 23-02-21 4.png" alt="ACC 23-02-21 4" style="zoom:60%;" />
+
+$\mathcal{U(A)}$ is the operation that builds a regular expression from the language $A$. For example, $\mathcal{U}(\{a, b, c\}) = a \cup b \cup c$.	
+
+
+
+
+
+#### Example
+
+FA is on the left side, GNFA is on the reight side. 
+
+<img src="./pics for conspects/ACC/ACC 23-02-20 7.png" alt="ACC 23-02-20 7" style="zoom:67%;" />
+
+
+
+
+
+
+
+### Lemma 3.3 \todo
+
+If a language is regular, then it is decribed by a regular rexpression.
+
+
+
+*Proof:*
+
+\todo
+
+
+
+
+
+
+
+### Th.
+
+Language is regular $\Leftrightarrow$ it can be described with a regular expression. 
+
+*Proof:* it is true because of Lemmas 3.1 and 3.3. 
+
+
+
+

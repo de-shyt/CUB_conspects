@@ -153,5 +153,108 @@ Types of Requirements:
 
 
 
+## 23-02-21
+
+### UML
+
+The UML -- Unified Modeling Language -- is the standard language for specifying, visualizing, constructing, and documenting all the artifacts of a software system. Synthesis of notations were done by Grady Booch, Jim Rumbaugh, Ivar Jacobson, and many others.
 
 
+
+
+
+#### Diagram Types
+
+The purpose of diagrams can be conceptual, for specification and for implementation. 
+
+
+
+##### Use Case Diagrams
+
+- use case = chunk of functionality, not a software module. Should contain a verb in its name
+- actor = someone or some thing interacting with system under development. Like a role in a scenario
+
+  Relationships between actors and use cases are visualized. 
+
+
+
+###### Example
+
+People are actors, circles are use cases. 
+
+<img src="./pics for conspects/SE/SE 23-02-21 1.png" alt="SE 23-02-21 1" style="zoom:60%;" />
+
+
+
+
+
+##### Activity Diagrams
+
+Graphical workflow of activities and actions. 
+
+There is a start point, then ways of doing something synchronously. 
+
+
+
+###### Example
+
+<img src="./pics for conspects/SE/SE 23-02-21 2.png" alt="SE 23-02-21 2" style="zoom:67%;" />
+
+
+
+
+
+##### Sequence Diagrams
+
+Displays object interactions (a sequence of moves) arranged in a time sequence.
+
+A SD should be done for every use case (for every actor of the scenario). 
+
+
+
+###### Example
+
+Yellow bars are a grouping of actions. For example, `ask id & pwd` and `acknoledge` are actions that are done together. 
+
+<img src="./pics for conspects/SE/SE 23-02-21 3.png" alt="SE 23-02-21 3" style="zoom:67%;" />
+
+
+
+
+
+##### State Transition Diagrams
+
+Shows life history of a given class. 
+
+STDs are usually used for classes that typically have a lot of dynamic behavior. 
+
+There are a start point and finish point(s). Any constraints are also shown on the diagram. 
+
+
+
+
+
+##### Class Diagrams
+
+Class = collection of objects with common structure, common behavior, common relationships, and common semantics
+
+
+
+**Properties of class diagrams:**
+
+- Association ($f(a, b) = f(b, a)$)
+- Aggregation
+- Dependency
+- Inheritance
+
+
+
+
+
+
+
+### DSL
+
+domain-specific modelling languages. Were created, since UML considered (too) complex (general-purpose) and software biased. For example, SQL is a DSL. 
+
+In whole, UML is better for enterprise apps (millions of possible directions) and DSL is better for embedded systems (clearly delimited app domain & paths).

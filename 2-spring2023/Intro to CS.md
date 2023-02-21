@@ -261,6 +261,8 @@ class (Eq a) => Ord a where
 
 
 
+
+
 ## Part 1
 
 ### Maze solving algorithms
