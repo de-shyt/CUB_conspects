@@ -704,9 +704,24 @@ fn f(mut mutable: &i32, immutable: &i32, mut_ref: &mut i32) {
 
 
 
+### Lifetime specifiers
 
+Есть как минимум два способа получить dangling reference. Чтобы такого не было, можно явно указать, из какого скоупа переменная. Синтаксис: `'x`.
 
+Пример:
 
+```rust
+fn main() {
+    let str1: String = String::from("aboba");
+    let str2: String = String::from("abober");
 
+    println!("longest string = '{}'", find_longest_string(&str1, &str2))
+}
 
+fn find_longest_string<'a>(x: &'a String, y: &'a String) -> &'a String {
+    if x.len() > y.len() { x } else { y }
+}
+```
+
+Если убрать лайфтаймы, то код не скомпилится, потому что функция возвращает ссылку на умирающий объект.
 

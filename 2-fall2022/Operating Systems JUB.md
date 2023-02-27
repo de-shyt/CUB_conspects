@@ -2940,7 +2940,7 @@ Redundancy is about adding extra components in order to cope with situations whe
 
 RAID 0 is taking a number of disks and merging them into one large volume. The volume is broken down into several data blocks. 
 
-<img src="../../Desktop/studying/JUB_conspects/pics for conspects/OS/OS 22-11-29 2.png" alt="OS 22-11-29 2" style="zoom:50%;" />
+<img src="./pics for conspects/OS/OS 22-11-29 2.png" alt="OS 22-11-29 2" style="zoom:50%;" />
 
 `+`  I/O performance is greatly improved, since there are many I/O channels. 
 
