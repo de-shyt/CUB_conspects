@@ -87,3 +87,100 @@ The simplest idea for the output is a set of numbers.
 ##### Example
 
 <img src="./pics for conspects/COMP/COMP 23-02-23 1.png" alt="COMP 23-02-23 1" style="zoom:90%;" />
+
+
+
+
+
+
+
+
+
+
+
+## 23-02-28
+
+We can have an instruction $I$ which is:
+
+$I = const N \ | \ LD  \ x \ | \ ST \ x \ | \ Binop \ | \ Read \ | \ Write$
+
+Program $p$ is a set of indtructions: 
+
+$p = [I]$
+
+
+
+**Example:**
+
+$2 + 3 * 4$ consists of $Const \ 2$, $Const \ 3$, $Const 4$, $Binop \ +$, $Binop \ *$. We can draw a tree:
+
+\TODO draw a tree
+
+
+
+
+
+\TODO rewrite
+
+$[|.|]_{SM} \ : \ P \rightarrow D$ where $D$ (domain) is $Z^* \times (X \rightarrow Z) \times Z^* \times Z^*$ -- a tuple {stack, mapping function, input, output}. The mapping function maps a variable to an integer. 
+
+Initial state is $<\epsilon, \Lambda, i, \epsilon>$.
+
+$<S, \delta, i, o> \overset{(Const \ n) p}{\longrightarrow} <n : S, \delta, i, o>$
+
+$<S, \delta, i, o> \overset{(LD \ x) p}{\longrightarrow} <\delta(x) : S, \delta, i, o>$
+
+$<S, \delta, i, o> \overset{(ST \ x) p}{\longrightarrow} $
+
+
+
+
+
+
+
+### Semantics for compiler \TODO
+
+$[|.|]^{\epsilon}_{comp} \ : \ E \rightarrow P$ -- function for expressions
+
+$[|Const \ n|]^{\epsilon}_{comp} = [Const \ n]$
+
+$[|x|]^{\epsilon}_{comp} = [LD \ x]$
+
+$[|l \ Binop \ r|]^{\epsilon}_{comp} = [|l|]_{comp} ++ [|r|]_{comp}$ ($l$ and $r$ are expressions)
+
+
+
+$[|.|]^S_{comp} \ : \ S \rightarrow P$ -- function for statements
+
+$[|skip|]^S_{comp}  = [ \ ]$
+
+$[|x = e|]^S_{comp}  = [|e|]^{\epsilon}_{comp} ++ [ST \ x]$
+
+$[|read(x)|]^S_{comp} = [Read; ST \ x]$
+
+$[|write(x)|]^S_{comp} = [|e|]^{\epsilon}_{comp} ++ [Write]$
+
+$[|S_1 ; S_2|]^S_{comp} = [|S_1]^S_{comp} ++ [|S_2|]^S_{comp}$
+
+
+
+
+
+
+
+Print `Hello world`
+
+```
+	.data
+str: .string "aboba\n"
+
+	.text
+	.globl main
+	
+main: 
+	pushl $str ; put a string on the top of the stack
+	call printf ; 
+```
+
+
+
