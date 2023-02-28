@@ -258,3 +258,226 @@ Class = collection of objects with common structure, common behavior, common rel
 domain-specific modelling languages. Were created, since UML considered (too) complex (general-purpose) and software biased. For example, SQL is a DSL. 
 
 In whole, UML is better for enterprise apps (millions of possible directions) and DSL is better for embedded systems (clearly delimited app domain & paths).
+
+
+
+
+
+
+
+
+
+## 23-02-28
+
+### Design patterns
+
+#### Types of patterns
+
+- creational
+
+  • Abstract Factory -- Creates an instance of several families of classes 
+
+  • Builder -- Separates object construction from its representation 
+
+  • Factory -- Method Creates an instance of several derived classes 
+
+  • Prototype -- A fully initialized instance to be copied or cloned 
+
+  • Singleton -- A class of which only a single instance can exist 
+
+- structural
+
+  • Adapter -- Match interfaces of different classes 
+
+  • Bridge -- Separates an object’s interface from its implementation 
+
+  • Composite -- A tree structure of simple and composite objects 
+
+  • Decorator -- Add responsibilities to objects dynamically 
+
+  • Facade -- A single class that represents an entire subsystem 
+
+  • Flyweight -- A fine-grained instance used for efficient sharing 
+
+  • Proxy -- An object representing another object 
+
+- behavioral (mediator, strategy patterns)
+
+  • Chain of Respect -- A way of passing a request between a chain of objects 
+
+  • Command -- Encapsulate a command request as an object 
+
+  • Interpreter -- A way to include language elements in a program 
+
+  • Iterator -- Sequentially access the elements of a collection 
+
+  • Mediator -- Defines simplified communication between classes 
+
+  • Memento -- Capture and restore an object's internal state 
+
+  • Observer -- A way of notifying change to a number of classes 
+
+  • State -- Alter an object's behavior when its state changes 
+
+  • Strategy -- Encapsulates an algorithm inside a class 
+
+  • Template Method -- Defer the exact steps of an algorithm to a subclass 
+
+  • Visitor -- Defines a new operation to a class without change
+
+
+
+
+
+
+
+#### Singleton pattern
+
+It is about creating only one instance of a class that is shared between other objects in the application. 
+
+The main downside of this pattern is the possibility of race conditions, when several objects try to write into the same variable. 
+
+
+
+
+
+##### Example: creating a singleton class 
+
+```javascript
+// fancyLogger.js
+
+class FancyLogger {
+    constructor() {
+        if (FancyLogger.instance == null) { // <=> no instances yet
+        	this.logs = []
+            FancyLogger.instance = this
+        }
+    }
+    
+    log(message) {
+        this.logs.push('${message}')
+    }
+    
+    printLogCount() {
+        console.log('${this.logs.length} logs')
+    }
+}
+
+const logger = new FancyLogger()
+Objects.freeze(logger) // now FancyLogger class cannot have new methods or variables
+
+export default logger
+// if there is `import` in another file, we will export the instance, not the class
+```
+
+
+
+```javascript
+// simpleFile.js
+
+import logger from './fancyLogger.js'
+
+export default function simpleFunction() {
+    logger.log('aboba')
+    logger.printLogCount()
+}
+```
+
+
+
+
+
+
+
+#### The Observer Pattern
+
+The Observer Pattern defines a "one-to-many" dependency between objects (there is one object $A$ and several objects which are dependent on $A$). When one object changes state, all of its dependencies are notified and updated automatically. 
+
+Object $A$ above is called *subject*. 
+
+Objects dependent on $A$ are called *observers*. 
+
+Relations between the subject and dependencies are called *subscriptions*. 
+
+Why The Observer Pattern is important? Imagine we have several changes in the timeline. And every observer will check periodically (by itself) whether something has changed recently. Thus, we get wasted cycles that are multiplied by the number of observers. This is a bad pattern for the observer being responsible for retrieving data.
+
+
+
+##### Example
+
+<img src="./pics for conspects/SE/SE 23-02-28 1.png" alt="SE 23-02-28 1" style="zoom:67%;" />
+
+
+
+
+
+
+
+#### The Mediator Pattern
+
+The Mediator Pattern defines an object that encapsulates how a set of other objects interact with one another. In other word, the mediator controls the communication between objects. 
+
+As opposed to the Observer Pattern, objects send  request to the mediator and get the answer. 
+
+
+
+
+
+
+
+#### The Facade Pattern
+
+We need a centralized place to put all of the logic inside it and to restrict direct access to the inner workings of the library/framework/other complex class.
+
+The Facade Pattern provides a <u>simplified</u> interface to a set of interfaces in a subsystem. This interface has methods with access to a particular part of the subsystem's functionality. 
+
+The main idea of the pattern is to make the subsystem easier to use. Instead of calling several functions, you have a method with a reasonable name, and a piece of logic is stored inside this method. 
+
+
+
+
+
+
+
+#### The Proxy Pattern
+
+To begin with, the proxy-server acts like a firewall, a filter and a caching tool. It provides a high level of security and data protection by checking the data it receives. 
+
+The Proxy Pattern provides a substitute (a placeholder) for the original object. The substitute controls access to the original object by performing something before or after the request reaches that object.
+
+
+
+##### Example
+
+We have a login form on the site. Before the user will see the personal account, he/she should enter correct login credentials. The proxy checks checks entered credentials and allows or denies the access. 
+
+ 
+
+
+
+
+
+#### The Adapter Pattern
+
+It is about making two incompatible interfaces compatible.
+
+
+
+
+
+
+
+#### Composite Pattern
+
+It is about composing a set of objects into a tree and then work with trees as if they were individual objects. 
+
+All elements share a common interface allowing the client to treat individual objects and compositions (subtrees) in the same way. 
+
+
+
+
+
+
+
+
+

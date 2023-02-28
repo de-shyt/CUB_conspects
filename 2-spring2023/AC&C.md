@@ -12,6 +12,10 @@
 
 ### Org stuff
 
+For schemes: https://www.cs.unc.edu/~otternes/comp455/fsm_designer/
+
+
+
 **Timetable:**
 
 - Mondays 14:15 lectures offline. Moodle quiz in the beginning of each lecture
@@ -529,6 +533,81 @@ If a language is regular, then it is decribed by a regular rexpression.
 Language is regular $\Leftrightarrow$ it can be described with a regular expression. 
 
 *Proof:* it is true because of Lemmas 3.1 and 3.3. 
+
+
+
+
+
+
+
+
+
+## 23-02-27
+
+###  Nonregular Languages
+
+*The Pumping Lemma* helps to decide whether a language is not regular. Its point is that, for a regular language, strings beyond a certain size contain parts that can be repeated (“pumped up”) arbitarily often while keeping the string in the same language.
+
+
+
+
+
+#### the Pumping Lemma
+
+$\Sigma$ is an alphabet and $A$ is a language over $\Sigma$. 
+
+$A$ is regular $\Rightarrow$ there exists $p$ such that any string $s \in A$ of length at least $p$ can be divided into three pieces $x, y, z$ which satisdy the following conditions:
+
+-  $\forall i \geqslant 0 \ : \ xy^iz \in A$
+- $|y| > 0$
+- $|xy| \leqslant p$
+
+$p$ is called *the pumping length*.
+
+
+
+
+
+##### Example 1
+
+$B = \{ 0^n 1^n \ | \ n \geqslant 0 \}$ is a nonregular language. 
+
+*Proof:*
+
+If $B$ is regular, then $\exists p$ from the Pumping Lemma. Let us consider a sting $0^p1^p \in B$ and try to divide it into three pieces
+
+1. $y$ consists only of $0$s. Then a string $xyyz$ has more $0$s then $1$s $\Rightarrow$ $xyyz \not \in B$.
+2. $y$ consists only of $1$s. The same as in point 1.
+3. $y$ consists of $0$s and $1$s. Then in a string $xyyz$ we can find $0$ and $1$ that go in the wrong order ($1$ is before $0$) $\Rightarrow$ $xyyz \not \in B$.
+
+
+
+##### Example 2 \TODO
+
+$F = \{ \ ww \ | \ w \in \{ 0, 1\}^* \ \}$ is nonregular. 
+
+*Proof:* \TODO
+
+
+
+
+
+
+
+### Context-Free Grammars
+
+Like regular expressions, they are a means to describe languages. 
+
+The language class counterpart for context-free grammars will be context-free languages (CFL), similar to regular languages that are the language class counterpart for regular expressions. 
+
+Note that a CFG can be ambiguous, i.e. there might be more than one way to generate a given string.
+
+<img src="./pics for conspects/ACC/ACC 23-02-27 1.png" alt="ACC 23-02-27 1" style="zoom:67%;" />
+
+
+
+
+
 
 
 

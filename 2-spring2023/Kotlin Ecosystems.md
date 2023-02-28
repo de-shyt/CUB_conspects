@@ -282,7 +282,7 @@ In Kotlin all exceptions are unchecked.
 
 
 
-### Testing
+### Testing \TODO
 
 #### Principles
 
@@ -306,30 +306,31 @@ In Kotlin all exceptions are unchecked.
 
 
 
-#### Unit testing \todo
+#### Unit testing in Kotlin
 
 Each non-trivial function has its own block of tests. The tests should run fast and one test should check a small part of the model. 
 
-`JUnit5` framework is the most popular way to test Java and Kotlin programs. There are a lot of annotations to customize tests: `@BeforeEach`, ``
+```kotlin
+// build.gradle.kts
 
-
-
-```
 dependencies {
     ...
-    testImplementation()
+    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+	testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
 tasks.test {
-
+	useJUnitPlatform()
 }
 ```
 
-TODO дописать со слайда 
 
 
 
-Kotlin program
+
+
+
+##### Example: kotlin program
 
 ```kotlin
 class MyTests {
@@ -353,7 +354,72 @@ class MyParameterizedTests {
             Arguments.of(2, 3, "-", -1)
         )
     }
+    
+    @ParameterizedTest
+	@MethodSource("calculatorInputs")
+	fun testCalculator(a: Int, b: Int, op: String, expected: Int) {
+		assertEquals(expected, myCalculator(a, b, op), "Failed for `$a $op $b`")
+	}
 }
 ```
 
-TODO дописать код
+
+
+
+
+
+
+##### Annotations
+
+`JUnit5` framework is the most popular way to test Java and Kotlin programs. There are a lot of annotations to customize tests: 
+
+- `@BeforeEach` -- methods annotated with this annotation are run before each test in the class
+- `@AfterEach` --  methods annotated with this annotation are run after each test in the class
+- `@BeforeAll` -- methods annotated with this annotation are run before all tests in the class
+-  `@AfterAll` -- methods annotated with this annotation are run after all tests in the class
+
+```kotlin
+class MyTestsWithInitialization {
+ 	lateinit var calculator: Calculator
+    
+ 	@BeforeEach
+ 	fun setUp() { calculator = Calculator(); ... }
+    
+ 	@ParameterizedTest
+ 	@CsvFileSource(files = ["testCalculatorInputs.csv"])
+ 	fun `test calculator from CSV`(a: Int, b: Int, op: String, expected: Int) {
+ 		assertEquals(expected, calculator.op(op)(a, b), "Failed for `$a $op $b`")
+ 	}
+    
+    @Test
+	fun `division by zero should cause an exception`() {
+ 		val exception: Exception = assertThrows(ArithmeticException::class.java) {
+ 			calculator.op("/")(1, 0)
+ 		}
+ 		assertEquals("/ by zero", exception.message)
+ 	}
+}
+```
+
+
+
+
+
+
+
+
+
+## 23-02-28
+
+### Profiling
+
+
+
+
+
+
+
+
+
+
+
