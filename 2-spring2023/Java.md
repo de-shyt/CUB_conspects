@@ -978,3 +978,419 @@ module demo {
 ```
 
 Название модуля с маленькой буквы.
+
+
+
+
+
+
+
+
+
+## 23-03-03
+
+### Исключения
+
+```java
+public int get(int index) {
+    if (index < 0) {
+        throw new IllegalArgumentException("index < 0");
+    }
+    return array[index];
+}
+```
+
+В джаве `stack trace` заполняется в момент создания исключения, а не в момент его выкидывания. Это отличает джаву от других языков. Если `new` и `throw` в разных местах кода, может возникнуть непонимание. 
+
+Можно у метода явно указать, что он кидает исключение: 
+
+```java
+public int get(int index) throws IllegalArgumentException {
+    if (index < 0) {
+        throw new IllegalArgumentException("index < 0");
+    }
+    return array[index];
+}
+```
+
+
+
+
+
+#### Иерархия
+
+Главный класс -- `Throwable`. Живет в библиотеке `java.lang.Throwable`. Все исключения, в том числе кастомные, наследуются от него. 
+
+Основные классы исключений представлены на картинке. Голубым отмечены проверяемые исключения (то есть желательно -- но не обязательно, -- чтобы они были указаны после слова `throws`), желтым -- непроверяемые. Суть голубых исключений в том, что 
+
+<img src="./pics for conspects/JA/JA 23-03-03 1.png" alt="JA 23-03-03 1" style="zoom:55%;" />
+
+
+
+
+
+
+
+####  Конструкторы
+
+```java
+Throwable();
+Throwable(message);  // exception with message
+Throwable(message, cause);  // exception with message and cause. Cause is another exception 
+                            // which was the reason for throwing currect exception.
+```
+
+
+
+
+
+#### Полезные методы у исключений
+
+```java
+Exception exception = new Exception();
+exception.getMessage();  // get message of exception
+exception.getCause();    // get cause of exception
+
+exception.getStackTrace();  // stack trace is an array of objects. Each object stores name of class, 
+                            // name of method and number of line where exception was thrown.
+
+exception.getSuppressed(); // if exception B is thrown inside exception A, exception A will be suppressed and saved. 
+```
+
+
+
+
+
+
+
+#### try-catch
+
+```java
+public int get(int index) {
+    if (index < 0) {
+        throw new IllegalArgumentException("get(index = " + index.toString() + "): index < 0\n");
+    }
+    return array[index];
+}
+
+public static void main(String[] args) {
+    try {
+        get(-1);
+    } 
+    catch (IllegalArgumentException ex) {
+        System.out.println("message: " + ex.getMessage());
+        System.out.println(ex.getStackTrace());
+    }
+}
+```
+
+Есть еще ключевое слово `finally`, тогда при любом исходе блок с `finally` будет выполнен:
+
+```java
+public static void main(String[] args) {
+    try {
+        get(-1);
+    } 
+    catch (IllegalArgumentException ex) {
+        System.out.println("message: " + ex.getMessage());
+        System.out.println(ex.getStackTrace());
+    }
+    finally {
+        System.out.println("Finishing main\n");
+    }
+}
+```
+
+
+
+
+
+##### Еще про `finally`
+
+Пример, как не надо делать:
+
+```java
+public static int test() {
+    try {
+    	return 5;
+    }
+    finally {
+    	return 6;
+    }
+}
+```
+
+Функция вернет `6`. Мы заходим в `try` блок и собираемся вернуть `5`. Перед тем, как сработает `return`, мы переходим в блок `finally`.
+
+
+
+
+
+
+
+#### Логирование: пример использования
+
+```java
+public class PoolComposerPrincipalEventIdentifier {
+    private static final Logger LOG = Logger.getLogger(
+    	PoolComposerPrincipalEventIdentifier.class.getName()
+    );
+
+    public void identifyPrincipalEvent() {
+        try {
+        	doIdentifyPrincipalEventUsingPoolComposer();
+        }
+        catch(Exception ex) {
+        	LOG.log(Level.SEVERE, "Error while identifying principal event", ex);
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+### Надтипы и подтипы
+
+Если какой-то класс реализует интерфейс, то интерфейс является *надтипом*, а соответствующий класс -- *подтипом*. 
+
+Если класс $A$ расширяет класс $B$, то $B$ -- это *надтип*, а $A$ -- это *подтип*. 
+
+Надтипы и подтипы образуют направленный граф. На них определен частичный порядок. 
+
+Надтип не должен предоставлять больше возможностей,
+чем предоставляет подтип (вообще, кажется, это, в принципе, невозможно. У наследников всегда больше функционала, чем у классов, от которых наследуемся). Подтип предоставляет больше конкретики, а надтип -- больше абстракции.
+
+`A extends B` -- `A` является подтипом `B`.
+
+`A super B` -- `A` является надтипом `B`. 
+
+Если тип `Derived` является подтипом  `Base`, это не значит, что `Myclass<Derived>` будет подтипом `MyClass<Base>`.
+
+
+
+
+
+#### Пример использования `extends`
+
+```java
+static double getDoubleValue(Shmoption<Number> shmopt) {
+	return shmopt.get().doubleValue();
+}
+
+getDoubleValue(new IntegerShmoption(123));
+```
+
+Не скомпилится, функция ожидает класс с типом `Number`, а не `Integer`. 
+
+```java
+static double getDoubleValue(Shmoption<? extends Number> shmopt) {
+	return shmopt.get().doubleValue();
+}
+
+getDoubleValue(new IntegerShmoption(123));
+// В данном случае тип переданного аргумента -- Integer. 
+```
+
+Теперь аргумент функции -- это класс любого типа, который является подтипом `Number`.
+
+
+
+
+
+####  Пример использования `super`
+
+```java
+static void setInteger(Shmoption<Integer> shmopt) {
+	shmopt.set(42);
+}
+
+NumberShmoption<Number> n = new NumberShmoption<>(123.45);
+setInteger(n);
+```
+
+Не скомпилится. Функция ожидает класс типа `Integer`.
+
+```java
+static void setInteger(Shmoption<? super Integer> shmopt) {
+shmopt.set(42);
+}
+NumberShmoption<Number> n = new NumberShmoption<>(123.45);
+setInteger(n);
+```
+
+ДТеперь в функцию можно передавать класс с типом, который является надтипом `Integer`. Например, `Double`. 
+
+
+
+
+
+
+
+### Covariant return type
+
+```java
+interface Supplier {
+	Object get();
+}
+
+interface StringSupplier extends Supplier {
+    @Override
+    String get();
+}
+```
+
+
+
+
+
+
+
+### Параметризация
+
+#### Параметризация типов
+
+Дженерики -- классы, объявленные обобщенными. Тип дженерика не может быть примитивным (поэтому существуют обертки `Integer`, `Long`, etc).
+
+
+
+**Пример**
+
+```java
+static class Option<T> {
+    private T value;
+    
+    public Option(T value) { this.value = value; }
+    
+    /** Never returns null */
+    public T get() {
+        if(value == null) throw new NoSuchElementException();
+        return value;
+    }
+    public T orElse(T other) { return value == null ? other : value; }
+    public boolean isPresent() { return value != null; }
+}
+
+public static void main(String[] args) {
+   Option<String> aboba = new Option<String>("aboba");
+    Option<String> abobaImplicit = new Option<>("aboba"); // в джаве 8 придумали оператор ромб:)
+                                                          // нет необходимости явно указывать тип в конструкторе
+}
+```
+
+```java
+public static void main(String[] args) {
+	Option<String> abobaImplicit = new Option<>("aboba"); // в джаве 8 придумали оператор ромб:)
+                                                          // нет необходимости явно указывать тип в конструкторе
+    
+    Option<var> abobaImplicit = new Option<>("aboba");
+    // бывают ситуации, когда компилятор не справляется определить нужный пользователю тип. 
+    // Например, поставит тип Object вместо String. 
+    // Поэтому дети, не используйте одновременно `var` и оператор `<>`.
+}                                                      
+
+```
+
+
+
+
+
+##### Маскировочный тип
+
+`?` (wildcard)
+
+`?` $\Leftrightarrow$ используется какой-то тип, который расширяет класс `Object`. 
+
+```java
+static class Shmoption<T> {
+    T value;
+    public Shmoption(T value) { this.value = value; }\
+    public T get() {
+        if(value == null) throw new NoSuchElementException();
+        return value;
+    }
+    public void set(T newValue) { value = newValue; }
+    public T orElse(T other) { return value == null ? other : value; }
+    public boolean isPresent() { return value != null; }
+}
+
+public static void main(String[] argv) {
+    Shmoption<?> present = new Shmoption<>("yes");
+    
+	System.out.println(present.isPresent()); // в данном случае не зависит от типа элемента
+    
+	Object value = present.get(); // вернет какой-то тип, не известный. 
+                                  // Но мы точно знаем, что это наследник `Object`
+    
+	present.set(???);  // сработает только с null. 
+                       // Тип у объекта `present` не определен, он так и остается `?`.
+}
+```
+
+Если поставить курсор между скобочками и нажать `ctrl+P`, то идея покажет, аргументы какого типа ожидаются 0_0
+
+
+
+
+
+###### `? extends Number`
+
+```java
+public static void main(String[] argv) {
+    Shmoption<? extends Number> number = new Shmoption<>(123);
+	Number n = number.get();
+	number.set(124);
+}
+```
+
+В данном случае тип всё еще не известен, но мы точно знаем, что он числовой. Таким образом, метод `get()` возвращает не просто `Object`, а `Number`. 
+
+
+
+
+
+##### Наследование
+
+```java
+// наследник типа Number
+class NumberShmoption<N extends Number> extends Shmoption<N> {
+	public NumberShmoption(N value) { super(value); }
+}
+
+// наследник типа Integer
+class IntegerShmoption extends NumberShmoption<Integer> {
+	public IntegerShmoption(Integer value) { super(value); }
+}
+```
+
+
+
+
+
+
+
+#### Параметризация методов
+
+Чаще всего делают статические параметризированные методы. 
+
+```java
+static <T> String returnString(T value) {
+    return value.toString();
+}
+```
+
+```java
+static <T> void setNotNull(Shmoption<? super T> shmoption, T value) {
+	if (value == null) throw new IllegalArgumentException();
+	shmoption.set(value);
+}
+
+setNotNull(n, 123);
+ShmoptionUtils.<Number>setNotNull(n, 123);
+```
+
+ Тип указывать не обязательно. Если компилятор не справился самостоятельно вывести тип, его можно указать в `<>`, при этом нужно обязательно указать квалификатор (штука до точки, может быть `this` или название класса, если метод статический). 
+
