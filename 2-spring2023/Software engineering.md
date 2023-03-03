@@ -1,4 +1,4 @@
-# Software Engineering
+# Software engineering
 
 > multi-person construction of multi-version software 
 
@@ -172,7 +172,7 @@ The purpose of diagrams can be conceptual, for specification and for implementat
 ##### Use Case Diagrams
 
 - use case = chunk of functionality, not a software module. Should contain a verb in its name
-- actor = someone or some thing interacting with system under development. Like a role in a scenario
+- actor = someone or something interacting with system under development. Like a role in a scenario
 
   Relationships between actors and use cases are visualized. 
 
