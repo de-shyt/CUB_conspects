@@ -987,7 +987,7 @@ module demo {
 
 
 
-## 23-03-03
+## 23-02-23
 
 ### Исключения
 
@@ -1232,6 +1232,8 @@ setInteger(n);
 
 ### Covariant return type
 
+Ковариантность -- это про приведение типов. 
+
 ```java
 interface Supplier {
 	Object get();
@@ -1275,16 +1277,21 @@ static class Option<T> {
 }
 
 public static void main(String[] args) {
-   Option<String> aboba = new Option<String>("aboba");
-    Option<String> abobaImplicit = new Option<>("aboba"); // в джаве 8 придумали оператор ромб:)
-                                                          // нет необходимости явно указывать тип в конструкторе
+    Option<String> aboba = new Option<String>("aboba");
+    
+    Option<String> abobaImplicit = new Option<>("aboba"); 
+    // в джаве 8 придумали оператор ромб:)
+    // нет необходимости явно указывать тип в конструкторе
+    
+    Option<String> abobaImplicit = new Option("aboba"); 
+    // raw type. Можно не указывать тип и не использовать `<>`. 
+    // нужно избегать их, как огня
 }
 ```
 
 ```java
 public static void main(String[] args) {
-	Option<String> abobaImplicit = new Option<>("aboba"); // в джаве 8 придумали оператор ромб:)
-                                                          // нет необходимости явно указывать тип в конструкторе
+	Option<String> abobaImplicit = new Option<>("aboba"); 
     
     Option<var> abobaImplicit = new Option<>("aboba");
     // бывают ситуации, когда компилятор не справляется определить нужный пользователю тип. 
@@ -1393,4 +1400,178 @@ ShmoptionUtils.<Number>setNotNull(n, 123);
 ```
 
  Тип указывать не обязательно. Если компилятор не справился самостоятельно вывести тип, его можно указать в `<>`, при этом нужно обязательно указать квалификатор (штука до точки, может быть `this` или название класса, если метод статический). 
+
+
+
+
+
+#### Дженерики и массивы
+
+Первый вариант не скомпилится не потняно почему. 
+
+Второй вариант скомпилится, потому что в байткоде не будет указан тип
+
+```java
+Shmoption<Integer>[] arrayInt = new Shmoption<Integer>[10]; // does not compile
+Shmoption<?>[] array = new Shmoption<?>[10]; // OK
+```
+
+Еще один вариант создать массив дженериков -- использование сырых типов:
+
+```java
+Shmoption<Integer>[] arrayInt = new Shmoption[10]; // raw-type. Получаем предупреждение
+Object[] obj = arrayInt;
+obj[0] = new Shmoption<>("foo");
+Shmoption<Integer> shmoption = arrayInt[0];
+Integer x = shmoption.get(); // ClassCastException: в `arrayInt[0]` лежит `String`
+System.out.println(x);
+```
+
+
+
+
+
+### Стирание (erasure)
+
+В процессе выполнения программы типовые параметры не существуют (стираются). Есть сами классы, но они не параметризованы с точки зрения виртуальной машины. 
+
+Преобразование типов может быть небезопасным (например, в коде `return (T)obj`; во время исполнения превращается в `return obj;`), это может привести к исплючению `ClassCastException`. 
+
+
+
+#### Пример
+
+```java
+Shmoption<Integer> integer = new Shmoption<>(10);
+
+Shmoption<String> string = ((Shmoption<String>) integer); 
+// ошибка: `Integer` и `String` в разных ветках иерархии
+
+Shmoption<?> any = integer;
+Shmoption<String> string2 = (Shmoption<String>) any; 
+// скомпилируется, но появится предупреждение,
+// потому что в байткоде будет просто `string2 = any`
+
+String s = string2.get(); 
+// ClassCastException: внутри `string2` живет `Integer`, а не `String`
+
+NumberShmoption<Integer> number = (NumberShmoption<Integer>)integer; 
+// OK
+```
+
+
+
+
+
+
+
+
+
+## 23-03-02
+
+### `varags`
+
+Переменное число аргументов
+
+```java
+static void printAll(Object... objects) {
+    for (Object object : objects) {
+    	System.out.println(object);
+	}
+}
+
+printAll("a", 1, "b", 2.0);
+
+Object[] objects = {"a", 1, "b", 2.0};
+printAll(objects);
+
+printAll(null, null); // OK. An array of nulls
+printAll(null); // does not compile. 
+```
+
+
+
+
+
+#### varargs + generics
+
+```java
+static <T> boolean isOneOf(T value, T... options) {
+    for (T option : options) {
+    	if (Objects.equals(value, option)) return true;
+    }
+    return false;
+}
+```
+
+`Objects.equals` использует метод `equals` объекта, но делает это аккуратно: сначала проверяет, что объект не `null`, потом вызывает метод. 
+
+Используя `varargs` и дженерики в методе, можно получить ворнинг типа `unchecked generic array creation for varargs parameter`. Если метод не делает ничего противозаконного, его можно пометить как безопасный с помощью аннотации `@SafeVarargs`:
+
+```java
+@SafeVarargs
+static <T> boolean isOneOf(T value, T... options) {
+    for (T option : options) {
+    	if (Objects.equals(value, option)) return true;
+    }
+    return false;
+}
+
+isOneOf(shmoption, new Shmoption<>("foo"),
+				   new Shmoption<>("bar"));
+```
+
+
+
+
+
+
+
+### Collections
+
+####  Иерархия
+
+Желтым отмечены интерфейсы, зеленым -- абстрактные классы, серым -- конкретные реализации (классы или методы). 
+
+<img src="./pics for conspects/JA/JA 23-03-04 1.png" alt="JA 23-03-04 1" style="zoom:67%;" />
+
+
+
+
+
+
+
+#### Одновременный read & write 
+
+Например, если мы в цикле  `for` обходим элементы коллекции и одновременно с этим модифицируем коллекцию, вылетит исключение `ConcurrentModificationException`:
+
+```java
+import java.util.List;
+import java.util.ArrayList;
+
+public class MyClass {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>(List.of(1, 2, 3));
+        for (Integer a : list) {
+            System.out.println(a);
+            list.add(4);
+        }
+    }
+}
+```
+
+```asciiarmor
+Exception in thread "main" java.util.ConcurrentModificationException
+	at java.base/java.util.ArrayList$Itr.checkForComodification(ArrayList.java:1013)
+	at java.base/java.util.ArrayList$Itr.next(ArrayList.java:967)
+	at MyClass.main(MyClass.java:7)
+```
+
+
+
+
+
+
+
+
 
