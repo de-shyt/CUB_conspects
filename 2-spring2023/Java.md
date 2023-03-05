@@ -1573,5 +1573,43 @@ Exception in thread "main" java.util.ConcurrentModificationException
 
 
 
+#### Не надо использовать 
+
+✓Enumeration -> Iterator
+
+✓Vector -> ArrayList
+
+✓Stack -> ArrayDeque
+
+✓Dictionary -> Map
+
+✓Hashtable -> HashMap
+
+✓LinkedList -> ArrayList/ArrayDeque
+
+У штук слева старая реализация, которая может работать долго. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
