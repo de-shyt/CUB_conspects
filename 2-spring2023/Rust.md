@@ -725,3 +725,714 @@ fn find_longest_string<'a>(x: &'a String, y: &'a String) -> &'a String {
 
 Если убрать лайфтаймы, то код не скомпилится, потому что функция возвращает ссылку на умирающий объект.
 
+
+
+
+
+#### Lifetime bounds
+
+`b: a` означает, что лайфтайм `b` входит в лайфтайм `a`. Пример:
+
+```rust
+fn get_reference_tuple<'a, 'b: 'a>(left: &'a MyStruct, right: &'b MyStruct)
+    -> (&'a i32, &'a i32)
+{
+    (&left.value1, &right.value1)
+}
+```
+
+
+
+
+
+
+
+
+
+## 23-02-28
+
+### Struct Update Syntax
+
+```rust
+struct MyBigStruct {
+    value1: i32,
+    value2: i32,
+    value3: i32,
+    value4: i32,
+    value5: i32,
+    value6: i32,
+    value7: String,
+}
+
+fn main() {
+    let var1 = MyBigStruct{
+        value1: 1, value2: 2, value3: 3,
+        value4: 4, value5: 5, value6: 6,
+        value7: String::from("Hello World"),
+    };
+    let var2 = MyBigStruct{
+        value1: 42,
+        ..var1 // all elems except `value1` are moved 
+               // from `var1` to `var2` 
+    };
+    
+    println!("{}", var1.value1);
+    println!("{}", var2.value1);
+    println!("{}", var1.value7); // does not compile
+}
+```
+
+```asciiarmor
+error[E0382]: borrow of moved value: `var1.value7`
+    println!("{}", var1.value7);
+                   ^^^^^^^^^^^ value borrowed here after move
+```
+
+
+
+
+
+ 
+
+### Tuples 
+
+#### Синтаксис
+
+```rust
+let tuple: (i32, bool, String) = (42, true, String::from("Hi"));
+let number = tuple.0;
+let (num, bool, str) = tuple; // move for string, copy for others
+```
+
+
+
+
+
+#### Проблема тупла и Borrowing
+
+```rust
+struct StrWithTuple {
+    field: (i32, bool, String),
+}
+
+fn main() {
+    let tuple: (i32, bool, String) = (42, true, String::from("Hi"));
+    
+	let (num, bool, str) = tuple;
+    let newStruct = StrWithTuple { field: tuple };
+    // does not compile. A string `Hi` was moved into `str`.
+}
+```
+
+Не скомпилится из-за строки 9. Мы пытаемся создать структуру из `tuple`, но `Hi` была перемещена из `tuple` в переменную `str`.
+
+Корректный код:
+
+```rust
+fn main() {
+    let tuple: (i32, bool, String) = (42, true, String::from("Hi"));
+    
+	let (num, bool, ref str) = tuple; // keyword `ref`
+    let newStruct = StrWithTuple { field: tuple };
+    
+    
+    println!("{}", str); // does not compile.
+    // Data was moved into `newStruct.field`,
+    // and reference stored in `str` is not valid anymore. 
+}
+```
+
+
+
+
+
+
+
+### TupleStruct
+
+Как обычная структура, но поля без имен. Имеет смысл использовать, если поля разных типов (тогда можно догадаться, какое поле что означает).
+
+```rust
+struct TupleStruct(i32, i32);
+let point = TupleStruct(42, 666);
+```
+
+
+
+
+
+
+
+### Unit
+
+По конструкции, `Unit` -- это пустой тупл. Штука, которая не хранит никаких данных. 
+
+```rust
+let unit = ();
+```
+
+Если не нужно создавать структуру для хранения данных (i.e. данных нет), можно использовать `Unit`, который занимает 0 байтов памяти. 
+
+
+
+
+
+#### StructUnit
+
+Частный случай `Unit`. Пустая структура, на которую можно потом навесить метаданные с помощью аттрибутов. 
+
+```rust
+struct UnitStruct;
+
+let unit_struct = UnitStruct;
+
+let unit: () = while false {};
+// в расте все возвращает значение, просто иногда это `Unit`. 
+// например, цикл `while`.
+```
+
+
+
+
+
+
+
+### Bang (!)
+
+Тип `Bang`. Оозначается как `!`.  Означает, что текущий код никогда не будет достижим. Пример -- бесконечный `loop`, который как раз вернет `!`:
+
+```rust
+let bang_loop: ! = loop {};
+let bang_panic: ! = panic!();
+
+let bang_unimpl: ! = unimplemented!();
+// макрос; используется, если еще нет реализации для метода. 
+```
+
+
+
+
+
+
+
+### Реализация методов у структур
+
+Методы реализуются в блоке с ключевым словом `impl <struct_name>`. В качестве аргумента передается ссылка на сам объект --  `&self`:
+
+```rust
+struct MyStruct {
+    val1: i32,
+}
+
+impl MyStruct {
+    fn print_me(&self) {
+        println!("val1 = {}", self.val1);
+    }
+}
+
+fn main() {
+    let aboba = MyStruct {
+        val1: 42,
+    };
+    
+    MyStruct::print_me(&aboba);
+    aboba.print_me();
+}
+```
+
+`impl` блоков может быть несколько, но методы не должны повторяться. `impl` блок должен быть в том же кейте, что и определение структуры. 
+
+
+
+
+
+#### Associated functions
+
+Ассоциированная функция -- любая функция в блоке `impl`. Её можно вызвать только через синтаксис `<struct_name>::`. 
+
+Метод -- это ассоциированная функция, в которую в качестве аргумента передается `&self`. Метод можно вызвать любым способом. 
+
+
+
+
+
+#### new
+
+Общая договоренность, что так называется конструктор. 
+
+```rust
+impl MyStruct {
+    fn new(value1: i32, value2: bool) -> Self {
+        Self { value1, value2 }
+    }
+
+    // если на объект кто-то в коде уже ссылается,
+    // метод вызвать не удастся. 
+    fn update_me(&mut self, new_value1: i32) {
+        self.value1 = new_value1;
+    }
+
+    fn move_me(self, new_owner: &mut (i32, MyStruct)) {
+        new_owner.1 = self;
+    }
+    
+    // деструктор. Параметр передается без ссылки (с помощью move), поэтому,
+    // когда выходим из тела функции, переданный параметр умирает, память чистится.
+    fn kill(self) {}
+}
+```
+
+
+
+
+
+```rust
+impl MyStruct {
+    fn any_static_method() {}
+
+    fn new(value1: i32, value2: bool) -> Self {
+        Self { value1, value2 }
+    }
+
+    fn print_me(&self) {
+        println!("{}{}", self.value1, self.value2);
+    }
+
+    fn update_me(&mut self, new_value1: i32) {
+        self.value1 = new_value1;
+    }
+
+    fn move_me(self, new_owner: &mut (i32, MyStruct)) {
+        new_owner.1 = self;
+    }
+
+    fn kill(self) {}
+}
+
+```
+
+
+
+
+
+
+
+### Traits
+
+Что-то похожее на интерфейсы, но с возможностью дефолтной реализации. Трейты используются для:
+
+- дефолтной реализации методов,
+- статического полиморфизма,
+- динамического полиморфизма.
+
+Блок `trait` -- это объявление того, что способен сделать объект. 
+
+Блок `impl` -- реализация объявленных методов для какой-то определенной структуры. 
+
+```rust
+trait MyTrait {
+    fn print_me(&self);
+    // здесь же может быть дефолтная реализация 
+}
+
+// реализация для структуры
+impl MyTrait for MyStruct {
+    fn print_me(&self) {
+        println!("{}{}", self.value1, self.value2);
+    }
+}
+
+// реализация для ссылки на структуру
+impl MyTrait for &MyStruct {
+    fn do (self) {
+        let it_is_reference: &MyStruct = self;
+    }
+}
+```
+
+Реализацию для ссылки на структуру необходимо вызывать явно, через `::`. Иначе будет вызываться реализация для структуры (по дефолту).  
+
+
+
+
+
+#### Пример использования `trait`
+
+```rust
+struct MyStruct { val1: i32, }
+
+trait MyTrait {
+    fn print_me(&self) { 
+        println!("{}", self.get_val1());
+    }
+    fn get_val1(&self) -> i32;
+}
+
+impl MyTrait for MyStruct {
+    fn get_val1(&self) -> i32 { self.val1 }
+}
+
+fn main() {
+    let my_struct = MyStruct { val1: 42, };
+    my_struct.print_me();
+}
+```
+
+
+
+
+
+#### Трейты для (простых) типов
+
+```rust
+impl MyTrait for i32 {
+    fn get_value1(&self) -> String {
+        self.to_string()
+    }
+
+    fn get_value2(&self) -> String {
+        self.to_string()
+    }
+}
+
+let str: String = 42.get_value1();
+```
+
+
+
+
+
+#### Default
+
+```rust
+#[derive(Default)]
+struct MyLuckyStruct {
+    value1: i32,
+    value2: bool,
+}
+
+let default_str = MyLuckyStruct::default();
+```
+
+Можно определить вручную:
+
+```rust
+impl Default for MyStruct {
+    fn default() -> Self {
+        Self { value1: 0, value2: false }
+    }
+}
+```
+
+
+
+
+
+#### Clone
+
+```rust
+#[derive(Clone, Default)]
+struct MyLuckyStruct {
+    value1: i32,
+    value2: bool
+}
+
+let default_str = MyLuckyStruct::default();
+let another_str = default_str.clone();
+println!("{}", default_str.value1);
+println!("{}", another_str.value1);
+```
+
+
+
+
+
+#### Copy
+
+Требует наличие `clone`.
+
+```rust
+#[derive(Copy, Clone, Default)]
+struct MyLuckyStruct {
+    value1: i32,
+    value2: bool
+}
+let default_str = MyLuckyStruct::default();
+let another_str = default_str;
+println!("{}", default_str.value1);
+println!("{}", another_str.value1);
+```
+
+
+
+
+
+
+
+### Array
+
+Не лежит на куче, если это явно не прописано. Живет на стеке или в структуре. 
+
+
+
+```rust
+let array: [i32; 5] = [1, 2, 3, 4, 5];
+
+let var1 = array[4];
+
+let var2 = array[42];
+// error: this operation will panic at runtime
+
+struct MyStructWithArray {
+    array: [i32; 5],
+}
+```
+
+
+
+
+
+### Vector
+
+Динамический массив. Реализуется через макрос `vec!` -- синтаксический сахар. 
+
+```rust
+let mut vec: Vec<i32> = vec![1, 2, 3, 4, 5];
+vec.push(42);
+let len = vec.len();
+println!("{}", vec[3]);
+```
+
+
+
+
+
+
+
+### Generics
+
+#### Структуры и метоы
+
+```rust
+struct MyPair<T> {
+    left: T,
+    right: T,
+}
+
+impl<T> MyPair<T> {
+    fn do_something_with_type(&self) {
+        println!("{}", self.left + self.right)
+    }
+}
+
+let my_small = MyPair::<i8> { left: 42, right: 1 };
+let my_big = MyPair::<i128> {
+    left: 42424212123123123123123312312312,
+    right: 4121234236423648726348263874621,
+};
+```
+
+
+
+
+
+#### Функции
+
+```rust
+fn generic_function<T>(p1: T, p2: T) -> MyPair<T> {
+    MyPair::<T>{
+        left: p1,
+        right: p2
+    }
+}
+generic_function::<i32>(42, 1);
+generic_function(42, 1);
+```
+
+
+
+##### Multiple generics
+
+```rust
+fn generic_function<T, V>(p1: T, p2: T, other: V) -> MyPair<T> {
+    MyPair::<T>{
+        left: p1,
+        right: p2
+    }
+}
+generic_function::<i32, bool>(42, 1, true);
+generic_function(42, 1, true);
+```
+
+
+
+##### Multiple gerenics in impl
+
+```rust
+impl<T> MyPair<T> {
+    fn new<V>(p1: T, p2: T, other: V) -> Self {
+        Self{
+            left: p1,
+            right: p2
+        }
+    }
+}
+let pair = MyPair::<i32>::new::<bool>(42, 1, true);
+let pair = MyPair::new(42, 1, true);
+```
+
+
+
+
+
+#### Generic bounds
+
+##### Add
+
+```rust
+impl<T: Add> MyPair<T> {
+    fn do_summ(self)  {
+        let sum = self.left + self.right;
+    }
+}
+```
+
+
+
+##### ToString
+
+```rust
+trait ToString {
+    fn to_string(&self) -> String;
+}
+
+impl<T: ToString> MyPair<T> {
+    fn print(&self) {
+        println!("{}{}", self.left.to_string(), self.right.to_string())
+    }
+}
+```
+
+
+
+##### Display
+
+```rust
+impl<T: Display> MyPair<T> {
+    fn print(&self) {
+        println!("{}{}", self.left, self.right)
+    }
+}
+
+pub trait Display {
+    #[stable(feature = "rust1", since = "1.0.0")]
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result;
+}
+```
+
+
+
+##### Multiple Bounds
+
+```rust
+fn trace<T: Display + Debug>(to_trace: T, verbose: bool) {
+    println!("Display: `{}`", to_trace);
+    if verbose {
+        println!("Debug: `{:?}`", to_trace);
+    }
+}
+
+#[derive(Debug)]
+struct MyPair<T> { left: T, right: T, }
+```
+
+Вывод получается такой:
+
+```asciiarmor
+> Display: `(42, 1)`
+> Debug: `MyPair { left: 42, right: 1 }`
+```
+
+
+
+###### Where clause
+
+Для лучшей читаемости можно параметризированный тип определить после `where`:
+
+```rust
+fn trace_multiple<T: Display + Debug, V: Display + Debug>(to_trace1: T, to_trace2: V) {…
+
+//     ^
+//    |||
+//     v
+
+fn trace_multiple<T, V>(to_trace1: T, to_trace2: V)
+    where
+        T: Display + Debug,
+        V: Display + Debug {
+```
+
+
+
+
+
+
+
+
+
+
+
+## 23-03-07
+
+### Option
+
+В расте вместо `null` используется `Option`. 
+
+```rust
+fn main() {
+    let mut var: Option<i32> = Option::None;
+    assert_eq!(true, var.is_none());
+
+    var = Option::Some(42);
+    assert_eq!(true, var.is_some());
+
+    print!("{}", var.unwrap());
+
+    let reference: &i32 = var.as_ref().unwrap();
+}
+```
+
+
+
+
+
+
+
+### Smart pointers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

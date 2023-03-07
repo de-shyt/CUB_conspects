@@ -59,3 +59,15 @@ Ich bin zur Moskau Schule $\underbrace{\textnormal{gegangen}}_{\textnormal{\scri
 
 
 dreimal -- three times 
+
+
+
+
+
+
+
+## 23-03-06
+
+benutzen -- использовать 
+
+Gestern habe ich meinen Computer benutzt. 
