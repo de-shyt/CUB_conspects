@@ -577,3 +577,153 @@ $\lambda x \in N \ . \ E$, where $N$ stands for natural numbers and $E$ is a fun
 
 
 
+
+
+
+
+## Part 3
+
+### Integer Numbers
+
+#### $(b-1)$-Complement Fixed Integer Numbers
+
+We have a fixed number space with n digits and base b. It can represent $b^n$ different numbers.
+
+Positive numbers are represented in the usual way. 
+
+To represent negative numbers, we invert the absolute value $(a_n \ldots a_0)_b$ into $(a'_n \ldots a'_0)_b$ where $a'_i = (b-1) - a_i$.
+
+Thus, we will have $+0$ and $-0$, so there are $b^n - 1$ different numbers.
+
+
+
+Example:
+
+$b = 2, n = 4 \ : \ 5_{10} = 0101_2, \ -5_{10} = 1010_2$.
+
+
+
+
+
+
+
+#### $b$-Complement Fixed Integer Numbers
+
+We have a fixed number space with n digits and a base b.
+
+Positive numbers are represented in the usual way. 
+
+To represent negative numbers, we invert the absolute value $(a_n \ldots a_0)_b$ into $(a'_n \ldots a'_0)_b + 1$ where $a'_i = (b-1) - a_i$. To get a positive from a negative, we do the same.
+
+
+
+Example:
+
+$b = 2, n = 4 \ : \ 5_{10} = 0101_2, \ -5_{10} = 1011_2$.
+
+
+
+- Positive numbers and 0 have the most significant bit set to 0
+- Negative numbers have the most significant bit set to 1
+- There is only a single representation for 0
+
+
+
+
+
+
+
+### Floating Point Numbers
+
+$b$ is the basis.
+
+A floating point number with precision $p$ is represented as $s \ \cdot \ \overline{d_0.d_1 \ldots d_{p-1}} \ \cdot \ b^e = s \cdot (\sum \limits_0^{p-1} d_i b^{-i}) \cdot b^e$.
+
+$p$ is precision. 
+
+$e$ is the exponent.
+
+$d_0, d_1, \ldots, d_{p-1}$ are digits of mantissa. $d_i \in \{0, \ldots, b-1 \}$. $d_0$ is usually in range $\{1, \ldots, b-1 \}$, except when the number is zero. 
+
+$s \in \{-1, 1 \}$ is the sign. 
+
+
+
+<img src="./pics for conspects/ICS/ICS 23-03-08 2.png" alt="ICS 23-03-08 2" style="zoom:80%;" />
+
+Here, $s = 0$ if the number is positive, $1$ otherwise. 
+
+
+
+
+
+
+
+#### Converting a fraction
+
+```java
+String decToBin(int f) {
+    string s;
+    while (f > 0) {
+        f *= 2;
+        int integer_part = int(f);
+        s += integer_part.to_string();
+        f -= int(f);
+    }
+    return s;
+}
+
+int binToDec(String s) {
+    int f = 0;
+    while (!s.isEmpty()) {
+        b = s.pop().toInt();
+        f = (f + b) / 2;
+    }
+    return f;
+}
+```
+
+
+
+
+
+
+
+#### Example
+
+We have a number $-114.625$ with base $10$. 
+
+First, convert $114_{10} \rightarrow 1110010_2$ in a usual way. 
+
+Then, convert the fraction $0.625 \rightarrow 0.101_2$ (using the algorithm above).
+
+
+
+Thus, we have an absolute value $01110010.101_2 = 1.110010101 \cdot 2^6$.
+
+
+
+The given number is negative, so the first digit is $1$. 
+
+Exponent is equal to $6 + 127 ({\small exponent \ bias \ for \ single \ precision}) = 133_{10} = 10000101_2$. 
+
+The fraction is equal to $110010101_2$.
+
+The result is $1 \underbrace{10000101}_{exponent} \underbrace{11001010100000000000000}_{fraction}$.
+
+Total length is $32$ bits. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
