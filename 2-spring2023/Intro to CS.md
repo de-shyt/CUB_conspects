@@ -509,6 +509,70 @@ A *randomized algorithm* is a (nondeterministic) algorithm that employs a degree
 
 
 
+## Part 2
+
+### Relations
+
+<img src="./pics for conspects/ICS/ICS 23-03-08.png" alt="ICS 23-03-08" style="zoom:67%;" />
+
+
+
+A relation R ⊆ A × A is called an *equivalence relation* on A if and only if R is reflexive, symmetric, and transitive.
+
+A relation R ⊆ A × A is called a *partial order* on A if and only if R is reflexive, antisymmetric, and transitive on A. 
+
+A relation R ⊆ A × A is called a *strict partial order* on A if and only if it is irreflexive, asymmetric and transitive on A.
+
+
+
+
+
+
+
+### Functions
+
+A relation $f \subseteq X \times Y$ is a *partial function* $\Leftrightarrow \forall x \in X$ there is at most one $y \in Y$ with $(x, y) \in f$ . 
+
+$f$ is undefined at $x \in X$ if $(x, y) \not \in f, \ \forall y \in Y$. In this case, we write $f(x) = \bot$.
+
+
+
+A relation $f \subseteq X \times Y$ is a *total function* $\Leftrightarrow$ $\forall x \in X$ there is exactly one $y \in Y$ such that $(x, y) \in f$. 
+
+If $f$ is a total function, we write $f \ : \ X \rightarrow Y$. 
+
+
+
+
+
+#### Function Properties
+
+Given a function $f \ : \ X \rightarrow Y$.
+
+- injective $\Leftrightarrow$ $\forall y \in Y$ is mapped to by at most one element from $X$:
+
+  $\forall x_1, x_2 \in X \ : \ f(x_1) = f(x_2) \Rightarrow x_1 = x_2$
+
+- surjective $\Leftrightarrow$ $\forall y \in Y$ is mapped to by at least one element from $X$:
+
+  $\forall y \in Y \ \exists x \in X \ : \ f(x) = y$
+
+- bijective $\Leftrightarrow$ $\forall y \in Y$ is mapped to by exactly one element from $X$. Thus, a function should be both injective and surjective. 
+
+
+
+
+
+#### Lambda Notation of Functions
+
+$\lambda x \in N \ . \ E$, where $N$ stands for natural numbers and $E$ is a function body. Examples:
+
+- $\lambda x \in N . x \ \Leftrightarrow \ f(x) = x \ \Leftrightarrow \ \{ (x, y) \in N \times N \ : \ y = x \}$
+- $\lambda x \in N . x^2 \ \Leftrightarrow \ f(x) = x^2 \ \Leftrightarrow \ \{ (x, y) \in N \times N \ : \ y = x^2 \}$
+- $\lambda (x, y) \in N \times N . x + y \ \Leftrightarrow \ f(x, y) = x + y \ \Leftrightarrow \ \{ ((x, y), z) \in (N \times N) \times N \ : z = x + y \}$
+
+
+
 
 
 

@@ -71,3 +71,44 @@ dreimal -- three times
 benutzen -- использовать 
 
 Gestern habe ich meinen Computer benutzt. 
+
+
+
+
+
+
+
+
+
+## 23-03-08
+
+
+
+`as <adjective> as` $\Leftrightarrow$ `so <adjective> wie`
+
+Das Laptop ist so praktisch wie das Tablet. 
+
+Перед `so` можно добавить слова genau (точно), nicht. 
+
+
+
+
+
+### Komparativ
+
+пригалательное + `er` = сравнительная степень
+
+- $\textcolor{black}{billig} \rightarrow \textcolor{black}{billig} \textcolor{red}{er}$
+- $\textcolor{black}{groß} \rightarrow \textcolor{black}{gr} \textcolor{red}{ö} \textcolor{black}{ß} \textcolor{red}{er}$
+- $\textcolor{black}{teuer} \rightarrow \textcolor{black}{teu} \textcolor{red}{r} \textcolor{black}{er}$ 
+- $\textcolor{black}{gut} \rightarrow \textcolor{black}{besser}$
+- $\textcolor{black}{gern} \rightarrow \textcolor{black}{lieber}$
+- $\textcolor{black}{viel} \rightarrow \textcolor{black}{mehr}$
+
+
+
+`is (more) <adj> than` $\Leftrightarrow$ `ist <adj> als`
+
+Das Laptop ist praktischer als das Tablet. 
+
+Ich kaufe lieber in den Geschäften als online. 
