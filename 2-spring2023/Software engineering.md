@@ -481,3 +481,71 @@ All elements share a common interface allowing the client to treat individual ob
 
 
 
+## 23-03-14
+
+### Compile/Link Steps
+
+<img src="./pics for conspects/SE/SE 23-03-14 1.png" alt="SE 23-03-14 1" style="zoom:80%;" />
+
+ 	
+
+
+
+
+
+### The C Preprocessor
+
+Things with which the preprocessor works:
+
+- defines commonly used constants, code fragments, etc.
+
+- include guards in header files
+
+- include headers (`#include <stdio.h>`)
+
+- process macros. If you use a function as a macro, do not forget to put brackets around arguments:
+
+  ```c++
+  // #define mult(a,b) a*b  <--- bad for a=2+3, b=4
+  #define mult(a,b) ((a)*(b))
+  ```
+
+   
+
+In Linux, header files live in `/usr/include` and `/usr/local/include`. 
+
+
+
+
+
+
+
+### The C(++) Compiler
+
+Generates relocatable machine -- „object“ -- code from source code. The code can be saved in different memory segments. 
+
+
+
+
+
+
+
+### Object Files
+
+Contain machine code of source file. There is info about constants, size of static data segments, etc. 
+
+`objdump` command displays information from an object file.
+
+
+
+
+
+
+
+### Name mangling
+
+Compiler modifies a function name to make it unique. 
+
+Every compiler has its individual mangling algorithm. Thus, code compiled with different compiles is incompatible. 
+
+C language does not know about name mangling. You need to use `extern "C" {}` keyword in order to avoid name mangling. 
