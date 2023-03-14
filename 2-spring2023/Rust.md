@@ -1386,7 +1386,7 @@ fn trace_multiple<T, V>(to_trace1: T, to_trace2: V)
 
 ### Option
 
-В расте вместо `null` используется `Option`. 
+Аналог `null` в расте.  
 
 ```rust
 fn main() {
@@ -1397,8 +1397,10 @@ fn main() {
     assert_eq!(true, var.is_some());
 
     print!("{}", var.unwrap());
+    // в данном случае, происходит move
 
     let reference: &i32 = var.as_ref().unwrap();
+    // `as_ref` возвращает ссылку на объект
 }
 ```
 
@@ -1408,13 +1410,375 @@ fn main() {
 
 
 
-### Smart pointers
+### How to move data to heap?
+
+Так никто не делает:
+
+```rust
+unsafe {
+    let layout = Layout::new::<u16>();
+    let ptr = alloc(layout);
+    
+    if ptr.is_null() { // не  получилось выделить память для кучи
+        handle_alloc_error(layout);
+    }
+    
+    // кладем значение на кучу
+    *(ptr as *mut u16) = 42;
+    assert_eq!(*(ptr as *mut u16), 42);
+
+    dealloc(ptr, layout);
+}
+```
+
+Ну, на самом деле, делает, но такой способ не самый безопасный: нужно не забывать про `dealloc`, следить за указателем `ptr`. 
+
+В расте есть концепция *OBRM -- Ownership Based Resource Management* -- аналог RAII. Общая идея в том, что объект живет между вызывами конструктора и деструктора. 
+
+Вот объект создается на куче. Используется определенное количество ресурсов, на стек кладется сырой указатель. Когда объект умирает, сырой указатель убирается со стека, а занятые ресурсы освобождаются. 
+
+
+
+
+
+### Linked List: пример плохого кода 
+
+```rust
+struct Node<'a> {
+    value: i32,
+    next: Option<&'a Node<'a>>
+}
+
+
+fn main() {
+    let mut node1 = Node { value: 1, next: Option::None };
+    {
+        let mut node2 = Node { value: 2, next: Option::None };
+        {
+            let node3 = Node { value: 3, next: Option::None };
+
+            node2.next = Some(&node3);
+            node1.next = Some(&node2);
+
+            println!("{}", node1.next.unwrap().next.unwrap().value);
+            node1.next = None;
+        }
+        
+    println!("{}", node1.value) // does not compile
+    }
+}
+```
+
+```asciiarmor
+error[E0597]: `node3` does not live long enough
+   |
+14 |             node2.next = Some(&node3);
+   |                               ^^^^^^ borrowed value does not live long enough
+...
+   |         - `node3` dropped here while still borrowed
+20 |     println!("{}", node1.value) // does not compile
+   |                    ----------- borrow later used here
+```
+
+Все ноды получают одинаковый лайфтайм, причем наименьший, поэтому все три ноды умирают внутри третьего скоупа. В строке 21 мы обращаемся к мертвой ноде. 
 
 
 
 
 
 
+
+### Box (unique ownership)
+
+Структура вида `Box<type>`. Внутри бокса хранится ссылка объект, живущий на куче. Создается вызовом функции `Box::new(<object>)`.
+
+`Box` -- это как `smart_ptr`. Кто владеет боксом, тот владеет объектом. 
+
+```rust
+struct Node {
+    value: i32,
+    next: Option<Box<Node>>,
+}
+```
+
+Теперь нода владеет следующей нодой. Лайфтаймы у нод получаются вложенные, а не равные. 
+
+Удаление последнего элемента не влияет на остальные ноды. Но удаление ноды $N$ в середине листа влечет за собой удаление последующих нод, потому что $N$ (скажем, косвенно) владеет всеми последующими нодами. 
+
+Полный пример кода:
+
+```rust
+struct Node {
+    value: i32,
+    next: Option<Box<Node>>,
+}
+
+
+fn main() {
+    let mut root = Box::new(Node {
+        value: 1,
+        next: Some(
+            Box::new(
+                Node {
+                    value: 2,
+                    next: Some(Box::new(Node {
+                        value: 3,
+                        next: None,
+                    })),
+                })),
+    });
+    
+    println!("{}", root.next.unwrap().next.unwrap().value);
+    
+    root.next = None;
+    println!("{}", root.value);
+}
+```
+
+
+
+
+
+#### Взятие ссылки на значение в боксе
+
+Функции `borrow()` и `borrow_mut()`.
+
+```rust
+use std::borrow::Borrow;
+use std::borrow::BorrowMut;
+
+struct MyStruct {
+    value1: i32,
+}
+
+fn main() {
+    let mut boxed = Box::new(MyStruct { value1: 42 });
+    
+    //let reference = boxed.borrow(); // does not compile
+                                      // type must be known at this point
+    let reference: &MyStruct = boxed.borrow();
+    println!("{}", reference.value1);
+    
+    let mut_reference: &mut MyStruct = boxed.borrow_mut();
+    mut_reference.value1 = 123;
+}
+```
+
+
+
+
+
+
+
+### RC (shared ownership)
+
+`Rc` = reference counter. Можно сделать несколько указателей на один и тот же объект (живущий на куче), и каждый из указателей владеет этим объектом. 
+
+`Rc` -- это как `shared_ptr`. Объект живет, пока есть хотя бы один `Rc`. 
+
+Модифицировать данные внутри `Rc` нельзя.
+
+
+
+Пример использования `Rc`:
+
+```rust
+use std::rc::Rc;
+
+struct MyStruct {
+    value: i32,
+}
+
+
+fn main() {
+    let owner1 = Rc::new(MyStruct { value: 42 });
+    let owner2: Rc<MyStruct> = owner1.clone();
+    let owner3: Rc<MyStruct> = owner2.clone();
+    
+    println!("{} {} {}", owner1.value, owner2.value, owner3.value);
+}
+```
+
+
+
+
+
+
+
+### Модуль `std::cell`
+
+Компилятор позволяет иметь одновременно либо несколько немутабельных ссылок (`&`) на объект, либо только одну мутабельную ссылку (`&mut`). Такая мутабельность называется `inherited mutability`. Но это не всегда удобно. 
+
+Контейнеры `Cell` и `RefCell` позволяют изменять объект, даже если на него ссылаются несколько немутабельных ссылок. Такая мутабельность называется `interior mutability`. Мутабельные ссылки получают с помощью метода `borrow()`.
+
+
+
+
+
+
+
+#### Cell
+
+Внутри контейнера хранится сам объект. Умеет мувать значение в контейнер и из него. 
+
+```rust
+use std::cell::Cell;
+use std::borrow::Borrow;
+
+fn main() {
+    let cell = Cell::new(42);
+    let ref1: &Cell<i32> = cell.borrow();
+    let ref2: &Cell<i32> = cell.borrow();
+    println!("{} {}", ref1.get(), ref2.get());
+    ref1.replace(123);
+    println!("{} {}", ref1.get(), ref2.get());
+}
+```
+
+Функция `Cell::get()` возвращает копию значения. Работает только на `Copy` объектах. 
+
+Функция `Cell::take()` меняет старое значение на дефолтное и возвращает старое значение. Работает только на `Default` объектах, внутри вызывает функцию `Default::default()`. 
+
+Функция `Cell::replace()` меняет старое значение на новое и возвращает старое значение. 
+
+
+
+
+
+
+
+#### RefCell 
+
+В отличие от простого `Cell`, внутри `RefCell` хранится именно ссылка на структуру. 
+
+```rust
+use std::cell::Ref;
+use std::cell::RefMut;
+use std::cell::RefCell;
+
+struct MyStruct {
+    value: i32,
+}
+
+
+fn main() {
+    let cell = RefCell::new(MyStruct { value: 42 });
+    {
+        // немутабельная ссылка на `cell`
+        let ref1: Ref<MyStruct> = cell.borrow();
+        println!("{}", ref1.value); // > 42
+    }
+    {
+        // мутабельная ссылка на `cell`
+        let mut ref_mut: RefMut<MyStruct> = cell.borrow_mut();
+        ref_mut.value = 123;
+    }
+    let ref2: Ref<MyStruct> = cell.borrow();
+    println!("{}", ref2.value); // > 123
+}
+```
+
+Компилятор проверяет, существуют ли одновременно и мутабельные, и немутабельные ссылки. Если убрать вложенные скоупы, код не скомпилится из-за проверок компилятора. 
+
+
+
+
+
+
+
+#### Circuler references
+
+```rust
+use std::cell::Cell;
+use std::rc::Rc;
+
+struct NodeLeft {
+    right: Cell<Option<Rc<NodeRight>>>,
+}
+
+struct NodeRight {
+    left: Cell<Option<Rc<NodeLeft>>>,
+}
+
+
+fn main() {
+    let node_left = Rc::new(NodeLeft { right: Cell::new(None) });
+    let node_right = Rc::new(NodeRight {
+        left: Cell::new(Some(node_left.clone()))
+    });
+    let e = node_left.right.replace(Some(node_right.clone()));
+}
+```
+
+Создаем левую ноду. Создаем правую ноду с ссылкой на левую. Потом через метод `replace()` сохраняем внутри левой ноды ссылку на правую. 
+
+Без `Cell` обойтись нельзя, потому что нам нужны мутабельные ссылки.
+
+
+
+
+
+
+
+#### Утечка памяти из-за `Rc`
+
+В коде выше два раза использовалась функция `clone()`. Когда `node_left` и `node_right` будут умирать, сами объекты не умрут, потому что все еще существуют ссылки на них.
+
+
+
+##### `Rc::downgrade()`
+
+Чтобы избежать эту проблему, используется `Weak` ссылка. Получить ее из `Rc` можно с помощью `Rc::downgrade()`. 
+
+```rust
+use core::cell::Cell;
+use std::rc::Rc;
+use std::rc::Weak;
+
+struct NodeLeft {
+    right: Cell<Option<Rc<NodeRight>>>,
+}
+struct NodeRight {
+    left: Cell<Option<Weak<NodeLeft>>>,
+}
+
+
+fn main() {
+    let node_left = Rc::new(NodeLeft { right: Cell::new(None) });
+    let node_right = Rc::new(NodeRight {
+        left: Cell::new(Some(Rc::downgrade(&node_left)))
+    });
+    let e = node_left.right.replace(Some(node_right.clone()));
+}
+```
+
+ 
+
+
+
+##### `Rc::upgrade()`
+
+Получить `Rc` ссылку из `Weak` ссылки:
+
+```rust
+use std::rc::Rc;
+
+fn main() {
+    let five = Rc::new(5);
+    let weak_five = Rc::downgrade(&five);
+    
+    // create a new Rc reference 
+    let strong_five: Option<Rc<_>> = weak_five.upgrade();
+    
+    // check if modification succeeded 
+    assert!(strong_five.is_some());
+    
+    drop(strong_five);
+    drop(five);
+    
+    assert!(weak_five.upgrade().is_none());
+}
+```
 
 
 

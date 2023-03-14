@@ -612,3 +612,63 @@ Note that a CFG can be ambiguous, i.e. there might be more than one way to gener
 
 
 
+## 23-03-13
+
+### Pushdown Automata
+
+A pushdown automaton is an NFA with the addition of an (infinite) stack.
+
+
+
+
+
+
+
+###  mPDA to CFG
+
+Let $P = (Q, \Sigma, \Gamma, \delta, q_0, \{ q_{accept}\})$ be an mPDA.
+
+
+
+$G(P) = \{ V, \Sigma, R, S \}$ is a CFG built from $P$. The final state in $G(P)$ should be only one. So, in case of several final states:
+
+1. create a new state and connect it to old final states via a new symbol (i.e. `#`)
+2. create a new start state and connect it to the old start state via the same new symbol. 
+
+
+
+$V = \{ A_{pq} | p,q \in Q \}$ are variables of $G(P)$.
+
+
+
+$A_{pq}$ generates all strings going from state $p$ to state $q$ with same stack height (this means height of stack in state $p$ is the dame as in state $q$).
+
+
+
+In mPDA we cannot simultaneously push to stack and pop from it. If we have PDA,  we can add a new state for a stack modification $a \rightarrow b$, where one step will be $a \rightarrow \epsilon$, and another step will be $\epsilon \rightarrow b$. 
+
+<img src="./pics for conspects/ACC/ACC 23-03-13 5.png" alt="ACC 23-03-13 5" style="zoom:67%;" />
+
+
+
+There are three rules $R$:
+
+
+
+1: $\forall p \in Q \ : \ A_{pp} = \epsilon$
+
+
+
+2: $\forall p, q, r \in Q \ : \ A_{pq} \rightarrow A_{pr} A_{rq}$. If $A_{pr}$ or $A_{rq}$ does not generate anything, then the rule does not generate anything either. 
+
+<img src="./pics for conspects/ACC/ACC 23-03-13 2.png" alt="ACC 23-03-13 2" style="zoom:50%;" />
+
+
+
+3: $\delta(p, a, \epsilon) = \{ (r, t),... \}$ and $\delta(s, b, t) = \{ (q, \epsilon),... \}$, then $A_{pq} \rightarrow a A_{rs} b$
+
+<img src="./pics for conspects/ACC/ACC 23-03-13 4.png" alt="ACC 23-03-13 4" style="zoom:80%;" />
+
+We looks at states $p, q$ on the same stack height. If we push the element $x$ in the beginning, then in the end we pop the same element $x$.
+
+So, in the beginning we read $a$ and push $x$ (without popping anything). Then $A_{rs}$ goes. Then we read $b$ and pop $x$ (without pushing anything). Thus, we get the rule written above. 
