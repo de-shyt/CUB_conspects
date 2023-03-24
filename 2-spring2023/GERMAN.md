@@ -112,3 +112,56 @@ Das Laptop ist so praktisch wie das Tablet.
 Das Laptop ist praktischer als das Tablet. 
 
 Ich kaufe lieber in den Geschäften als online. 
+
+
+
+
+
+### Superlativ
+
+прилагательное $\rightarrow$ `am <adj>sten`
+
+- $\textcolor{black}{schon} \rightarrow \textcolor{black}{am \ schon} \textcolor{red}{stern}$
+- $\textcolor{black}{kurz} \rightarrow \textcolor{black}{am \ kürz} \textcolor{blue}{e} \textcolor{red}{stern}$
+- $\textcolor{black}{gut} \rightarrow \textcolor{black}{am \ besten}$
+- $\textcolor{black}{gern} \rightarrow \textcolor{black}{am \ liebsten}$
+- $\textcolor{black}{viel} \rightarrow \textcolor{black}{am \ meisten}$
+- $\textcolor{black}{nach} \rightarrow \textcolor{black}{am \ nächsten}$
+
+
+
+
+
+
+
+## 23-03-20
+
+das Gefühl, die Gefühle = feeling
+
+Grosse und kleine Gefühle
+
+
+
+aufgeregt sein = to be excited 
+
+
+
+die Hochzeit = wedding 
+
+die Braut = bride
+
+der Bräutigam = groom 
+
+
+
+heiraten = to get married 
+
+verheiratet = married 
+
+
+
+Ich gratuliere zum Geburtstag -- поздравляю с др
+
+
+
+schmücken = decorate

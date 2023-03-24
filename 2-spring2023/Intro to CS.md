@@ -719,7 +719,11 @@ Total length is $32$ bits.
 
 
 
+### ASCII encoding
 
+Traditionally, ASCII encodes 128 specified characters into seven-bit natural numbers. Extended ASCII encodes the 128 specified characters into eight-bit natural numbers. 
+
+Source for decoding: https://graphemica.com/
 
 
 

@@ -1686,7 +1686,7 @@ fn main() {
 
 
 
-#### Circuler references
+#### Circular references
 
 ```rust
 use std::cell::Cell;
@@ -1788,9 +1788,243 @@ fn main() {
 
 
 
+## 23-03-14 \todo
 
 
 
+
+
+
+
+
+
+## 23-03-21
+
+### Модули или Как компануется приложение раста
+
+Есть package. Внутри него живут crates. Crates делятся на модули.
+
+
+
+#### Package
+
+Описывается в файле `Cargo.toml`:
+
+```toml
+[package]
+name = "hello-world"
+version = "0.1.0"
+edition = "2021"
+```
+
+
+
+
+
+#### Crates
+
+Crate = единица компиляции. Крейты могут быть
+
+- Binary (скомпилированный файл - `exe`)
+
+  ```toml
+  [[bin]]
+  name = "create_name"
+  path = "src/main.rs"
+  ```
+
+- Library (скомпилированный файл - `rlib`)
+
+  ```toml
+  [lib]
+  name = "create_name"
+  path = "src/lib.rs"
+  ```
+
+
+
+Symbol table -- символьная таблица -- хранит соответствие между символом и строкой. Уменьшает время компиляции
+
+`rlib` -- набор `.o` файлов, метаданных, символьных таблиц. Хранится в виде архива. 
+
+Команда `rustc foo.rs --crate-type rlib` компилирует крейт как либу. 
+
+
+
+
+
+#### Rustc entity
+
+Изначально у крейта нет собственного имени. Во время компиляции мы можем задать имя импортироемому крейту.
+
+```rust
+// foo.rs
+pub fn aboba() {
+    println!("aboba")
+}
+
+// bar.rs
+fn main() {
+   custom_name::aboba();
+}
+```
+
+```shell
+$ rustc foo.rs --crate-type rlib
+> libfoo.rlib
+
+$ rustc bar.rs --extern custom_name=./libfoo.rlib
+> bar
+```
+
+
+
+
+
+
+
+#### Теперь про модули
+
+Рутовым крейтом считается файл `main.rs`. В него можно импортить другие исходные файлы:
+
+```rust
+//features.rs
+pub struct MyFeature;
+impl MyFeature {
+    pub fn print(&self) {
+        println!("I am a feature!")
+    }
+}
+```
+
+```rust
+// main.rs
+mod features; // импорт из файла `features.rs`
+
+fn main() {
+    let feature = crate::features::MyFeature;
+    feature.print();
+}
+```
+
+
+
+
+
+##### Создание
+
+```rust
+struct MyStruct0;
+mod level1 {
+    struct MyStruct1;
+    mod level2 {
+        struct MyStruct2;
+    }
+}
+```
+
+
+
+
+
+##### `pub`
+
+У модулей есть уровни доступа. 
+
+По дефолту, элемент из текущего модуля может использовать элементы родительских модулей, но не может использовать элементы дочерних модулей:
+
+```rust
+struct MyStruct0;
+mod level1 {
+    struct MyStruct1;
+    mod level2 {
+        struct MyStruct2;
+    }
+    fn test() {
+        let parent = crate::level1::MyStruct1;
+        let child = crate::level1::level2::MyStruct2;
+    }
+}
+```
+
+```asciiarmor
+error[E0603]: unit struct `MyStruct2` is private
+    let child = crate::level1::level2::MyStruct2;
+                                       ^^^^^^^^^ private unit struct
+```
+
+
+
+Поменять такое поведение можно с помощью ключевого слова `pub`:
+
+```rust
+struct MyStruct0;
+mod level1 {
+    struct MyStruct1;
+    mod level2 {
+        pub struct MyStruct2;
+    }
+    pub fn test() {
+        let parent = crate::level1::MyStruct1; // полный путь
+        let child = level2::MyStruct2;  // относительный путь
+    }
+}
+
+fn main() {
+    crate::level1::test();
+}
+```
+
+
+
+
+
+###### `pub(super)` \TODO
+
+
+
+
+
+##### `use`
+
+```rust
+// использование `MyStruct` без дальнейшего прописывания полного пути
+use crate::level1::level2::level3::MyStruct;
+use crate::level1::level2::level3::{MyStruct1, MyStruct2};
+
+// с помощью алиасинга
+use crate::level1::level2::level3::MyStruct as Aboba;
+
+// использование всего, что живет в выбранном модуле,
+// без прописываня полного пути
+use crate::level1::level2::level3::*;
+```
+
+
+
+
+
+
+
+##### Импорт крейтов 
+
+Простой пример [здесь](####Теперь про модули).
+
+Если внутри `src` есть еще директории с исходными файлами. 
+
+Для директории `<name>` создаем файл `<name>.rs`, внутри него импортим `rs` файлы, которые живут в директории `<name>`:
+
+<img src="./pics for conspects/RUST/RUST 23-03-21 1.png" alt="RUST 23-03-21 1" style="zoom:80%;" />
+
+
+
+
+
+
+
+### Линковка в стиле `C`
+
+Раст часто используется для взаимодействия с каким-то куском кода на другом языке. 
 
 
 

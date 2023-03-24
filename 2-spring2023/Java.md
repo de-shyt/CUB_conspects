@@ -1597,6 +1597,660 @@ Exception in thread "main" java.util.ConcurrentModificationException
 
 
 
+## 23-03-16
+
+### Функциональный интерфейс
+
+Интерфейс (не абстрактный класс), содержащий единственный абстрактный метод (single abstract method -- SAM). Может быть аннотирован как `@FunctionalInterface` (тогда компилятор будет проверять, что интерфейс функциональный). 
+
+Пример SAM -- интерфейс `Runnable` с абстрактный методом `Run()`. Другой пример -- интерфейс `Function`, у которого всего 4 метода, но абстрактным является только один. 
+
+Еще пример (неочев):
+
+```java
+@FunctionalInterface
+interface LongSupplier {
+	long getLong(); // sam, since not implemented
+}
+
+@FunctionalInterface
+interface IntSupplier extends LongSupplier {
+    int getInt(); // sam, since not implemented
+    @Override
+    default long getLong() { return getInt(); }
+}
+```
+
+Интерфейс `IntSupplier` является подтипом функционального интерфейса, появляется реализация `getLong()`. Но внутри создается новый (и единственный) абстрактный метод `getInt()`, поэтому `IntSupplier` становится функциональным интерфейсом. 
+
+
+
+
+
+### Функциональное выражение
+
+Экземпляры функциональных интерфейсов создаются с помощью функциональных выражений. 
+
+У функционального выражения нет внутреннего состояния, оно не может хранить значения. Функциональное выражение -- это всегда реализация какого-то функционального интерфейса. 
+
+Тип функционального выражения явно не указан, поэтому он определяется по контексту (aka [поливыражения](https://vaskoz.wordpress.com/2013/08/15/jsr335-poly-expressions/)). Есть два возможных типа: 
+
+- лямбда ($\texttt{(a, b)} \textcolor{red}{\texttt{\ ->\ }} \texttt{a + b}$) 
+- ссылка на метод ($\texttt{Integer} \textcolor{red}{\texttt{::}} \texttt{sum}$)
+
+
+
+Не гарантируется идентичность функциональных выражений. Одно и то же функциональные выражение не обязательно создает один и тот же объект класса. 
+
+Не гарантируется идентичность `getClass()` у функциональных выражений. Не обязательно, что одно и то же функциональные выражение создает объект одного и того же класса. 
+
+Короче, методы вроде `getClass()`, `toString()` не используем. 
+
+
+
+#### 
+
+#### Примеры
+
+```java
+public static void main(String[] args) {
+	Runnable r = () -> System.out.println("Hello World!");
+	r.run();
+}
+```
+
+Функциональные выражение -- лямбда -- присвоилась переменной `r`. 
+
+В строке `r.run()` вызывается тот самый единственный абстрактный метод интерфейса (в данном случае, метод `run()`).
+
+
+
+При использовании функциональных выражений нужно, чтобы тип интерфейса явно определялся. 
+
+```java
+static void run(Runnable r) { 
+    r.run(); 
+}
+public static void main(String[] args) {
+	run(() -> System.out.println("Hello World!"));
+}
+```
+
+В этом примере тип интерфейса, используемого для лямбды, определяется внутри функции `run(Runnable)`. 
+
+
+
+
+
+
+
+### Лямбда-выражения
+
+- аргументы: `(type1 name1, type2 name2)`, `()`
+- стрелочка: `->`
+- тело 
+  - выражение: `System.out.ptintln("aboba");`
+  - блок: `{ System.out.ptintln("aboba"); }`
+
+
+
+
+
+#### Возвращаемое значение
+
+- Void-compatible (void SAM):
+  - Выражение: допустимое в утверждении (вызов метода, присваивание и т. д.)
+  - Блок: каждый return не содержит выражения
+
+- Value-compatible (non-void SAM):
+  - Выражение: имеет значение не void
+  - Блок: каждый return содержит выражение и нормальное завершение невозможно.
+
+
+
+
+
+#### Захват значений
+
+1. Захватываем локальную переменную:
+
+   Она должна быть `effectively final` и инициализирована. Это означает, что нельзя изменять значение захваченной переменной внутри лямбды. 
+
+   В лямбду отправляется *значение* переменной. 
+
+   
+
+2. Захватываем поле класса:
+
+   Захватывается не само значение, а `this`. 
+
+   
+
+3. Захватываем статическое поле: 
+
+   Ничего не захватывается, тело лямбды становится stateless. Так как переменная статическая, ее значение подставится в момент вызова функции. 
+
+   Пример: 
+
+   ```java
+   import java.util.ArrayList;
+   import java.util.List;
+   import java.util.function.IntSupplier;
+   
+   public class Demo {
+       static int x = 5;
+       public static void main(String[] args) {
+           List<IntSupplier> List = new ArrayList<>();
+           for (int i = 0; i < 5; i++) {
+               x++; // does not actually influence on anything
+               IntSupplier l1 = () -> x * x;
+               List.add(l1);
+           }
+           for (IntSupplier elem : List) {
+           	System.out.println(elem.getAsInt());
+           }
+       }
+   }
+   ```
+
+   Статическая переменная `x` увеличилась на 5. В строках 14-16 ее значение подставляется в лямбды. 
+
+   Вывод:
+
+   ```shell
+   100
+   100
+   100
+   100
+   100
+   ```
+
+
+
+
+
+##### Пример
+
+Хотим создать несколько лямбд, которые возвращают разные целочисленные значения. 
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntSupplier;
+
+public class Demo {
+    public static void main(String[] args) {
+        int x = 1;
+        List<IntSupplier> List = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            int xx = x++;
+            IntSupplier l1 = () -> xx * xx;
+            List.add(l1);
+        }
+        for (IntSupplier elem : List) {
+        	System.out.println(elem.getAsInt());
+        }
+    }
+}
+```
+
+Переменная `xx` является для лямбды effectively final, в нее копируется текущее значение `x`. Лямбда создается с захватом значения из `xx`. 
+
+Вывод:
+
+```shell
+1
+4
+9
+16
+25
+```
+
+
+
+
+
+
+
+### Optional\<T\>
+
+Коробочка для значений. Можно применять разные функции в зависимости от того, есть ли что-то внутри:
+
+```java
+// filter(Predicate<T>)
+boolean isFooEqualsBar = Optional.of("foo").filter("bar"::equals).isPresent();
+
+// <U> map(Function<T, U>)
+String trimmed = Optional.of(" foo ").map(String::trim).get();
+
+// <U> flatMap(Function<T, Optional<U>>)
+Integer num = Optional.of("1234").flatMap(x -> toInteger(x)).orElse(-1);
+
+// orElseGet(Supplier<T>)
+Double random = Optional.<Double>empty().orElseGet(Math::random);
+
+// <X extends Throwable> orElseThrow(Supplier<T>) throws X
+Double random = Optional.<Double>empty().orElseThrow(Exception::new);
+
+//or(Supplier<? extends Optional<? extends T>>)
+getOneOptional().or(() -> getAnotherOptional());
+```
+
+
+
+
+
+#### Пример 1: update karma
+
+```java
+interface User {
+    String name();
+    boolean isActive();
+	void updateCarma(int delta);
+}
+
+interface UserRepository {
+	Optional<User> findUser(String name);
+}
+
+void increaseUserCarma(UserRepository repository, String name) {
+    repository.findUser(name)
+        .filter(User::isActive)
+        .ifPresent(user -> user.updateCarma(1));
+
+}
+```
+
+Хотим по имени найти юзера в репозитории юзеров. Если он активный, улучшим карму. Иначе ничего не делаем. 
+
+
+
+
+
+#### Пример 2: update + throw
+
+```java
+interface User {
+    String name();
+    boolean isActive();
+    void updateCarma(int delta);
+}
+
+interface UserRepository {
+	Optional<User> findUser(String name);
+}
+
+void increaseUserCarma(UserRepository repository, String name) {
+    repository.findUser(name)
+        .filter(User::isActive)
+        .orElseThrow(() -> new IllegalArgumentException("No such user: "+name))
+        .updateCarma(1);
+}
+```
+
+Находим юзера по имени. Если не нашли, кидаем исключение. Если нашли и он активный, улучшаем карму. 
+
+
+
+
+
+
+
+### Stream API
+
+Из библиотеки `java.util.stream`. 
+
+Есть 
+
+- источник (создает стрим)
+- промежуточные операции (формируют последовательность комманд, но сами комманды не выполняют. Команды выполняютя, когда появляется терминальная операция)
+- терминальные операции (функции, которые вызываются в конце)
+
+Существуют `Stream`, `IntStream`, `LongStream`, `DoubleStream`. 
+
+
+
+
+
+
+
+#### Источники
+
+```java
+Stream.empty();
+
+Stream.of(x, y, z);  // из существующих элементов
+
+// если null, вернется пустой стрим 
+// если не null, вернется стрим из одного элемента
+Stream.ofNullable(x);
+
+// бесконечный стрим
+Stream.generate(Math::random);
+    
+// следующий элемент зависит от  предыдущего 
+// val -- начальное значение 
+Stream.iterate(val, x -> x+1);
+    
+// то же, но в условием 
+Stream.iterate(0, x -> x < 100, x -> x + 1);
+
+// любую коллекцию можно превратить в стрим 
+collection.stream();
+
+// массив можно превратить в стрим
+// должен быть тип int, long, double или Object
+// с остальными упс
+Arrays.stream(array);
+
+// стрим чаров, полученный из строки
+// внутри хранятся не символы, а их численные значения 
+String.chars();
+
+// как ленивый стрим. Хорош для длинных строк
+Pattern.splitAsStream();
+```
+
+
+
+
+
+
+
+#### Промежуточные операции
+
+| щперации       | комментарии                                                  |
+| -------------- | ------------------------------------------------------------ |
+| map            | Из стрима получается стрим. Есть mapToInt, mapToLong, mapToDouble, mapToObj, предвращают старый тип в новый из названия. |
+| filter         | Выкидывает элементы по предикату. Не меняет изначальную сортированность |
+| flatMap        | Превращает стрим стримов в стрим. Eсть flatMapToInt, flatMapToLong, flatMapToDouble |
+| mapMulti       | mapMultiToInt, mapMultiToLong, mapMultiToDouble              |
+| distinct       | Избавиться от повторяющихся элементов                        |
+| sorted         | Сортирует                                                    |
+| limit          | Ограничивает количество элементов в стриме                   |
+| skip           | Скипает первые сколько-то элементов                          |
+| peek           | Можно применить переданную функцию к каждому элементу, чтобы посмотреть, какие элементы в стриме |
+| takeWhile      | Берем элементы, *пока* они удовлетворяют условию (предикату). |
+| dropWhile      | Скипаем элементы, *пока* они удовлетворяют условию (предикату). |
+| boxed          | Превращает стрим в стрим от `Integer`.                       |
+| asLongStream   |                                                              |
+| asDoubleStream |                                                              |
+
+
+
+
+
+##### Пример `peek`
+
+```java
+long count = Stream.of(1,2,3,4,5)
+    .peek(System.out::println)
+    .count();
+```
+
+В старших версиях джавы промежуточные операции (в данном случае, `peek`) могут скипаться, если результат известен заранее.
+
+Здесь изначально известно, чему равен `count`.
+
+
+
+
+
+##### Пример `flatMap`
+
+```java
+List<List<String>> listOfLists =
+	List.of(List.of("foo", "bar", "baz"),
+	List.of("Java", "Kotlin", "Groovy"),
+	List.of("Hello", "Good Bye"));
+
+System.out.println(listOfLists.stream()
+    .flatMap(List::stream) // стрим стримов -> стрим
+    .anyMatch("Java"::equals));
+```
+
+
+
+##### Пример, как не надо делать: shuffle
+
+Хотим рандомизировать порядок в стриме. Так плохо:
+
+```java
+IntStream.range(1, 10)
+    .boxed()
+    .sorted((a, b) -> Math.random() > 0.5 ? 1 : -1)
+    .forEach(System.out::println);
+```
+
+` .boxed()` -- превращаем инты в `Integer`, только так можно использовать кастомный компаратор
+
+`.sorted()` -- передаем компаратор
+
+
+
+Проблема: при изменении $10 \rightarrow 50$ нарушается контракт (какой-то). Какой-то там алгоритм меняется при увеличении количества элементов, и все взрывается.
+
+Правильное решение -- через `Collections`:
+
+```java
+List<Integer> list = 
+    IntStream.range(1, 50)
+		.boxed()
+    	.collect(Collectors.toList());
+
+Collections.shuffle(list);
+
+list.forEach(System.out::println);
+```
+
+
+
+
+
+##### Пример, как не надо делать: порядок промежуточных операций
+
+```java
+IntStream.iterate(1, x -> x * 2)
+    .sorted()
+    .limit(10)
+    .forEach(System.out::println);
+```
+
+Упадет с ошибкой, потому что пытаемся сортировать бесконечный список. Правильный вариант:
+
+```java
+IntStream.iterate(1, x -> x * 2)
+    .limit(10)
+    .sorted()
+    .forEach(System.out::println);
+```
+
+
+
+
+
+
+
+#### Терминальные операции
+
+✓count (возвращает `long`)
+
+✓findFirst/findAny -> Optional
+
+✓anyMatch/noneMatch/allMatch
+
+✓forEach/forEachOrdered
+
+✓max/min -> Optional
+
+✓reduce
+
+✓collect
+
+✓toArray
+
+✓toList (Java 16+)
+
+✓sum/average/summaryStatistics (мин, макс, среднее) (примитивы)
+
+
+
+
+
+##### Пример `anyMatch`
+
+```java
+boolean hasOption = Stream.of(args)
+    .filter(x -> x.startsWith(PREFIX))
+    .findFirst()
+    .isPresent();
+```
+
+Можно проще:
+
+```java
+boolean hasOption = Stream.of(args).anyMatch(x -> x.startsWith(PREFIX));
+```
+
+
+
+
+
+##### Пример `reduce`
+
+Функция редукции выводит результат какой-то функции, примененной ко всем элементам.
+
+```java
+static BigInteger factorial(int n) {
+    return IntStream.rangeClosed(1, n)
+        .mapToObj(BigInteger::valueOf)
+        .reduce(BigInteger.ONE, BigInteger::multiply);
+}
+```
+
+Первый аргумент `reduce` -- начальное значение, должно быть нейтральным элементом для выбранной функции. В коде `1` -- нейтральный элемент для умножения: `1 * 1 = 1`. 
+
+Второй аргумент `reduce` -- ассоциативная функция. Может быть лямбдой, принимающей два аргумента. 
+
+
+
+Dont overreduce! Можно получить кучу мусора в виде временны элементов. 
+
+
+
+
+
+
+
+#### Collectors
+
+Способ комбинирования элементов в единое целое. Вызывается с помощью `.collect()`. 
+
+Некоторые коллекторы можно комбинировать. 
+
+Можно написать кастомный коллектор (`Collector.of`). 
+
+
+
+✓**toList()** -- возвращает `ArrayList`
+
+✓**toSet()**
+
+✓**toCollection(supplier)** -- создает пустую коллекцию, пример: `toCollection(ArrayList::new)`
+
+✓**toMap(keyMapper, valueMapper[, merger[, mapSupplier]])** -- передаются две функции: одна создает ключи мапы, другая -- значения. Если ключи повторяются, по умолчанию, кидается исключение. Если хочется этого избежать, передается третья функция, решающая коллизии. Можно передать четвертый параметр, который выберет реализацию мапы (`HashTable::new` или `TripleMap::new`)
+
+✓**joining([separator[, prefix, suffix]])** -- склеивает *строки*. Есть необязательные параметры. Первый -- это сепаратор. Второй -- это префикс. Третий -- суффикс. Пример: `joining(',', '(', ')')`
+
+✓**groupingBy(classifier[[, mapSupplier], downstream])** -- группирует элементы по ключам. Первый обязательный аргумент -- классификатор -- значение для ключей. Второй необязательный -- способ объединения элементов, у которых одинаковый ключ. По умолчанию, такие элементы объединяются в массив. В итоге получаются <u>две</u> группы с ключом `true` и с ключом `false`, даже если одна из них пустая.
+
+✓**partitioningBy(predicate[, downstream])** -- разновидность `groupingBy`, но в качестве классификатора берется предикат, который возвращает `true` или `false`. Первый аргумент (предикат) обязательный. 
+
+✓**reducing/counting/mapping/minBy/maxBy**
+
+✓**averagingInt/averagingLong/averagingDouble**
+
+✓**summingInt/summingLong/summingDouble**
+
+
+
+
+
+
+
+##### Пример: группируем строки по длине 
+
+Хотим сделать мапу, в которой ключи -- это длина, значения -- строки этой длины. 
+
+```java
+static Map<Integer, String> stringsByLength(List<String> list) {
+    return list.stream().collect(
+        Collectors.groupingBy(String::length, Collectors.joining(","))
+    );
+}
+
+stringsByLength(Arrays.asList("a", "bb", "c", "dd", "eee"));
+// {1=a,c, 2=bb,dd, 3=eee}
+```
+
+
+
+
+
+
+
+##### Пример: вложенные коллекторы 
+
+Сначала группируем по длине, потом внутри значения с одинаковым ключом группируем по первой букве.
+
+```java
+static Map<Integer, Map<Character, List<String>>>
+	stringsByLengthAndFirstLetter(List<String> list) {
+    return list.stream().collect(
+        Collectors.groupingBy(
+            String::length,
+            Collectors.groupingBy(s -> s.charAt(0)))
+    );
+}
+stringsByLengthAndFirstLetter(Arrays.asList("a", "b", "aa", "ab", "ba"));
+//{1={a=[a], b=[b]}, 2={a=[aa, ab], b=[ba]}}
+```
+
+
+
+
+
+
+
+##### Пример `toMap`
+
+Хотим получить мапу, где ключи -- категории, значения -- минимальная стоимость в категории. 
+
+```java
+interface Book {
+	String getCategory();
+	int getPrice();
+}
+
+static Map<String, Integer> getLowestBookPriceByCategory(List<Book> list) {
+	return list.stream().collect(Collectors.toMap(
+        Book::getCategory, 
+        Book::getPrice,
+        BinaryOperator.minBy(Comparator.naturalOrder())
+    ));
+}
+```
+
+Ключи -- `Book::getCategory`, значения -- `Book::getPrice`. Если значений несколько, применяем сапплайер `BinaryOperator.minBy()`.
+
+
+
+
+
+
+
+
+
 
 
 
