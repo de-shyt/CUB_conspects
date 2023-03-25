@@ -165,3 +165,39 @@ Ich gratuliere zum Geburtstag -- поздравляю с др
 
 
 schmücken = decorate
+
+
+
+
+
+
+
+## 23-03-22
+
+die Angst = fear
+
+Angst haben vor = to be afraid of 
+Ich habe Angst vor der Zeit — Я боюсь времени
+
+
+
+
+
+#### Придаточное придложение с wenn (если|когда)
+
+Глагол в главном предложении всегда стоит на втором месте. Первое место может быть занято одним словом, несколькими взаимосвязанными словами или придаточным предложением
+
+Wenn ich frei habe, mache ich einen Ausflug. — When I have time off, I take a trip.
+Ich singe ein Lied, wenn ich gute Laune habe. — I sing a song when I'm in a good mood.
+
+Если главное предложение стоит после условия, в его начало можно добавить dann (then):
+Wenn es gibt die Sonne, (dann) bin ich glucklich.
+
+
+
+
+
+
+
+
+
