@@ -199,5 +199,123 @@ Wenn es gibt die Sonne, (dann) bin ich glucklich.
 
 
 
+## 23-03-27
 
+sich entscheiden = to decide
+
+Ich habe mich entscieden = I decided. (Порядок ei и ie меняется!)
+
+Er entscheidet sich für eine gute Universität. -- He decided to go to a good university
+
+
+
+sich erinnern = to remember 
+
+Ich erinnere mich an meine Schulzeit.  -- Я помню школьные годы 
+
+
+
+sich ärgern = to be annoyed
+
+Das ärgert mich — It annoys me
+
+
+
+sich freuen = look forward, be happy about (радоваться)
+
+Ich freue mich auf Ostern. — I'm looking forward to Easter.
+
+
+
+sich treffen = meet someone 
+
+Sie treffen uns in einer Bar. — They will meet us in the bar.
+
+ 
+
+sich unterhalten = have a good time
+
+Ich unterhalte mich immer mit meinen Freunden. — I always have a good time with my friends 
+
+
+
+sich entspannen = relax 
+
+Ich entspanne mich. -- I relax
+
+
+
+sich erholen = отдыхать 
+
+Ich habe mich erholt. -- Я отдыхал
+
+
+
+sich kümmern = to take care of 
+
+Die Mutter kümmert sich um die Kinder. 
+
+
+
+
+
+
+
+### Reflexive forms 
+
+Ich erinnere mich
+
+du erinnerst dich
+
+er, sie, es erinnert sich
+
+wir erinnern uns
+
+ihr erinnert euch
+
+sie/Sie erinnern sich
+
+
+
+
+
+
+
+
+
+## 23-04-12
+
+## Lieben in der Stadt
+
+öffentliche Verkehrsmittel = public transport 
+
+
+
+die Behörde = authorities 
+
+
+
+die Müllabfuhr = garbage collection 
+
+der Restmüll = residual waste (который не перерабатывается)
+
+der gelbe Sack = the yellow bag
+
+die blaue Tonne für Papier = the blue bin for paper
+
+
+
+die Umwelt = the environment
+
+
+
+reinigen = to clean 
+
+er Beamte / die Beamtin  = гос служащий 
+
+
+
+beschützen = protect 
+
+den Papierkorb leeren = to empty the trash 
 
