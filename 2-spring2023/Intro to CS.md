@@ -731,3 +731,25 @@ Source for decoding: https://graphemica.com/
 
 
 
+## Part 4
+
+### Boolean operations 
+
+$\wedge$ = and
+
+$\vee$ = or
+
+$\textlnot$ = not
+
+$\rightarrow$ = impication. $x \rightarrow y = \bar{x} + y$
+
+$\leftrightarrow$ = equivalence. `True` if values are equal, `False` otherwise. $x \leftrightarrow y = (x \wedge y) \vee (\bar{x} \wedge \bar{y})$
+
+$\oplus$ = exclusive or = xor 
+
+$\uparrow$ = not-and
+
+$\downarrow$ = not-or
+
+
+

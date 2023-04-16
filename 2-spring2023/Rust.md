@@ -1788,7 +1788,324 @@ fn main() {
 
 
 
-## 23-03-14 \todo
+## 2023-03-14
+
+### Принципы ООП
+
+#### Инкапсуляция
+
+Это, по сути, изоляция чего-то, чтобы испключить влияние извне. 
+
+Для изоляции полей используют геттеры и сеттере. В расте от такой идеи иногда отказываются.
+
+
+
+
+
+#### Наследование
+
+В расте реализуется с помощью `trait`. 
+
+```rust
+use std::f32::consts::PI;
+
+
+trait Shape {
+    fn area(&self) -> f32;  
+}
+
+trait HasAngles: Shape {
+    fn angles_count(&self) -> i32;
+}
+
+
+struct Rectangle {
+    x: f32,
+    y: f32,
+}
+
+impl Shape for Rectangle {
+    fn area(&self) -> f32 { self.x * self.y }
+}
+
+impl HasAngles for Rectangle {
+    fn angles_count(&self) -> i32 { 4 }
+}
+
+
+struct Circle { r: f32, }
+
+impl Shape for Circle {
+    fn area(&self) -> f32 {
+        self.r.powi(2) * PI
+    }
+}
+
+
+
+fn main() {
+    let rectangle = Rectangle { x: 3.0, y: 4.0 };
+    println!("area of rectangle is {}", rectangle.area());
+    println!("amount of angels in rectangle is {}", rectangle.angles_count());
+    
+    let circle = Circle { r: 3.0 };
+    println!("area of circle is {}", circle.area());
+    // println!("amount of angels is {}", circle.angles_count());
+}
+```
+
+
+
+
+
+
+
+##### Множественное наследование 
+
+```rust
+trait Flyable {
+    fn fly(&self);
+}
+
+trait Sayable {
+    fn sayHi(&self);
+}
+
+trait FlyAndSay: Flyable + Sayable {
+    fn dosmth(&self);
+} 
+```
+
+
+
+
+
+
+
+#### Полиморфизм
+
+Возможность использовать в конкретном контексте объект, который является наследником. 
+
+В расте наследование реализовано не у структур, а у трейтов. И трейты невозможно передать в функцию. 
+
+
+
+
+
+##### Статический полиморфизм 
+
+В статическом полиморфизме известно на этапе компиляции, какие типы используются в каждом контексте.
+
+
+
+###### `impl`
+
+Для статического полиморфиза используется ключевое слово `impl`.
+
+В примере есть мерчендайзеры (работники) и директоры. Мерчендайзера уолить легко, а директор с решением не соглашается. 
+
+```rust
+impl Employee for MerchandiserImpl {
+    fn fire(&self) { println!("Ok, I am fired :(") }
+    ...
+}
+
+impl Employee for DirectorImpl {
+    fn fire(&self) { println!("No, YOU ARE FIRED") }
+    ...
+}
+
+
+// `impl` = ожидается аргумент, у которого реализован трейт `Employee` 
+fn do_fire(employee: impl Employee) {
+    employee.fire();
+}
+
+// ожидается, что у аргумента реализованы трейты `Employee` и `Customer`
+fn check_discount(employee: impl Employee + Customer) { ... }
+```
+
+
+
+
+
+##### Динамический полиморфизм 
+
+  Возможность использовать агрументы с типами разных наследников в функциях, где требуется базовый трейт. 
+
+
+
+В расте, для реализациия используются dynamically sized types -- типы, размеры которых не известны на этапе компиляции (i.e., `str`). Их информация хранится в друх полях -- указателе на ячейку памяти и переменной с размером. 
+
+Если объект фиксированного размера, его тип наследуется от `Sized`. Если нет, что тип наследуется от `?Sized`:
+
+```rust
+fn generic<T> (t: T) {} // фиксированный размер
+fn generic<T: Sized> (t: T) {} // то же, что и выше 
+fn generic<T: ?Sized> (t: &T) {} // динамический тип
+```
+
+
+
+В расте элемнты из `Vec` имеют фиксированный размер. Объекты внутри `Box`, наоборот,  динамического размера, а сам `Box` -- это указатель (=> фиксированного размера). 
+
+
+
+
+
+###### `dyn`
+
+В полиморфизме раста используются `trait objects`, а не сами структуры. Для динамического полиморфизма используется ключевое слово `dyn`. 
+
+Размер трейта должен быть известен на этапе компиляции, поэтому `dyn` трейты оборачиваются в `Box`.
+
+```rust
+trait Animal {
+    fn eat(&self);
+}
+
+
+struct Herbivore;
+
+impl Animal for Herbivore {
+    fn eat(&self) {
+        println!("I eat plants");
+    }
+}
+
+
+struct Carnivore;
+
+impl Animal for Carnivore {
+    fn eat(&self) {
+        println!("I eat flesh");
+    }
+}
+```
+
+```rust
+fn main() {
+    // Create a vector of Animals:
+    let mut list: Vec<Box<dyn Animal>> = Vec::new();
+    let goat = Herbivore;
+    let dog = Carnivore;
+    list.push(Box::new(goat));
+    list.push(Box::new(dog));
+
+    // Calling eat() for all animals in the list:
+    for animal in &list{
+        animal.eat();
+    }
+}
+```
+
+Использование динамического полиморфизма в функции: 
+
+```rust
+use std::borrow::Borrow;
+
+// реализация структур и трейтов
+
+fn dyn_eat(animal: &dyn Animal) {
+    animal.eat();
+}
+
+fn main() {
+    let list: Vec<Box<dyn Animal>> = vec![
+        Box::new(Herbivore),
+        Box::new(Carnivore)
+    ];
+    
+    dyn_eat(list[0].borrow());
+    dyn_eat(list[1].borrow());
+}
+```
+
+Динамический полиморфизм дольше по времени, чем статический, потому что сначала узнается тип объекта, потом находится нужная функция в таблице `vtable` (маппинг функций).
+
+
+
+
+
+##### Static vs dynamic polymorphism
+
+| impl                                                         | dyn                                                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| generic                                                      | dynamic dispatch -- диспетчеризация по `vtable`              |
+| method can be inlined -- используется прямой указатель на функцию (без `vtable`) | method cannot be inlined -- т.к. используется `vtable`       |
+| one pointer -- указатель на метод                            | fat pointer -- хранятся два указателя, на объект и на метод в `vtable` |
+| code dublication -- если один трейт и много структур, для каждой структуры нужна своя реализация трейта | no code dublication                                          |
+
+
+
+
+
+### Трейт `Drop`
+
+Это как деструктор. Трейт `Drop` будет вызван, когда стурктура уничтожается.
+
+```rust
+struct A;
+
+impl Drop for A {
+    fn drop(&mut self) {
+        println!("Dropped")
+    }
+}
+
+fn main() {
+    let a = A;
+}
+```
+
+```shell
+> Dropped
+```
+
+
+
+
+
+#### Прямой вызов `drop()`
+
+```rust
+struct A;
+
+impl A {
+    fn say_hello(&self) {
+        println!("I am A struct");
+    }
+}
+
+impl Drop for A {
+    fn drop(&mut self) {
+        println!("Dropped")
+    }
+}
+
+fn main() {
+    let a = A;
+    
+    // error: explicit destructor calls not allowed
+    // a.drop();
+    
+    // ok
+    std::mem::drop(a);
+    
+    // error: value borrowed here after move
+    // a.say_hello();
+}
+```
+
+
+
+
+
+#### Drop order 
+
+В структуре поля дропаются в том же порядке, что и создаются. 
+
+
 
 
 
@@ -1971,6 +2288,7 @@ mod level1 {
 }
 
 fn main() {
+    let aboba = crate::level1::level2::MyStruct2;
     crate::level1::test();
 }
 ```
@@ -1979,7 +2297,92 @@ fn main() {
 
 
 
-###### `pub(super)` \TODO
+###### `pub(crate)`
+
+Доступ к объекту только внутри текущего трейта (файла).
+
+
+
+
+
+###### `pub(super)`
+
+Доступ к объекту есть у родительского модуля. 
+
+```rust
+mod one {
+    pub mod two {
+        pub mod three {
+            pub(super) fn say_hello() { println!("hello"); }
+        } // `three`
+        
+        pub fn foo() { three::say_hello(); }
+    } // `two`
+    
+    pub fn foo() { two::three::say_hello(); }
+} // `one`
+```
+
+```asciiarmor
+error[E0603]: function `say_hello` is private
+   |
+15 |    two::three::say_hello();
+   |                ^^^^^^^^^ private function
+```
+
+
+
+
+
+###### `pub(self)`
+
+Доступ к объекту только внутри текущего модуля.
+
+```rust
+mod outer_mod {
+    pub mod inner_mod {
+        // can be seen only inside `inner_mod`
+        pub(self) fn say_hello() { println!("hello"); }
+        
+        pub fn foo() { say_hello(); }
+    }
+    
+    pub fn foo() { inner_mod::say_hello(); }
+}
+```
+
+```asciiarmor
+error[E0603]: function `say_hello` is private
+   |
+14 |    inner_mod::say_hello();
+   |               ^^^^^^^^^ private function
+```
+
+
+
+
+
+###### `pub(in path)`
+
+Доступ к объекту есть у модуля `path`. `path` должен быть родителем текущего модуля. 
+
+```rust
+mod one {
+    pub mod two {
+        pub mod three {
+            pub(in one) fn say_hello() { println!("hello"); }
+        } // `three`
+    } // `two`
+    pub fn foo() { two::three::say_hello(); }
+} // 
+
+
+fn main() {
+    one::foo();
+}
+```
+
+
 
 
 
@@ -2025,12 +2428,5 @@ use crate::level1::level2::level3::*;
 ### Линковка в стиле `C`
 
 Раст часто используется для взаимодействия с каким-то куском кода на другом языке. 
-
-
-
-
-
-
-
 
 
