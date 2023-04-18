@@ -549,3 +549,220 @@ Compiler modifies a function name to make it unique.
 Every compiler has its individual mangling algorithm. Thus, code compiled with different compiles is incompatible. 
 
 C language does not know about name mangling. You need to use `extern "C" {}` keyword in order to avoid name mangling. 
+
+
+
+
+
+
+
+
+
+
+
+## 23-03-21
+
+### Defensive Programming \TODO
+
+
+
+
+
+
+
+## 23-03-28
+
+### Configuration management \TODO 
+
+
+
+
+
+
+
+
+
+
+
+## 23-04-18
+
+### Software testing
+
+Software Testing = process of exercising a program in order to find errors before delivering it to the end user.
+
+Developer understands the system but tests it "gently". Independent tester must learn about the system and attempts to break it. 
+
+Testing shows errors, requirements conformance, performance and, of course, quality of the code. The code with tests should be well structured and should have a documentation. 
+
+Source code and test code should be separated. 
+
+
+
+
+
+#### Software Costs
+
+requirements << design & documentation << testing <<< maintenance 
+
+
+
+
+
+#### Test Feature Space
+
+1. Automation
+   - manual
+   - automatic
+2. Accessibility
+   - black box -- testing code without knowing the source code
+   - white box (glass-box testing) -- the opposite to the black box
+   - grey box
+3. Level of testing 
+   - unit tests
+   - integration
+   - system
+   - acceptance
+   - regression
+4. Quality of code 
+   - correctness
+   - reliability
+   - robustness
+   - performance
+   - security
+   - ...
+
+
+
+
+
+#### Equivalence Class Testing
+
+Idea: build equivalence classes of input situations, test one candidate per class. Also, check boundaries: for boundary $x$ check $x-1$ and $x+1$. 
+
+A "good" test case is when it is likely to produce an error. 
+
+
+
+
+
+#### 	Types of testing 
+
+<img src="./pics for conspects/SE/SE 23-04-18.png" alt="SE 23-04-18" style="zoom:80%;" />
+
+
+
+
+
+##### Unit testing 
+
+Code is divided into modules. Every module is tested on local data structures, boundary conditions, error handling paths. 
+
+Test unit = code that tests target. Test unit consists of one or more test modules. 
+
+
+
+
+
+##### Integration testing
+
+Tests interactions among units:
+
+- Import/export type compatibility
+- range errors
+
+We have a dependency tree. There is *Top-Down Integration*, when we start testing from top to bottom. That is less convenient than *Bottom-Up Integration*:
+
+For exmaple, we have this fragment of the tree:
+
+```asciiarmor
+   B
+  / \
+ C   E
+```
+
+First, we test interactions between classes (modules) $B$ and $C$, then add class $E$ and test interactions between $B$ and $E$. 
+
+
+
+
+
+##### System Testing
+
+- Determine whether system meets requirements. 
+
+- Focus on use & interaction of system functionalities, rather than details of implementations. 
+
+- Should be carried out by a group independent of the code developers
+
+Types of system testing are alpha and beta testing. 
+
+
+
+
+
+##### Acceptance Testing
+
+It is about checking to what degree an application meets end users' approval. 
+
+- structure the code of demo 
+- be sure that the demo works
+- agree on schedule & criteria beforehand
+
+
+
+
+
+
+
+#### Testing methods 
+
+##### Static testing 
+
+Collects information about a software without executing it (Reviews, walkthroughs, and inspections; static analysis; formal verification; documentation testing)
+
+
+
+###### Static analysis
+
+Control flow analysis and data flow analysis
+
+Examples of errors that can be found:
+
+- Unreachable statements
+- Variables used before initialization
+- Variables declared but never used
+- Possible array bound violations
+
+
+
+
+
+##### Dynamic testing 
+
+Collects information about a software with executing it
+
+
+
+###### White-box testing 
+
+Looks inside module/class. 
+
+- check that all statements & conditions have been executed at least once
+- check that no requirements are missing 
+
+
+
+###### Black-Box testing 
+
+No knowledge about code internals, relying only on interface specifications.
+
+Limitations:
+
+- Specs are not always available
+- Many companies still have only code, there is no other document
+
+
+
+
+
+##### Regression testing

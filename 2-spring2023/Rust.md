@@ -2374,7 +2374,7 @@ mod one {
         } // `three`
     } // `two`
     pub fn foo() { two::three::say_hello(); }
-} // 
+} // `one`
 
 
 fn main() {
@@ -2423,7 +2423,7 @@ use crate::level1::level2::level3::*;
 
 
 
-
+failed to resolve: could not find `visitors` in the crate root
 
 ### Линковка в стиле `C`
 
