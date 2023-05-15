@@ -753,3 +753,31 @@ $\downarrow$ = not-or
 
 
 
+
+
+### Normal forms
+
+*Conjunctive Normal Form (CNF)* -- disjunction inside the clause, conjunction between clauses. $(x_1 \vee x_2) \wedge (x_3 \vee x_4) \wedge \ ...$
+
+*Disjunctive Normal Form (DNF)* -- conjunction inside the clause, disjunction between clauses. $(x_1 \wedge x_2) \vee (x_3 \wedge x_4) \vee \ ...$
+
+
+
+
+
+
+
+
+
+## Part 5
+
+### Computer architecture 
+
+#### Logic gates
+
+<img src="./pics for conspects/ICS/ICS 23-04-20 1.png" alt="ICS 23-04-20 1" style="zoom:80%;" />
+
+
+
+
+

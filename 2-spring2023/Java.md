@@ -1648,7 +1648,7 @@ interface IntSupplier extends LongSupplier {
 
 
 
-#### 
+
 
 #### Примеры
 
@@ -1742,7 +1742,7 @@ public static void main(String[] args) {
        public static void main(String[] args) {
            List<IntSupplier> List = new ArrayList<>();
            for (int i = 0; i < 5; i++) {
-               x++; // does not actually influence on anything
+               x++;
                IntSupplier l1 = () -> x * x;
                List.add(l1);
            }
@@ -2431,6 +2431,481 @@ static <T, R> Collector<T, ?, Optional<R>> minMax
 ```
 
 
+
+
+
+
+
+
+
+
+
+## 23-04-18
+
+✓InputStream – читать байты (низкоуровневый API)
+
+✓OutputStream – писать байты (низкоуровневый API)
+
+✓Reader – читать символы
+
+✓Writer – писать символы
+
+
+
+
+
+### InputStream
+
+Для работы с байтами 
+
+
+
+
+
+#### Реализации
+
+✓`FileInputStream` – файл
+
+✓`ByteArrayInputStream` – массив байт
+
+✓`BufferedInputStream` – буферизированная обёртка
+
+✓`DataInputStream` – структурированные двоичные данные
+
+✓`PipedInputStream` – плохой, негодный
+
+✓`ZipFile.getInputStream(ZipEntry)` – файл из зипа (без распаковки!)
+
+✓`Process.getInputStream() `– стандартный вывод процесса
+
+✓`URL.openStream()` – содержимое по URL (http/https/file/ftp/etc.)
+
+✓...
+
+
+
+
+
+#### Методы
+
+Есть три метода для чтения. Все методы блокирующие (блокируется текущий thread)
+
+✓`int read()` → `-1` или `0..255` -- считывает один байт из потока и возвращает его или `-1`, если поток закончился (EOF)
+
+✓`int read(byte[] b)` → количество прочитанных байт (длина массива `b`)
+
+✓`int read(byte[] b, int offset, int length)` → количество прочитанных байт в фрагменте массива `b`
+
+✓`long skip(long n)` → количество пропущенных байт -- пропустить какое-то число байт
+
+✓`int available()` → количество байт, доступных без блокировки
+
+✓`void mark(int readlimit)` -- пометить, что, например, прочитаем не больше 100 байт, и потом прочитать не больше 100 байт 
+
+✓`void reset()` -- вернуть поток в состояние, в котором он был до вызова `mark`
+
+✓`boolean markSupported()`
+
+
+
+
+
+##### Пример
+
+```java
+import java.io.InputStream;
+import java.util.Arrays;
+import java.io.IOException;
+
+public class Main {
+    static void readFully(InputStream is, byte[] b) throws IOException {
+        int offset = 0;
+        while(offset < b.length) {
+            int count = is.read(b, offset, b.length - offset);
+            if(count == -1) {
+                throw new IOException("Stream has less than " + b.length + " bytes");
+        }
+        offset += count;
+        }
+    }
+    
+    public static void main(String[] args) throws IOException {
+        byte[] b = new byte[10];
+        readFully(System.in, b);
+        
+        System.out.println("result is " + Arrays.toString(b));
+        for (byte el : b) {
+            System.out.println(el + " --> " + (char) el);
+        }
+    }
+}
+```
+
+
+
+
+
+#### Современный InputStream
+
+✓`byte[] readAllBytes()` → всё содержимое (Java 9+)
+
+✓`byte[] readNBytes(int len)` → не больше len байт (Java 11+)
+
+✓`int readNBytes(byte[] b, int offset, int length)` → количество прочитанных байт (до ошибки или конца потока, Java 11+)
+
+✓`void skipNBytes(long n)` → пропускает n байт (EOFException, если меньше)
+
+✓`long transferTo(OutputStream out)` → перекачивает в выходной поток (Java 9+)
+
+✓`static InputStream nullInputStream()` → пустой поток (Java 11+)
+
+
+
+
+
+#### Управление внешними ресурсами: pакрытие файла 
+
+Явное закрытие файла -- метод `close()`.
+
+Простой, но неправильный пример:
+
+```java
+InputStream f = new FileInputStream("/etc/passwd");
+try {
+    int b = f.read();
+} finally {
+    f.close();
+}
+```
+
+Без try-блока будет плохо. Например, вылетит ошибка при чтении байта, и файл будет вечно висеть открытый, пока работа приложения не завершится. 
+
+По-хорошему надо делать большую лесницу из try-блоков, которая увеличивается с увеличением числа открытых файлов. Вместо этого используется "продвинутый" try-блок [НАЗВАНИЕ УДАЛЕНО]:
+
+```java
+try (InputStream in = new FileInputStream("/etc/passwd");
+	 OutputStream out = new FileOutputStream("/etc/passwd.bak")) {
+	in.transferTo(out);
+}
+
+// после `try` в скобках указываются файлы на открытие
+// в теле `try`-блока происходят махинации с открытыми файлами 	
+```
+
+Такая штука гарантирует, что 
+
+- открытие файлов будет корректным 
+- ресурсы будут закрыты в порядке, обратном открыванию
+- при выкидывании исключения, все файлы будут корректно закрыты
+
+
+
+
+
+
+
+### OutputStream
+
+Для работы с байтами 
+
+
+
+
+
+#### Реализации
+
+✓`FileOutputStream` – файл
+
+✓$\textcolor{green}{\texttt{ByteArrayOutputStream}}$ – массив байт
+
+✓`BufferedOutputStream` – буферизированная обёртка
+
+✓`PrintStream` – для удобства печати (System.out)
+
+✓`DataOutputStream` – структурированные двоичные данные
+
+✓`PipedOutputStream` (тоже плохой)
+
+✓`Process.getOutputStream()` – стандартный ввод процесса
+
+✓`URL.openConnection().getOutputStream()` – писать в URL (HTTP POST)
+
+✓...
+
+
+
+
+
+#### Методы
+
+Методы для записи, могут кинуть `IOException`. 
+
+✓`void write(int b) `→ записывает младшие 8 бит. Передается тип `int` $\in$ `[0..255]` вместо `byte`, который знаковый и $\in$ `[-128, 127]`.
+
+✓`void write(byte[] b)` → пишет весь массив (если не упал, то всё записал. Не может быть такого, что записалась часть)
+
+✓`void write(byte[] b, int offset, int length)` → часть массива
+
+✓`void flush()` -- сбрось кэши куда-нибудь (например, в файл)
+
+✓`void close()` 
+
+✓`static OutputStream nullOuputStream() `→ всё, записанное сюда, игнорируется, писать можно бесконечно
+
+
+
+***Note:*** у `ByteArrayOutputStream` реализация такая, что перечисленные методы не кидают `IOException`. Кроме `write(byte[] b)`. Прикол.
+
+
+
+
+
+##### Пример
+
+```java
+public static void main(String[] args) {
+    // создаем массив байт для записи
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    
+    baos.write(0x01);
+    baos.write(0x02);
+    baos.write(0x03);
+    
+    byte[] result = baos.toByteArray();
+    
+    System.out.println(Arrays.toString(result));
+    // [1, 2, 3]
+}
+```
+
+
+
+
+
+
+
+### Reader
+
+Для работы с символами
+
+
+
+
+
+#### Реализации
+
+✓`InputStreamReader (InputStream + charset)` -- чтение из `InputStream`
+
+✓`FileReader` (осторожно) -- чтение из файла
+
+- В Java 11 появился `FileReader(file, charset)`
+
+- В Java 18 используется UTF-8, по умолчанию
+
+✓`StringReader`
+
+✓`BufferedReader`
+
+- `String readLine()` -- считать строку до ближайщего `\n` 
+- `Stream<String> lines()` -- получить стрим, состоящий из строк 
+
+✓...
+
+
+
+
+
+#### Методы
+
+✓`int read()` → -1 или 0..0xFFFF
+
+✓`int read(char[] cb)` → количество прочитанных символов
+
+✓`int read(char[] cb, int offset, int length)` → количество прочитанных символов
+
+✓`long skip(long n)` → количество пропущенных символов. Работает не так быстро, как `skip()`  у байтов, потому что один символ может занимать $> 1$ байта.
+
+✓`boolean ready()` → можно ли прочитать хоть что-то без блокировки
+
+✓`void mark(int readlimit)`
+
+✓`void reset()`
+
+✓`boolean markSupported()`
+
+✓`long transferTo(Writer out)` – Java 10
+
+✓`static Reader nullReader()` – Java 11
+
+
+
+
+
+### Writer
+
+Для работы с символами 
+
+
+
+
+
+#### Реализации
+
+✓`OutputStreamWriter(OutputStream + charset)` -- запись в `OutputStream`
+
+✓`FileWriter` (осторожно)
+
+- В Java 11 появился `FileWriter(file, charset)`
+
+- В Java 18 используется UTF-8, по умолчанию 
+
+✓`StringWriter` 
+
+✓`BufferedWriter`
+
+✓...
+
+
+
+
+
+#### Методы
+
+✓`void write(int b)` → пишет 16 младших бит
+
+✓`void write(char[] cb) `→ пишет весь массив (если не упал, то всё
+записал)
+
+✓`void write(char[] cb, int offset, int length)` → часть массива
+
+✓`void write(String str) `→ пишет всю строку (если не упал, то всё записал)
+
+✓`void write(String str, int offset, int length)` → часть строки
+
+✓`void flush()`
+
+✓`void close()`
+
+✓`static Writer nullWriter()` – Java 11
+
+
+
+
+
+
+
+### `java.io.File` (классика)
+
+✓Представляет и путь к файлу, и сам файл (каталог и т. д.)
+
+✓Может быть абсолютным или относительным
+
+✓Относительный считается относительно текущего каталога Java-процесса (и его крайне трудно поменять)
+
+```java
+// new File(parentDirectory + "/" + fileName); -- bad
+// new File(parentDirectory + File.separator + fileName); -- bad
+File aboba = new File(parentDirectory, fileName); // OK
+```
+
+
+
+
+
+#### Методы
+
+✓getName()/getPath()/getParent()/getParentFile()
+
+✓getAbsoluteFile()/getAbsolutePath() -- абсолютный путь/файл
+
+✓getCanonicalFile()/getCanonicalPath() -- то же самое, но можно переходить и по символическим ссылкам
+
+✓exists()/canRead()/canWrite()/canExecute()/length()
+
+✓isDirectory()/isFile()/isHidden()
+
+✓createNewFile()/mkdir()/mkdirs()
+
+✓renameTo()/delete()
+
+✓list([filter]) (возвращает массив строк) / listFiles([filter]) (возвращает массив файловых объектов)
+
+
+
+
+
+#### Пример
+
+```java
+import java.io.File;
+
+public class Main {
+    public static void main(String[] args) {
+        String fname = args[0];
+        File f = new File(fname);
+  
+        System.out.println("File name :" + f.getName());
+        System.out.println("Path: " + f.getPath());
+        System.out.println("Absolute path:"
+                           + f.getAbsolutePath());
+        System.out.println("Parent:" + f.getParent());
+        System.out.println("Exists :" + f.exists());
+  
+        if (f.exists()) {
+            System.out.println("Is writable:"
+                               + f.canWrite());
+            System.out.println("Is readable" + f.canRead());
+            System.out.println("Is a directory:"
+                               + f.isDirectory());
+            System.out.println("File Size in bytes "
+                               + f.length());
+        }
+    }
+}
+```
+
+
+
+
+
+### `java.nio.file.[Path/Paths/Files]`
+
+Превратить строку (строки) в путь
+
+```java
+Path p = Paths.get("/etc/passwd");
+Path p = Paths.get(parentDirectory, fileName);
+Path p = Paths.get("foo", "bar", "baz");
+
+// начиная с Java 11:
+Path p = Path.of("/etc/passwd");
+Path p = Path.of(parentDirectory, fileName);
+Path p = Path.of("foo", "bar", "baz");
+```
+
+
+
+
+
+#### Методы
+
+✓`getFileName()`
+
+✓`getParent()`
+
+✓`getRoot()`
+
+✓`resolve(Path/String)`, `resolveSibling(Path/String)` -- ищет файл относительно текущего пути (первый -- в предках, второй -- в детях)
+
+✓`isAbsolute()`/`toAbsolutePath()`
+
+✓`startsWith(Path/String)`, `endsWith(Path/String)`
+
+✓`getName(int)`, `getNameCount()`, `iterator()`
+
+✓`toString()`/`toFile()`/`toUri()`
+
+✓`register(WatchService, WatchEvent.Kind...)`
 
 
 

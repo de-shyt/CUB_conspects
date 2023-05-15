@@ -12,6 +12,8 @@
 
 rustlings <img src="https://github.githubassets.com/images/icons/emoji/unicode/1f980.png" alt="crab" style="zoom:43%;" ><img src="https://github.githubassets.com/images/icons/emoji/unicode/2764.png" alt="heart" style="zoom:35%;" /> : https://github.com/rust-lang/rustlings
 
+книжечка с теорией: [rust-lang](https://doc.rust-lang.org/book/ch19-05-advanced-functions-and-closures.html?highlight=pointer#function-pointers)
+
 
 
 ### Crate
@@ -2428,5 +2430,73 @@ failed to resolve: could not find `visitors` in the crate root
 ### Линковка в стиле `C`
 
 Раст часто используется для взаимодействия с каким-то куском кода на другом языке. 
+
+
+
+
+
+
+
+
+
+## 23-03-28
+
+### Closures
+
+***Closure*** -- анонимная функция (функция без имени, да). В расте аргументы анонимной функции определяются внутри `|...|`, а тело функции -- внутри `{...}`:
+
+```rust
+|num| num + 1 
+// анонимная функция получает `i32` аргумент 
+// и возвращает `i32` значение
+```
+
+
+
+
+
+### Function pointers
+
+Можно передать функцию как аргумент в другую функцию. 
+
+Есть три типа указателей на функцию: 
+
+- `Fn` -- использует *немутабельные* ссылки на захваченные переменные
+
+  ```rust
+  fn apply_closure(closure: impl Fn(i32) -> i32, arg: i32) -> i32 {
+      closure(arg)
+  }
+  
+  fn main() {
+      let closure = |num| num + 1;
+      let result = apply_closure(closure, 5);
+      assert_eq!(result, 6);
+  }
+  ```
+
+- `FnMut` -- использует *мутабельные* ссылки на захваченные переменные
+
+  ```rust
+  fn apply_closure(mut closure: impl FnMut()) {
+      closure();
+  }
+  
+  fn main() {
+      let mut value = 42;
+      let closure = || value *= 2;
+      apply_closure(closure);
+      assert_eq!(value, 84);
+  }
+  ```
+
+- `FnOnce` -- получает уникальные ссылки на переменные и может быть вызвана только один раз 
+
+  
+
+
+
+
+
 
 
