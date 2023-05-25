@@ -562,7 +562,22 @@ C language does not know about name mangling. You need to use `extern "C" {}` ke
 
 ## 23-03-21
 
-### Defensive Programming \TODO
+### Defensive Programming
+
+*Defensive programming* = the creation of code for software designed to avoid problematic issues before they arise and to make the product more stable. 
+
+The basic idea behind this approach is to create a program that is able to run properly even when unforeseen processes or unexpected entries are made by users. 
+
+  - Assertions, Exceptions, Return codes  
+  - Loop invariants
+  - Class invariants:
+      - constructors should create a new object in a valid state
+      - methods should leave object in a valid state
+  - Method invariants:
+      - users must meet pre-conditions
+      - method guarantees post-conditions
+
+
 
 
 
@@ -572,9 +587,27 @@ C language does not know about name mangling. You need to use `extern "C" {}` ke
 
 ## 23-03-28
 
-### Configuration management \TODO 
+### Configuration management 
+
+*Software Configuration Management (SCM)* = the discipline of controlling the evolution of software systems
+
+*Revision* — software object that was created by modifying an existing one 
+
+*Variant* — two software objects sharing an important property, differing in others
+
+*Version* = Revision | Variant 
+
+*Release* — a version that has been made available to user/client
+
+*Configuration* — selection of components from the repository that together make up a release
 
 
+
+Three major configuration models:
+
+1. Composition model (conf = set of software objects)
+2. Change Set Model  (conf = package of changes)
+3. Long Transaction Model (conf = all changes are isolated into transactions)
 
 
 
@@ -672,7 +705,7 @@ Tests interactions among units:
 
 We have a dependency tree. There is *Top-Down Integration*, when we start testing from top to bottom. That is less convenient than *Bottom-Up Integration*:
 
-For exmaple, we have this fragment of the tree:
+For example, we have this fragment of the tree:
 
 ```asciiarmor
    B
@@ -766,3 +799,84 @@ Limitations:
 
 
 ##### Regression testing
+
+Regression testing = = after system changes , test a new version on old tests. Easy to do automatically.
+
+
+
+
+
+
+
+## 23-05-25
+
+### Documentation
+
+1. Internal — comments inside the code 
+2. External — separate doc about the code 
+3. User doc — explanation of what the code does from the user's view
+
+
+
+
+
+
+
+### Event-driven programming
+
+**Event** — something happens (i.e. mouse motion). Event has properties (i.e. cursor position). Events form Event Queue. 
+
+**Widget** — a layer between the event queue and the code. 
+
+
+
+
+
+#### Event loop
+
+```c++
+while (app is running) {
+  take event from event queue; 
+  pass it to the right widget;
+}
+```
+
+
+
+
+
+#### MVC
+
+**MVC** (Model-View-Controller) — an architecture for interactive apps
+
+- *Model* — information the app is trying to manipulate
+- *View* — implements visual display of the model 
+- *Controller* — receives input events from user and process them
+
+
+
+
+
+
+
+### UI design
+
+#### Pressman's Golden Rules
+
+1. **Place User in Control**: make the usage more comfortable for the user 
+      - avoid creating unnecessary interactions
+      - allow user to interrupt or undo interactions
+      - allow customizing the interface
+      - hide technical internals
+2. **Reduce User’s Memory Load**: the user хочет запоминать о функционале как можно меньше 
+      - Reduce demand on short-term memory
+      - provide meaningful defaults, undo and redo; visual cues; intuitive shortcuts
+      - use real-world metaphors (words and actions should match the environment?)
+3. **Make Interface Consistent**
+      - put current task into meaningful context
+      - if interaction has created expectations, do not change
+
+
+
+
+
