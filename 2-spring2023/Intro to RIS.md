@@ -16,6 +16,8 @@
 
 **Kinetics** is concerned with the relationship between motion and its causes, specifically, forces and torques. 
 
+**Dynamics** studies forces and their effect on motion. 
+
 
 
 
@@ -23,6 +25,60 @@
 
 
 ## 23-02-07
+
+### Vector 
+
+#### Vector norm
+
+A norm is a function $f \ : \ R^n \rightarrow R$ that satisfies 4 properties:
+
+1.  Non-negativity: $\forall x \in R^n \ : \ f(x) \geqslant 0$
+2.  Definiteness: $f(x) = 0 \Rightarrow x = 0$
+3.  Homogeneity: $\forall x \in R^n, t \in R \ : \ f(tx) = |t| f(x)$
+4. Triangle inequality: $\forall x, y \in R^n \ : \ f(x + y) \leqslant f(x) + f(y)$
+
+
+
+Euclidean vector norm (2-norm): $||x||_2 = \sqrt{\sum \limits_{i = 1}^{n} x_i^2}$
+
+$||x||_2 = \sqrt{x^{T} x}$
+
+General $p$-norms, $p \geqslant 1$:   $||x||_p = (\sum \limits_{i=1}^n |x_i|^p)^{\frac{1}{p}}$
+
+$||x||_{\infty} = \max \limits_i |x_i|$
+
+
+
+
+
+#### Dot product 
+
+$[x_1 ... x_n] \cdot \begin{bmatrix} y_1 \\ \vdots \\ y_n \end{bmatrix} = \sum \limits_{1}^{n} x_iy_i$
+
+
+
+
+
+#### Cross product 
+
+<img src="./pics for conspects/RIS/RIS 23-05-25 1.png" alt="RIS 23-05-25 1" style="zoom:45%;" />
+
+
+
+Properties:
+
+- $a \times a = 0$
+- $||a \times b|| = ||a|| \cdot ||b|| \cdot \sin \theta$ where $\theta$ is the angle between $a$ and $b$
+- if $a$ and $b$ are parallel, then $a \times b = 0$  $\textcolor{grey}{\scriptsize (since \ \sin \theta = 0)}$
+- cross product is not commutative: $a \times b = - b \times a$
+- cross product is not associative: $a \times (b \times c) \neq (a \times b) \times c $
+- cross product is distributive: $a \times (b + c) = a \times b + a \times c$
+
+
+
+
+
+
 
 ### Matrix operations
 
@@ -58,30 +114,7 @@
 
 
 
-### Vector norm
-
-A norm is a function $f \ : \ R^n \rightarrow R$ that satisfies 4 properties:
-
-1.  Non-negativity: $\forall x \in R^n \ : \ f(x) \geqslant 0$
-2.  Definiteness: $f(x) = 0 \Rightarrow x = 0$
-3.  Homogeneity: $\forall x \in R^n, t \in R \ : \ f(tx) = |t| f(x)$
-4. Triangle inequality: $\forall x, y \in R^n \ : \ f(x + y) \leqslant f(x) + f(y)$
-
-
-
-Euclidean vector norm (2-norm): $||x||_2 = \sqrt{\sum \limits_{i = 1}^{n} x_i^2}$
-
-$||x||_2 = \sqrt{x^{T} x}$
-
-General $p$-norms, $p \geqslant 1$:   $||x||_p = (\sum \limits_{i=1}^n |x_i|^p)^{\frac{1}{p}}$
-
-$||x||_{\infty} = \max \limits_i |x_i|$
-
-
-
-
-
-### Matrix multiplication
+#### Multiplication
 
 - associative: $(AB)C = A(BC)$
 - distributive: $A(B+C) = AB + AC$
@@ -91,11 +124,9 @@ $||x||_{\infty} = \max \limits_i |x_i|$
 
 
 
-### Determinant
+#### Determinant
 
-
-
-#### Properties
+Properties:
 
 - $\det AB = \det BA$
 - $\det A^{-1} = \frac{1}{\det A}$
@@ -105,7 +136,7 @@ $||x||_{\infty} = \max \limits_i |x_i|$
 
 
 
-### Inverse
+#### Inverse
 
 Given a matrix $A$, its inverse is a matrix $A^{-1}$ such that $A A^{-1} = A^{-1} A = 1$. 
 
@@ -115,7 +146,7 @@ Inverse matrices do not exist for non-square matrices.
 
 
 
-#### Properties
+Properties:
 
 - $(A^{-1})^{-1} = A$
 - $(AB)^{-1} = B^{-1} A^{-1}$
@@ -330,7 +361,7 @@ $\det \mathcal{A} = \det D = \lambda_1 \cdot \ldots \cdot \lambda_n$.
 
 $a_x = a \cos \theta, \ a_y = a \sin \theta$
 
-$a = sqrt{a_x^2 + a_y^2}$
+$a = \sqrt{a_x^2 + a_y^2}$
 
 $\theta = \arctan \frac{a_y}{a_x}$
 
@@ -372,13 +403,126 @@ Counter-clockwise direction
 
   
 
-- around z-axis:
+- around x-axis:
 
   $R_z(\alpha) = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & \cos \alpha & -\sin \alpha & 0 \\ 0 & \sin \alpha & \cos \alpha & 0  \\ 0 & 0 & 0 & 1 \end{pmatrix}$
 
 
 
 
+
+
+
+
+
+## 23-02-21
+
+### Quaternions
+
+$V$ is a $3$-dimensional matrix. 
+
+$q = (a, V) = (a, b, c, d)$
+
+$a$ is a scalar, $(b, c, d)$ is a vector.
+
+
+
+$q = (a, b, c, d) = a + bi + cj + dk$
+
+$i, j, k$ are basis vectors of 3-dimensional matrix. They satisfy the rule:
+
+<img src="./pics for conspects/RIS/RIS 23-02-21 3.png" alt="RIS 23-02-21 3" style="zoom:80%;" />
+
+*Proof:*
+
+ <img src="./pics for conspects/RIS/RIS 23-02-21 4.png" alt="RIS 23-02-21 4" style="zoom:31%;" />
+
+$ijk = -1 \ \underset{i \cdot...}{\Rightarrow} -jk = -i \Rightarrow jk = i$
+
+
+
+The **norm** $||q || = \sqrt{a^2 + b^2 + c^2 + d^2}$
+
+
+
+Quaternion **conjugate** (сопряженная матрица) $q^* = (a, -b, -c, -d)$. 
+
+$q \cdot q^* = |q|^2 \ \Rightarrow$ Quaternion **inverse** $q^{-1} = \frac{q^*}{|q|^2}$
+
+
+
+
+
+
+
+#### Get a 4-dimensional matrix
+
+$$
+q = (a, b, c, d) = 
+\begin{bmatrix} 
+a & -b & -c & -d \\
+b & a & -d & c \\
+c & d & a & -b \\
+d & -c & b & a 
+\end{bmatrix}
+$$
+
+
+
+
+
+
+
+#### Addition / subtraction
+
+<img src="./pics for conspects/RIS/RIS 23-02-21 1.png" alt="RIS 23-02-21 1" style="zoom:80%;" />
+
+
+
+
+
+
+
+#### Multiplication 
+
+- associative
+- not commutative
+
+
+
+Раскрываем скобочки и применяем правила
+
+<img src="./pics for conspects/RIS/RIS 23-02-21 2.png" alt="RIS 23-02-21 2" style="zoom:80%;" />
+
+
+
+
+
+## 23-02-24
+
+### 3d-rotations
+
+#### Rodrigues Rotation
+
+<img src="./pics for conspects/RIS/RIS 23-02-24 1.png" alt="RIS 23-02-24 1" style="zoom:50%;" />
+
+We want to rotate vector $v$ around axis $n$ with the angle $\theta$. 
+
+$v_{||}$ is a projection of $v$ on axis $n$. $v_{\bot}$ is a projection on the plain. 
+
+
+
+$v = v_{||} + v_{\bot}$ -- the initial vector 
+
+$v' = v'_{||} + v'_{\bot}$ -- the result vector 
+
+
+
+$v'_{||} = v_{||} = (v \cdot n) \times n$   ($n$ is normalized, value in brackets is a scalar)
+
+
+
+$v' = \cos \theta \cdot v + (1 - \cos \theta ) \cdot v_{ll} + \sin \theta \cdot (n \times v)$
 
 
 
