@@ -451,6 +451,11 @@ int[][] twoDsimple = { {1, 2, 3}, {4, 5}, {6} };
 Методы класса `Array`: [java.util.Arrays](https://courses.cs.washington.edu/courses/cse341/98au/java/jdk1.2beta4/docs/api/java/util/Arrays.html)
 
 ```java
+int[][] tmp = new int[3][];
+
+Arrays.fill(tmp, 0, tmp.length, new {1});
+// заполнить массив начальными значениями 
+
 int[][] ints = { {1, 2, 3}, {4, 5}, {6} };
 
 System.out.println(ints.length);
@@ -680,6 +685,29 @@ Person.unnamed("aboba address");
 
 
 
+##### Self-referential class
+
+Класс типа `Type`, у которого есть поле такого же типа `Type`:
+
+```java
+class Aboba {
+    private Aboba abobaField;
+    private String data;
+    
+    public Aboba() {}
+}
+```
+
+При неправильном написани конструктора можно закончить в бесконечном цикле и получить ошибку `StackOverflowError` в рантайме.  
+
+Такая штука используется, например, при реализации Singleton pattern. 
+
+
+
+
+
+
+
 ### `instanceof`
 
 Оператор, чтобы проверить, является ли объект инстансом определенного класса:
@@ -825,7 +853,7 @@ abstract static class AbstractSwimmable extends Swimmable {
 
 #### Модификатор `sealed`
 
-Используется для классов или интерфейсов Что-то среднее между final и не-final. Явно определяет список возможных наследников с помощью слова `permits`:
+Используется для классов или интерфейсов. Что-то среднее между final и не-final. Явно определяет список возможных наследников с помощью слова `permits`:
 
 ```java
 sealed interface Swimmable permits Duck {
@@ -938,6 +966,53 @@ for (Weekday weekday : Weekday.values()) {
     System.out.println(workingHours(weekday))
 }
 ```
+
+
+
+
+
+
+
+### Dependency Injection (DI)
+
+*Dependency injection* is a way of organizing and connecting different parts of a software application. It allows the dependencies of a class to be provided <u>externally</u> rather than being created or managed <u>within the class itself</u>.
+
+There are three types of DI: 
+
+- **Constructor Injection** -- dependencies are provided as parameters in the constructor:
+
+  ```java
+  public class MyClass {
+      private Dependency dependency;
+  
+      public MyClass(Dependency dependency) {
+          this.dependency = dependency;
+      }
+  }
+  ```
+
+- **Setter Injection** -- dependencies are set through the setter methods:
+
+  ```java
+  public class MyClass {
+      private Dependency dependency;
+  
+      public void setDependency(Dependency dependency) {
+          this.dependency = dependency;
+      }
+  }
+  ```
+
+- **Method Injection** -- dependencies are passed as parameters to the method of the class:
+
+  ```java
+  public class MyClass {
+      ...
+      public void doSomething(Dependency dependency) {
+          // Use the dependency here
+      }
+  }
+  ```
 
 
 
