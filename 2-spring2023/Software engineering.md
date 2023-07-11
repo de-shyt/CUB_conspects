@@ -269,7 +269,305 @@ In whole, UML is better for enterprise apps (millions of possible directions) an
 
 ## 23-02-28
 
+### Software architecture
+
+*Software architecture* -- SA -- a pattern, which describes all inner components of the system and interactions between them. You can visualize SA through UMLs. 
+
+For a better understanding, there are a few basic types of software architecture:
+
+- **Application architecture** -- focuses on the structure and organization of the software app. It considers aspects like the choice of programming languages, frameworks, libraries, and patterns to achieve the desired functionality and maintainability. Example: monolithic, microservices, and layered architectures.
+- **Information architecture** -- deals with the structure and organization of information within a system or a website. It focuses on how information is categorized, organized, and presented to users. It is about creating site maps, navigation menus, content categorization, and defining metadata. 
+- **Database architecture** -- refers to the design, development, implementation and maintenance  of a database system. There are various database architecture models, such as hierarchical, network, relational, and object-oriented. 
+- **Network architecture** -- involves the design and organization of computer networks. It defines how devices are connected and communicate with each other. Network architecture includes decisions about network topology, protocols, addressing, security measures, and network hardware. Examples: client-server, peer-to-peer, and hybrid architectures.
+
+
+
+
+
+
+
 ### Design patterns
+
+#### Creational patterns
+
+*Provide more flexibility in how the objects are actually created.*
+
+
+
+
+
+
+
+##### Singleton
+
+Guarantees that only one instance of the class exists.
+
+
+
+Simple implementation:
+
+```java
+// `instance` field is static, since `getInstance` method needs to be static
+public class Singleton {
+    private static Singleton instance;
+    private String data;
+
+    private Singleton(String data) {
+        this.data = data;
+    }
+
+    public static Singleton getInstance(String data) {
+        if (instance == null) {
+            instance = new Singleton(data);
+        }
+        return instance;
+    }
+}
+
+
+class Main {
+    public static void main(String[] args) {
+        Singleton singleton = Singleton.getInstance("aboba");
+    }
+}
+```
+
+
+
+Thread-safe implementation:
+
+```java
+public class Singleton {
+    private static volatile Singleton instance;
+    private String data;
+
+    private Singleton(String data) {
+        this.data = data;
+    }
+
+    public static Singleton getInstance(String data) {
+        // use `result` variable, since `instance` is volatile
+        // thus, we read directly from the main memory only once
+        Singleton result = instance;
+        if (result == null) {
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    instance = new Singleton(data);
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+
+
+
+
+
+
+
+##### Factory
+
+Separates the product's construction code from the code that uses this product. 
+
+It relies heavily on inheritance. 
+
+```java
+// Product interface
+interface Product {
+    void use();
+}
+
+
+// Concrete products
+class ConcreteProductA implements Product {
+    @Override
+    public void use() {
+        System.out.println("Using ConcreteProductA");
+    }
+}
+
+class ConcreteProductB implements Product {
+    @Override
+    public void use() {
+        System.out.println("Using ConcreteProductB");
+    }
+}
+
+
+// "Factory" class
+class Creator {
+    public static Product createProduct(String type) {
+        if (type.equalsIgnoreCase("A")) {
+            return new ConcreteProductA();
+        } else if (type.equalsIgnoreCase("B")) {
+            return new ConcreteProductB();
+        }
+        throw new IllegalArgumentException("Invalid product type: " + type);
+    }
+}
+
+
+// the products are used here
+public class Main {
+    public static void main(String[] args) {
+        Product productA = ProductFactory.createProduct("A");
+        productA.use();  // Output: Using ConcreteProductA
+
+        Product productB = ProductFactory.createProduct("B");
+        productB.use();  // Output: Using ConcreteProductB
+    }
+}
+```
+
+
+
+
+
+
+
+##### Abstract factory
+
+Allows to produce a group of related objects without specifying their concrete classes. 
+
+```java
+// Abstract Product A
+interface ProductA {
+    void use();
+}
+
+// Concrete Product A1
+class ConcreteProductA1 implements ProductA {
+    @Override
+    public void use() {
+        System.out.println("Using ConcreteProductA1");
+    }
+}
+
+// Concrete Product A2
+class ConcreteProductA2 implements ProductA {
+    @Override
+    public void use() {
+        System.out.println("Using ConcreteProductA2");
+    }
+}
+
+
+
+
+
+// Abstract Product B
+interface ProductB {
+    void interact(ProductA productA);
+}
+
+// Concrete Product B1
+class ConcreteProductB1 implements ProductB {
+    @Override
+    public void interact(ProductA productA) {
+        System.out.println("Interacting with ConcreteProductA1");
+        productA.use();
+    }
+}
+
+// Concrete Product B2
+class ConcreteProductB2 implements ProductB {
+    @Override
+    public void interact(ProductA productA) {
+        System.out.println("Interacting with ConcreteProductA2");
+        productA.use();
+    }
+}
+
+
+
+
+
+// Abstract Factory
+interface AbstractFactory {
+    ProductA createProductA();
+    ProductB createProductB();
+}
+
+// Concrete Factory 1
+class ConcreteFactory1 implements AbstractFactory {
+    @Override
+    public ProductA createProductA() {
+        return new ConcreteProductA1();
+    }
+
+    @Override
+    public ProductB createProductB() {
+        return new ConcreteProductB1();
+    }
+}
+
+// Concrete Factory 2
+class ConcreteFactory2 implements AbstractFactory {
+    @Override
+    public ProductA createProductA() {
+        return new ConcreteProductA2();
+    }
+
+    @Override
+    public ProductB createProductB() {
+        return new ConcreteProductB2();
+    }
+}
+
+
+
+
+
+// Client code
+public class Main {
+    public static void main(String[] args) {
+        AbstractFactory factory1 = new ConcreteFactory1();
+        ProductA productA1 = factory1.createProductA();
+        ProductB productB1 = factory1.createProductB();
+        productB1.interact(productA1);
+        // Output:
+        // Interacting with ConcreteProductA1
+        // Using ConcreteProductA1
+
+        AbstractFactory factory2 = new ConcreteFactory2();
+        ProductA productA2 = factory2.createProductA();
+        ProductB productB2 = factory2.createProductB();
+        productB2.interact(productA2);
+        // Output:
+        // Interacting with ConcreteProductA2
+        // Using ConcreteProductA2
+    }
+}
+
+```
+
+A real-world example is when there are two independent factories that can produce laptops and phones. Here, `productA = laptop` and `productB = phone`, but products at the first factory differ from product at the second factory. 
+
+
+
+
+
+
+
+#### Structural patterns
+
+*Deal with inheritance and composition to provide extra functionality.*
+
+
+
+
+
+#### Behavioral patterns
+
+*Are about communication and assignment of responsibilities between objects.*
+
+
+
+
+
+
 
 #### Types of patterns
 
@@ -279,11 +577,11 @@ In whole, UML is better for enterprise apps (millions of possible directions) an
 
   • Builder -- Separates object construction from its representation 
 
-  • Factory -- Method Creates an instance of several derived classes 
+  • + Factory -- Method Creates an instance of several derived classes 
 
   • Prototype -- A fully initialized instance to be copied or cloned 
 
-  • Singleton -- A class of which only a single instance can exist 
+  • + Singleton -- A class of which only a single instance can exist 
 
 - structural
 
