@@ -629,64 +629,6 @@ A real-world example is when there are two independent factories that can produc
 
 
 
-#### Singleton pattern
-
-It is about creating only one instance of a class that is shared between other objects in the application. 
-
-The main downside of this pattern is the possibility of race conditions, when several objects try to write into the same variable. 
-
-
-
-
-
-##### Example: creating a singleton class 
-
-```javascript
-// fancyLogger.js
-
-class FancyLogger {
-    constructor() {
-        if (FancyLogger.instance == null) { // <=> no instances yet
-        	this.logs = []
-            FancyLogger.instance = this
-        }
-    }
-    
-    log(message) {
-        this.logs.push('${message}')
-    }
-    
-    printLogCount() {
-        console.log('${this.logs.length} logs')
-    }
-}
-
-const logger = new FancyLogger()
-Objects.freeze(logger) // now FancyLogger class cannot have new methods or variables
-
-export default logger
-// if there is `import` in another file, we will export the instance, not the class
-```
-
-
-
-```javascript
-// simpleFile.js
-
-import logger from './fancyLogger.js'
-
-export default function simpleFunction() {
-    logger.log('aboba')
-    logger.printLogCount()
-}
-```
-
-
-
-
-
-
-
 #### The Observer Pattern
 
 The Observer Pattern defines a "one-to-many" dependency between objects (there is one object $A$ and several objects which are dependent on $A$). When one object changes state, all of its dependencies are notified and updated automatically. 
@@ -923,44 +865,11 @@ Software Testing = process of exercising a program in order to find errors befor
 
 Developer understands the system but tests it "gently". Independent tester must learn about the system and attempts to break it. 
 
-Testing shows errors, requirements conformance, performance and, of course, quality of the code. The code with tests should be well structured and should have a documentation. 
+Testing shows errors, requirements conformance, performance and the quality of the code (reliability, robustness, security, etc). The code with tests should be well structured and should have a documentation. 
 
 Source code and test code should be separated. 
 
 
-
-
-
-#### Software Costs
-
-requirements << design & documentation << testing <<< maintenance 
-
-
-
-
-
-#### Test Feature Space
-
-1. Automation
-   - manual
-   - automatic
-2. Accessibility
-   - black box -- testing code without knowing the source code
-   - white box (glass-box testing) -- the opposite to the black box
-   - grey box
-3. Level of testing 
-   - unit tests
-   - integration
-   - system
-   - acceptance
-   - regression
-4. Quality of code 
-   - correctness
-   - reliability
-   - robustness
-   - performance
-   - security
-   - ...
 
 
 
@@ -976,68 +885,21 @@ A "good" test case is when it is likely to produce an error.
 
 
 
-#### 	Types of testing 
-
-<img src="./pics for conspects/SE/SE 23-04-18.png" alt="SE 23-04-18" style="zoom:80%;" />
 
 
+#### 	Levels of testing 
 
+**Unit testing** — tests for every non-trivial function or method
 
+**Integration testing** — check the integration of the application with all the outside components
 
-##### Unit testing 
+**End-to-end testing** — check the entire system from start to end. performed under real-world scenarios, but they're expensive to perform and can be hard to maintain when they're automated.
 
-Code is divided into modules. Every module is tested on local data structures, boundary conditions, error handling paths. 
-
-Test unit = code that tests target. Test unit consists of one or more test modules. 
+**UI testing** — simulate user actions.
 
 
 
-
-
-##### Integration testing
-
-Tests interactions among units:
-
-- Import/export type compatibility
-- range errors
-
-We have a dependency tree. There is *Top-Down Integration*, when we start testing from top to bottom. That is less convenient than *Bottom-Up Integration*:
-
-For example, we have this fragment of the tree:
-
-```asciiarmor
-   B
-  / \
- C   E
-```
-
-First, we test interactions between classes (modules) $B$ and $C$, then add class $E$ and test interactions between $B$ and $E$. 
-
-
-
-
-
-##### System Testing
-
-- Determine whether system meets requirements. 
-
-- Focus on use & interaction of system functionalities, rather than details of implementations. 
-
-- Should be carried out by a group independent of the code developers
-
-Types of system testing are alpha and beta testing. 
-
-
-
-
-
-##### Acceptance Testing
-
-It is about checking to what degree an application meets end users' approval. 
-
-- structure the code of demo 
-- be sure that the demo works
-- agree on schedule & criteria beforehand
+**Beta testing** — requires volunteers who will use the product for a while and point out its shortcomings.
 
 
 
@@ -1049,13 +911,9 @@ It is about checking to what degree an application meets end users' approval.
 
 ##### Static testing 
 
-Collects information about a software without executing it (Reviews, walkthroughs, and inspections; static analysis; formal verification; documentation testing)
+Сollects information about a software without executing it (Reviews, walkthroughs, and inspections; static analysis; formal verification; documentation testing)
 
-
-
-###### Static analysis
-
-Control flow analysis and data flow analysis
+*Static analysis* -- сontrol flow analysis and data flow analysis
 
 Examples of errors that can be found:
 
@@ -1068,29 +926,36 @@ Examples of errors that can be found:
 
 
 
+
+
 ##### Dynamic testing 
 
 Collects information about a software with executing it
 
+1. **White-box testing** -- looks inside module/class. 
+   - check that all statements & conditions have been executed at least once
+   - check that no requirements are missing 
+
+2. **Black-Box testing** -- no knowledge about code internals, relying only on interface specifications.
+
+   Limitations:
+
+   - Specs are not always available
+   - Many companies still have only code, there is no other document
 
 
-###### White-box testing 
-
-Looks inside module/class. 
-
-- check that all statements & conditions have been executed at least once
-- check that no requirements are missing 
 
 
 
-###### Black-Box testing 
 
-No knowledge about code internals, relying only on interface specifications.
 
-Limitations:
+##### Smoke testing
 
-- Specs are not always available
-- Many companies still have only code, there is no other document
+Executed to verify that critical functional parts are performing as expected and the whole system is stable. It makes no sense to send a program that has not passed this test for deeper testing.
+
+Can be implemented at any level because the developers can make changes at any level.
+
+
 
 
 
@@ -1098,7 +963,15 @@ Limitations:
 
 ##### Regression testing
 
-Regression testing = = after system changes , test a new version on old tests. Easy to do automatically.
+Confirms that implemented changes have not negatively impacted the existing functionality/feature set. 
+
+Simply, it is about executing tests that already exist in order to check that the old code still works correctly. 
+
+Can be implemented at any level because the developers can make changes at any level.
+
+
+
+
 
 
 
@@ -1147,8 +1020,8 @@ while (app is running) {
 
 **MVC** (Model-View-Controller) — an architecture for interactive apps
 
-- *Model* — information the app is trying to manipulate
-- *View* — implements visual display of the model 
+- *Model* — all data and logic
+- *View* — visual display of the model
 - *Controller* — receives input events from user and process them
 
 
