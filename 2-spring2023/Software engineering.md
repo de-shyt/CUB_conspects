@@ -551,6 +551,250 @@ A real-world example is when there are two independent factories that can produc
 
 
 
+##### Builder
+
+Allows to produce <u>different</u> types and representations of an object using the <u>same construction process</u>. We extract the object creation code out of its class and move it to separate objects called *builders*.
+
+- the builder has the same fields as the class
+- the builder has setter-methods for every field and a `build()` method responsible for creating the class instance
+- no-argument constructor is used for creating the builder
+
+
+
+This is the basic idea:
+
+```java
+public class Car {
+    private final String brand;
+    private final String color;
+    private final String model;
+
+    // constructor should be package-private of protected
+    Car(String brand, String color, String model) {
+        this.brand = brand;
+        this.color = color;
+        this.model = model;
+    }
+}
+
+
+
+public class CarBuilder {
+    private String brand;
+    private String color;
+    private String model;
+
+    public CarBuilder brand(String brand) {
+        this.brand = brand;
+        return this;
+    }
+
+    public CarBuilder color(String color) {
+        this.color = color;
+        return this;
+    }
+
+    public CarBuilder model(String model) {
+        this.model = model;
+        return this;
+    }
+
+    public Car build() {
+        return new Car(brand, color, model);
+    }
+}
+
+
+
+class Main {
+    public static void main(String[] args) {
+        CarBuilder builder = new CarBuilder()
+                .brand("Mitsubishi").color("red").model("b612");
+        Car car = builder.build();
+    }
+}
+```
+
+
+
+Sometimes the same creation code is used to create several objects (for example, creating many `Bugatti` cars and many `Lamborgini` cars). In this case, we can use a **Director** -- a class which defines specific configurations depending on the case. 
+
+```java
+public class Director {
+    public void buildBugatti(CarBuilder builder) {
+        builder.brand("Bugatti")
+                .color("Blue")
+                .model("bugatti model");
+    }
+
+    public void buildLamborghini(CarBuilder builder) {
+        builder.brand("Lamborghini")
+                .color("Yellow")
+                .model("lambo model");
+    }
+}
+```
+
+Using a director is optional. Still, its advantage is that it completely hides the details of the product construction from the client code:
+
+```java
+public static void main(String[] args) {
+    Director director = new Director();
+    CarBuilder builder = new CarBuilder();
+    
+    director.buildBugatti(builder);
+    
+    Car car = builder.build();
+}
+```
+
+
+
+
+
+
+
+##### Prototype
+
+Every class that supports cloning is called a *prototype*.
+
+The idea of the Prototype pattern is to delegate the object cloning process to the actual objects that are being cloned. 
+
+- the class should have a copy constructor and a `clone()` method overriden from the parent class
+- the `clone()` method invokes the copy constructor
+- the copy constructor both copies values of the class's fields and invokes the parent's copy constructor 
+
+
+
+```java
+public abstract class Vehicle {
+    private final String color;
+    private final String brand;
+
+    protected Vehicle(String color, String brand) {
+        this.color = color;
+        this.brand = brand;
+    }
+
+    // copy constructor — should be protected
+    protected Vehicle(Vehicle other) {
+        this.color = other.color;
+        this.brand = other.brand;
+    }
+
+    public abstract Vehicle clone();
+}
+```
+
+```java
+public class Car extends Vehicle {
+    private final String model;
+
+    public Car(String color, String brand, String model) {
+        super(color, brand);
+        this.model = model;
+    }
+
+    protected Car(Car other) {
+        super(other);
+        this.model = other.model;
+    }
+
+    @Override
+    public Car clone() {
+        return new Car(this);
+    }
+}
+```
+
+```java
+public class Bus extends Vehicle {
+    private final int amountOfPlaces;
+
+    Bus(String color, String model, int amountOfPlaces) {
+        super(color, model);
+        this.amountOfPlaces = amountOfPlaces;
+    }
+
+    Bus(Bus other) {
+        super(other);
+        this.amountOfPlaces = other.amountOfPlaces;;
+    }
+
+    @Override
+    public Vehicle clone() {
+        return new Bus(this);
+    }
+}
+```
+
+
+
+
+
+###### Shallow vs Deep copy
+
+Imagine, we have fields of a reference type. For example, we use a class `Engine` as a field for a `Car` class:
+
+```java
+public class Car extends Vehicle {
+    private final String model;
+    private final Egnine engine;
+
+    // constructor
+
+    protected Car(Car other) {
+        super(other);
+        this.model = other.model;
+        this.engine = other.engine; // <------ shallow copy
+        //          = other.engine.clone(); <------ deep copy
+    }
+
+    @Override
+    public Car clone() {
+        return new Car(this);
+    }
+}
+```
+
+
+
+- Shallow copy = we simply assign a value from the `other`'s field
+
+  ```java
+  public class Car extends Vehicle {
+      private final Egnine engine;
+      ...
+      
+      protected Car(Car other) {
+          super(car);
+          // assign values to other `Car` fields
+          this.engine = other.engine;
+      }
+  }
+  ```
+
+- Deep copy = we use `clone()` to get a copy of the `other`'s field
+
+  ```java
+  public class Car extends Vehicle {
+      private final Egnine engine;
+      ...
+      
+      protected Car(Car other) {
+          super(car);
+          // assign values to other `Car` fields
+          this.engine = other.engine.clone();
+      }
+  }
+  ```
+
+  
+
+
+
+
+
 #### Structural patterns
 
 *Deal with inheritance and composition to provide extra functionality.*
@@ -569,7 +813,37 @@ A real-world example is when there are two independent factories that can produc
 
 
 
-#### Types of patterns
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*NEED TO BE EDITED*
+
+
+
+
+
+
+
+**Types of patterns**
 
 - creational
 
@@ -629,7 +903,7 @@ A real-world example is when there are two independent factories that can produc
 
 
 
-#### The Observer Pattern
+**The Observer Pattern**
 
 The Observer Pattern defines a "one-to-many" dependency between objects (there is one object $A$ and several objects which are dependent on $A$). When one object changes state, all of its dependencies are notified and updated automatically. 
 
@@ -643,7 +917,7 @@ Why The Observer Pattern is important? Imagine we have several changes in the ti
 
 
 
-##### Example
+**Example**
 
 <img src="./pics for conspects/SE/SE 23-02-28 1.png" alt="SE 23-02-28 1" style="zoom:67%;" />
 
@@ -653,7 +927,7 @@ Why The Observer Pattern is important? Imagine we have several changes in the ti
 
 
 
-#### The Mediator Pattern
+**The Mediator Pattern**
 
 The Mediator Pattern defines an object that encapsulates how a set of other objects interact with one another. In other word, the mediator controls the communication between objects. 
 
@@ -665,7 +939,7 @@ As opposed to the Observer Pattern, objects send  request to the mediator and ge
 
 
 
-#### The Facade Pattern
+**The Facade Pattern**
 
 We need a centralized place to put all of the logic inside it and to restrict direct access to the inner workings of the library/framework/other complex class.
 
@@ -679,7 +953,7 @@ The main idea of the pattern is to make the subsystem easier to use. Instead of 
 
 
 
-#### The Proxy Pattern
+**The Proxy Pattern**
 
 To begin with, the proxy-server acts like a firewall, a filter and a caching tool. It provides a high level of security and data protection by checking the data it receives. 
 
@@ -687,7 +961,7 @@ The Proxy Pattern provides a substitute (a placeholder) for the original object.
 
 
 
-##### Example
+**Example**
 
 We have a login form on the site. Before the user will see the personal account, he/she should enter correct login credentials. The proxy checks checks entered credentials and allows or denies the access. 
 
@@ -697,7 +971,7 @@ We have a login form on the site. Before the user will see the personal account,
 
 
 
-#### The Adapter Pattern
+**The Adapter Pattern**
 
 It is about making two incompatible interfaces compatible.
 
@@ -707,11 +981,29 @@ It is about making two incompatible interfaces compatible.
 
 
 
-#### Composite Pattern
+**Composite Pattern**
 
 It is about composing a set of objects into a tree and then work with trees as if they were individual objects. 
 
 All elements share a common interface allowing the client to treat individual objects and compositions (subtrees) in the same way. 
+
+
+
+
+
+
+
+
+
+
+
+*DOES NOT NEED TO BE EDITED ANYMORE*
+
+
+
+
+
+
 
 
 
