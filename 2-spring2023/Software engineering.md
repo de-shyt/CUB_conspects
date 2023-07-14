@@ -296,8 +296,6 @@ For a better understanding, there are a few basic types of software architecture
 
 
 
-
-
 ##### Singleton
 
 Guarantees that only one instance of the class exists.
@@ -789,9 +787,172 @@ public class Car extends Vehicle {
   }
   ```
 
-  
 
 
+
+
+
+
+
+#### Behavioral patterns
+
+*Are about communication and assignment of responsibilities between objects.*
+
+
+
+
+
+##### The Chain of Responsibility
+
+Transforms particular behaviors into stand-alone objects called *handlers*. 
+
+The basic idea is to delegate tasks to a proper handler. Each handler must either process a request or pass it along the chain. 
+
+A chain of handlers can be implemented as a linked list (using the `next` field). The client may trigger any handler in the chain, not only the first one. 
+
+Also, the Chain of Responsibility pattern allows to insert, remove or reorder handlers <u>dynamically</u>. 
+
+
+
+**Example**
+
+Basically, the `Handler` class has a `next` field, an abstract `handle()` method:
+
+```java
+public abstract class Handler {
+    private Handler next;
+
+    public Handler setNextHandler(Handler next) {
+        this.next = next;
+        return next;
+    }
+
+    protected boolean handleNext(String username, String password) {
+        if (next == null)
+            return true;
+        return next.handle(username, password);
+    }
+    
+    public abstract boolean handle(String username, String password);
+}
+```
+
+
+
+Imagine we have a verification process. There are a few steps to check before the user is logged in: 
+
+1. Validate username
+2. Validate password
+3. Check role 
+
+For each step, we create a handler: 
+
+```java
+public class ValidUserHandler extends Handler {
+    private final Database database;
+
+    public ValidUserHandler(Database database) {
+        this.database = database;
+    }
+
+    @Override
+    public boolean handle(String username, String password) {
+        if (!database.isValidUsername(username)) {
+            System.out.println("The user '" + username + "' does not exist");
+            return false;
+        }
+        return handleNext(username, password);
+    }
+}
+
+
+public class ValidPasswordHandler extends Handler {
+    private final Database database;
+
+    public ValidPasswordHandler(Database database) {
+        this.database = database;
+    }
+
+    @Override
+    public boolean handle(String username, String password) {
+        if (!database.isValidPassword(username, password)) {
+            System.out.println("Wrong password for user '" + username + "'");
+        }
+        return handleNext(username, password);
+    }
+}
+
+
+public class RoleCheckHandler extends Handler {
+    private final String adminUsername;
+
+    public RoleCheckHandler(String adminUsername) {
+        this.adminUsername = adminUsername;
+    }
+
+    @Override
+    public boolean handle(String username, String password) {
+        if (adminUsername.equals(username)) {
+            System.out.println("Loading Admin Page...");
+        } else {
+            System.out.println("Loading Default page...");
+        }
+        return handleNext(username, password);
+    }
+}
+```
+
+
+
+Finally, lets create a chain of handlers:
+
+```java
+class Main {
+    public static void main(String[] args) {
+        Database database = new Database();
+        Handler handler = new ValidUserHandler(database)
+                .setNextHandler(new ValidPasswordHandler(database))
+                .setNextHandler(new RoleCheckHandler("admin_username"));
+
+        handler.handle("abobaUser", "abobaPwd");
+    }
+}
+```
+
+
+
+Instead of invoking `handle()` method explicitly, a class `AuthService` can be created:
+
+```java
+public class AuthService {
+    private final Handler handler;
+
+    public AuthService(Handler handler) {
+        this.handler = handler;
+    }
+    
+    public boolean logIn(String username, String password) {
+        if (handler.handle(username, password)) {
+            System.out.println("Authorization was successful");
+            return true;
+        }
+        return false;
+    }
+}
+
+
+class Main {
+    public static void main(String[] args) {
+        Database database = Database.getInstance();
+        Handler handler = // create a chain of handlers 
+
+        AuthService service = new AuthService(handler);
+        service.logIn("abobaUser", "abobaPwd");
+    }
+}
+```
+
+ 
 
 
 
@@ -803,9 +964,7 @@ public class Car extends Vehicle {
 
 
 
-#### Behavioral patterns
 
-*Are about communication and assignment of responsibilities between objects.*
 
 
 
@@ -844,18 +1003,6 @@ public class Car extends Vehicle {
 
 
 **Types of patterns**
-
-- creational
-
-  • Abstract Factory -- Creates an instance of several families of classes 
-
-  • Builder -- Separates object construction from its representation 
-
-  • + Factory -- Method Creates an instance of several derived classes 
-
-  • Prototype -- A fully initialized instance to be copied or cloned 
-
-  • + Singleton -- A class of which only a single instance can exist 
 
 - structural
 
