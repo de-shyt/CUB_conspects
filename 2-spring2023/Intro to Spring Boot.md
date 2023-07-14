@@ -793,7 +793,7 @@ The same is about destruction. Before destroying the bean, some custom cleanup m
 
 
 
-#### **Option 1: using annotations**
+#### Option 1: using annotations
 
 **When it comes to a `@Component` class**, we can use `@PostConstruct` and `@PreDestroy` annotations to the methods. Spring will can methods annotated this way only once:
 
@@ -861,7 +861,7 @@ Instead of using attributes inside `@Bean` annotation, we still can add the `@Po
 
 
 
-#### **Option 2: implement some interfaces**
+#### Option 2: implement some interfaces
 
 Another way to customize the initialization and destruction of beans is to implement the `InitializingBean` and `DisposableBean` interfaces and override their `afterPropertiesSet` and `destroy` methods:
 
@@ -893,7 +893,7 @@ After the bean instance is created and all its properties have been set (via dep
 
 
 
-#### **Option 3: use an XML bean definition file**
+#### Option 3: use an XML bean definition file
 
 This is an outdated way mostly used for legacy applications. Forget it. 
 
@@ -975,6 +975,221 @@ logging.file.name=log/logfile.log
 ```
 
 Also, we defined the lowest level of logging  which is important for us. Here the information from `debug` and `trace` levels of logging will be ignored.
+
+
+
+
+
+
+
+## HTTP messages
+
+There are two types of messages: **requests** and **responses**. A request is an operation that a client wants to perform on the server, and a response is an answer from the server to an incoming request.
+
+
+
+
+
+### Format
+
+In the HTTP protocol, all messages consist of text strings. Both requests and responses have roughly the same standardized format:
+
+1. **Start line** -- $\textcolor{red}{\texttt{required}}$:
+   - for requests, it indicates the type of request (**method**) and the URL where to send it (**target**);
+   - for responses, it contains a status code to determine the success of the operation.
+2. **Headers** -- $\textcolor{red}{\texttt{required}}$: describe the message and convey various parameters.
+3. **Body** -- $\texttt{can be empty}$: contains data.
+
+
+
+
+
+### HTTP interaction
+
+<img src="./pics for conspects/spring_boot/http_messages.png" alt="http_messages" style="zoom:80%;" />
+
+
+
+
+
+### Methods
+
+HTTP defines a set of request types (methods) to interact with web resources. Here are the most commonly used query methods:
+
+- `GET` -- used to retrieve data from a resource. Multiple identical requests will have the same effect.
+- `HEAD` -- similar to `GET`, but retrieves only headers, without the response body.
+- `POST` -- submits data to the specified resource. It can create new resources or update existing ones. Multiple identical requests may have different effects.
+- `PUT` -- used to update or replace an existing resource with the request payload. Multiple identical requests will have the same effect.
+- `DELETE` -- deletes a specified resource. 
+
+
+
+
+
+### Status code
+
+| code pattern | description                                                  |
+| :----------- | ------------------------------------------------------------ |
+| `1xx`        | Information code. It means the request has been received and the process is continuing. |
+| `2xx`        | Success code. Informs that the client's action has been successfully accepted for processing. |
+| `3xx`        | Redirection code. It means further action must be taken in order to complete the request. |
+| `4xx`        | Client Error. It reports errors on the client's side.        |
+| `5xx`        | Server Error. It indicates that the operation was unsuccessful due to the fault of the server. |
+
+
+
+
+
+
+
+## Spring repositories
+
+We might want to update or delete the data from the database. These operations are called **CRUD** operations, short for Create, Read, Update, and Delete.
+
+In Java and Kotlin, we manipulate database data using an entity (it is simply a class). Spring data has the `Repository` concept. A **repository** is an abstraction that helps us reduce the amount of boilerplate code. Spring Data provides several repository interfaces. All these interfaces are database-agnostic. This means you can use these abstractions with any relational or NoSQL database.
+
+
+
+The base interface is **`Repository`**:
+
+```java
+@Indexed
+public interface Repository<T, ID> {}
+```
+
+`@Indexed` means that all descendants should be treated as candidates for repository beans. 
+
+The `Repository` interface is generic. `T` is the type of the entity, `ID` is the type of the primary key. 
+
+
+
+The **`CrudRepository`** interface is used for CRUD operations:
+
+```java
+@NoRepositoryBean
+public interface CrudRepository<T, ID> extends Repository<T, ID> {
+    // CREATE/UPDATE methods
+    <S extends T> S save(S entity);
+    <S extends T> Iterable<S> saveAll(Iterable<S> entities);
+
+    // READ methods
+    Optional<T> findById(ID id);
+    boolean existsById(ID id);
+    Iterable<T> findAll();
+    Iterable<T> findAllById(Iterable<ID> ids);
+    long count();
+
+    // DELETE methods
+    void deleteById(ID id);
+    void delete(T entity);
+    void deleteAllById(Iterable<? extends ID> ids);
+    void deleteAll(Iterable<? extends T> entities);
+    void deleteAll();
+}
+```
+
+The `CrudRepository` interface has basic auto-generated CRUD operations. 
+
+It has the same declared methods for the `Create` and `Update` operations. Under the hood, Spring data checks if a given entity is new or old and, depending on that, creates or updates the entity.
+
+
+
+
+
+### Declaring a repository
+
+Lets use a `Treadmill` class as an entity:
+
+```java
+// an annotation goes here
+public class Treadmill {
+    private Integer code;
+    private String model;
+
+    // constructors, getters, setters
+}
+```
+
+We didn't annotate the `Treadmill` class. The reason is that the entity declaration can vary depending on the actual database you are using. Depending on your target database, you have to choose:
+
+- `@Entity` (for relational databases. Also, `@Id` is used to mark a primary key)
+- `@Document` (for NoSQL document-oriented databases like MongoDB)
+- `@KeySpace` (for NoSQL graph database like Neo4J)
+- or another annotation.
+
+
+
+Now lets create a repo for `Treadmill` entities:
+
+```java
+public interface TreadmillRepository extends 
+    CrudRepository<Treadmill, Integer> {
+
+}
+```
+
+We will use the `Integer` property `code` as the ID. 
+
+
+
+Now lets use the repo:
+
+```java
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class);
+    }
+
+    @Component
+    public class Runner implements CommandLineRunner {
+        private final TreadmillRepository repository;
+
+        public Runner(TreadmillRepository repository) {
+            this.repository = repository;
+        }
+
+        @Override
+        public void run(String... args) {
+            // all CRUP operations are done here
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
