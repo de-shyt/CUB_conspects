@@ -956,6 +956,127 @@ class Main {
 
 
 
+
+
+##### Command
+
+The idea is to turn a request (= a command) into a stand-alone object that contains everything about that request. 
+
+Thus, encapsulation principle is achieved. Every class has its own responsibility: it does not know about the inside structure of the command, it just executes the command. 
+
+The Command pattern opens a lot of interesting uses: 
+
+- passing commands as method arguments
+- storing them inside other objects 
+- switching commands at runtime
+- serializing commands, making it easy to write them to and read them from a file 
+
+ 
+
+
+
+**Example**
+
+Basically, there is an interface `Command` which has a method `execute()`:
+
+```java
+public interface Command {
+    void execute();
+}
+```
+
+There can be several concrete commands that implement `Command`. There is an `Invoker` (responsible for initiating requests, i.e. the user) and a `Reciever` (who invokes the command execution).
+
+
+
+In the example below, there is a command to turn on (or turn off) the lights. There are classes for different rooms, each of them extends the `Room` class. 
+
+```java
+public class SwitchLightsCommand implements Command {
+    private final Light light;
+
+    public SwitchLightsCommand(Light light) {
+        this.light = light;
+    }
+
+    @Override
+    public void execute() {
+        light.switchLights();
+    }
+}
+
+
+public class Room {
+    Command command;
+
+    public Room() {}
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    public void executeCommand() {
+        command.execute();
+    }
+}
+
+
+class Main {
+    public static void main(String[] args) {
+        Room livingRoom = new LivingRoom();
+        livingRoom.setCommand(
+            new SwitchLightsCommand(new Light())
+        );
+        
+        livingRoom.executeCommand();
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #### Structural patterns
 
 *Deal with inheritance and composition to provide extra functionality.*
@@ -1022,9 +1143,9 @@ class Main {
 
 - behavioral (mediator, strategy patterns)
 
-  • Chain of Respect -- A way of passing a request between a chain of objects 
+  • + Chain of Respect -- A way of passing a request between a chain of objects 
 
-  • Command -- Encapsulate a command request as an object 
+  • + Command -- Encapsulate a command request as an object 
 
   • Interpreter -- A way to include language elements in a program 
 
