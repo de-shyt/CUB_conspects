@@ -1163,6 +1163,607 @@ public class Application {
 
 
 
+## REST
+
+**REST (Representational State Transfer)** is a fairly common way of interaction between client applications and services on the Internet. It is one of the possible ways to use HTTP. It is not a standard, but rather a set of useful recommendations.
+
+
+
+There are six principles that guarantee the service to be *RESTful*:
+
+1. **Client-server interaction model.** By separating the user interface from the data warehouse server, we improve and simplify application operation.
+2. **Stateless.** Each request from a client to a server must contain all necessary information and cannot rely on any state stored on the server side. According to REST, the service does not store the results of the previous operation. Simply put, it works according to the *"Asked, answered, forgotten"* concept.
+3. **Cacheable.** A request-response pair can be marked as cached and stored on the user side. It is possible to draw an analogy to web page caching: if a page was downloaded once, it can be accessed without addressing the server again.
+4. **Uniform interface.** REST architecture specifies that any REST service must be understandable without its developer.
+5. **Layered system.** A client cannot just tell whether it is connected directly to the end server or an intermediary along the way.
+6. **Code on demand [Optional]**. On request, the service must give executable code in the form of an applet or script to be executed on the client's side. In practice, it is very seldom used.
+
+
+
+In the REST concept, interaction with resources is performed by calling the URL of the resource and four basic HTTP methods: `GET`, `POST`, `PUT`, `DELETE`. 
+
+- `POST` is used to create new resources. If the resource is successfully created, the HTTP code *201 (Created)* is returned, the address of the created resource is passed in the header `Location`.
+- `GET` is used to retrieve data. If the `GET` method is successful and does not contain address errors, it returns an XML or JSON representation of the resource in combination with an HTTP *200 (OK)* status code. In case of errors, the code *404 (NOT FOUND)* or *400 (BAD REQUEST)* is returned.
+- `PUT` method either creates a resource by the specified ID or updates an existing one. If the update is successful, the code is *200 (OK)*; *204 (NO CONTENT)* is returned if no content in the response body has been transmitted.
+- `DELETE` method is used to remove a specific resource. If the deletion is successful, *200 (OK)* HTTP code is returned, together with the response body containing the data of the remote resource. It is also possible to use HTTP code *204 (NO CONTENT)* without the response body.
+
+
+
+
+
+
+
+## SOLID
+
+Each letter in SOLID refers to a distinct design principle:
+
+- **S**ingle Responsibility Principle (*SRP*) -- every class should have a single responsibility or single job or single purpose. Use *layers* in your application and break God classes into smaller classes or modules.
+
+- **O**pen-Closed Principle (*OCP*) -- you should be able to extend a class behavior, without modifying it.
+
+- **L**iskov Substitution Principle (*LSP*) -- any class that is the child of a parent class should be usable in place of its parent without any unexpected behavior.
+
+- **I**nterface Segregation Principle (*ISP*) -- avoid fat interface and give preference to many small client-specific interfaces. 
+
+- **D**ependency Inversion Principle (*DIP*):
+
+  1. High-level modules/classes should not depend on low-level modules/classes. Both should depend upon abstractions.
+
+  2. Abstractions should not depend upon details. Details should depend upon abstractions.
+
+*SOLID* principles help you to organize your code. Applying them, you make your code more structured and clean, so it doesn't look like a maze anymore.
+
+
+
+
+
+
+
+## Jackson
+
+Jackson is a powerful, lightweight, and flexible Java library that provides a way to convert Java objects to JSON and vice versa. The  `jackson-databind` dependency can be used in Spring applications. 
+
+*A quick summary.* The `ObjectMapper` class is a Jackson serializer/deserializer. Its `writeValueAsString()` method is used to convert Java object to JSON, and its `readValue()` method is used for the opposite. 
+
+
+
+
+
+### Serialization
+
+Imagine we have a class `Task`:
+
+```java
+public class Task {
+    private int id;
+    private String name;
+    private String description;
+    private Date date;
+
+	// contructor, getters, setters
+}
+```
+
+
+
+The `ObjectMapper` object is used to convert an instance of `Post` into the JSON format:
+
+```java
+Task task = new Task(1, "sing", "sing a song");
+
+ObjectMapper objectMapper = new ObjectMapper();
+
+String json = objectMapper.writeValueAsString(task);
+System.out.println(json);
+```
+
+```shell
+{"id":1,"name":"sing","description":"sing a song","date":1689714161375}
+```
+
+
+
+Let's get a **formatted JSON string**:
+
+```java
+String json = objectMapper
+    .writerWithDefaultPrettyPrinter()
+    .writeValueAsString(task);
+System.out.println(json);
+```
+
+```shell
+{
+  "id" : 1,
+  "name" : "sing",
+  "description" : "sing a song",
+  "date" : 1689714218288
+}
+```
+
+
+
+
+
+#### `@JsonProperty`
+
+1. The `@JsonProperty` annotation allows you to change the name used in JSON as a key:
+
+   ```java
+   public class Post {
+       private int id;
+       private String name;
+       private String description;
+       
+       @JsonProperty("createdAt")
+       private Date date;
+       
+       // contructor, getters, setters
+   }
+   ```
+
+   ```shell
+   {
+     "id" : 1,
+     "name" : "sing",
+     "description" : "sing a song",
+     "createdAt" : 1689714308210
+   }
+   ```
+
+   
+
+2. It allows to denote a custom getter/setter that will be used on a JSON property (even if the property is not a field of the class, like `currentTime` in the example):
+
+   ```java
+   public class Post {
+       private int id;
+       private String name;
+       private String description;
+       private Date date;
+   
+       // contructor, getters, setters
+   
+   
+       @JsonProperty("date")
+       public String getModifiedDate() {
+           return (new SimpleDateFormat("dd-MM-yyyy")).format(date);
+       }
+       
+       @JsonProperty("currentTime")
+       public String getCurrentTime() {
+           DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+           return LocalTime.now().format(formatter);
+       }
+   }
+   ```
+
+   ```java
+   {
+     "id" : 1,
+     "name" : "sing",
+     "description" : "sing a song",
+     "date" : "18-07-2023",
+     "currentTime" : "23:11"
+   }
+   ```
+
+
+
+
+
+#### `@JsonIgnore`
+
+`@JsonIgnore` helps us ignore some Java class fields:
+
+```java
+public class Post {
+    @JsonIgnore
+    private int id;
+    private String name;
+    private String description;
+    private Date date;
+
+    // contructor, getters, setters
+    
+    @JsonProperty("date")
+    public String getModifiedDate() {
+        return (new SimpleDateFormat("dd-MM-yyyy")).format(date);
+    }
+}
+```
+
+```shell
+{
+  "name" : "sing",
+  "description" : "sing a song",
+  "date" : "18-07-2023"
+}
+```
+
+
+
+
+
+#### `@JsonPropertyOrder`
+
+By default, the ordering of the fields in the serialized JSON depends on the JDK. `@JsonPropertyOrder` allows us to set a specific order when serializing a Java object:
+
+```java
+@JsonPropertyOrder({
+        "date",
+        "id",
+        "name",
+        "description"
+})
+public class Post {
+    @JsonIgnore
+    private int id;
+    private String name;
+    private String description;
+    private Date date;
+
+    // contructor, getters, setters
+    
+    @JsonProperty("date")
+    public String getModifiedDate() {
+        return (new SimpleDateFormat("dd-MM-yyyy")).format(date);
+    }
+}
+```
+
+```java
+{
+  "date" : "18-07-2023",
+  "name" : "sing",
+  "description" : "sing a song"
+}
+```
+
+
+
+
+
+### Deserialization
+
+To convert a JSON object to a Java object, the `readValue()` method from the `ObjectMapper` is used. 
+
+```java
+ObjectMapper objectMapper = new ObjectMapper();
+
+String json = """
+    {
+      "date" : "18-07-2023",
+      "id" : 1,
+      "name" : "sing",
+      "description" : "sing a song"
+    }""";
+
+Task task = objectMapper.readValue(json, Task.class);
+```
+
+
+
+
+
+#### Restrictions
+
+For Jackson to be able to convert JSON into a Java object of some class, this class must satisfy several conditions:
+
+- The class must have an empty constructor, and the fields must not be `final`. Jackson will first create an instance of the class, and then put values into all fields through reflection.  Setters are only needed if you want to change the value in the fields — Jackson doesn't use them.
+
+- The class must have a constructor with the `@JsonCreator` annotation, and all its parameters must have the `@JsonProperty` annotation, which must necessarily contain the name from JSON.
+
+  ```java
+  public class Task {
+      private int id;
+      private String name;
+      private String description;
+      private Date date;
+      
+      Task() {}
+      
+      @JsonCreator
+      public Task(@JsonProperty("id") int id,
+                  @JsonProperty("name") String name,
+                  @JsonProperty("description") String description,
+                  @JsonProperty("date") String date) throws ParseException {
+          this.id = id;
+          this.name = name;
+          this.description = description;
+  
+          SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+          this.date = dateFormat.parse(date);
+      }
+      
+      // getters and setters
+  }
+  ```
+
+  
+
+
+
+
+
+## `@RestController`
+
+A **controller** is a part of the application that handles these API methods. A basic **REST-based controller** (server) is used for retrieving data through `GET` requests. 
+
+```java
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TaskController { }
+```
+
+The `@RestController` annotation makes a class provide exact endpoints (URLs) to access the REST methods. The annotation is a wrapper of two different annotations:
+
+1. `@Controller` contains handler methods for various requests. Since we opted for `@RestController`, the methods are related to REST requests.
+2. `@ResponseBody` binds the return value of each handler method to a web response body. When we send a request, the HTTP response we receive is <u>in JSON format</u>. 
+
+
+
+
+
+
+
+### `GET`
+
+#### `@GetMapping`
+
+To implement a `GET` request, we can use the `@GetMapping` annotation. It indicates what URL path should be associated with a `GET` request:
+
+```java
+public class Task {
+    private int id;
+    private String name;
+    private String description;
+
+    public Task() {}
+
+    public Task(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    // getters and setters
+}
+
+
+@RestController
+public class TaskController {
+    private final List<Task> taskList = List.of(
+            new Task(1, "task 1", "A first task"),
+            new Task(2, "task 2", "A second task")
+    );
+
+    @GetMapping("/tasks")
+    public List<Task> getTasks() {
+        return taskList;
+    }
+}
+```
+
+We can create a `GET` request that returns a list of tasks in JSON format when `http://localhost:8080/tasks` is accessed.
+
+It is essential to implement getters and setters. If they are not implemented, Spring cannot display object contents correctly. Spring will try to return all data from our controller in JSON format or similar.
+
+When we work with Spring, we can face a lot of `GET` requests at the same time. So, using an <u>immutable collection</u> to eliminate any thread-based issues would be a good idea.
+
+
+
+
+
+#### Returning a status code
+
+By default, a method annotated with `@GetMapping` returns a response with the status code `200 OK` if a request was processed successfully and the status code `500` if there is an uncaught exception. 
+
+However, we can change this default status code by returning an object of the `ResponseEntity<T>` class:
+
+```java
+@GetMapping("/tasks")
+public ResponseEntity<List<Task>> getTasks() {
+    return new ResponseEntity<>(taskList, HttpStatus.ACCEPTED);
+}
+
+// the code 202 (ACCEPTED) instead of 200 (OK) is returned 
+```
+
+
+
+
+
+#### `@PathVariable`
+
+There is an option to get a value from the URL. To do this, the `@PathVariable` annotation is used:
+
+```java
+@RestController
+public class TaskController {
+    private final List<Task> taskList = List.of(
+        new Task(1, "task1", "A first test task"),
+        new Task(2, "task2", "A second test task")
+    );
+
+    @GetMapping("/tasks/byId/{id}")
+    public Task getTask(@PathVariable int id) {
+        return taskList.get(id);
+    }
+
+    @GetMapping("/tasks/byName/{name}")
+    public Task getTask(@PathVariable("name") String name) {
+        for (Task task : taskList) {
+            if (task.getName().equals(name)) {
+                return task;
+            }
+        }
+        return null;
+    }
+}
+```
+
+
+
+
+
+
+
+### `POST`
+
+With `POST` requests, users can add information by sending **values** they wish to upload. The `POST` requests are implemented using a `@PostMapping` annotation. 
+
+If it works, the code `200 (OK)` is returned. If a `POST` parameter is either missing or invalid, a user receives a `400 (Bad Request)`.
+
+We advise using a **thread-safe object** to work with data in a `@RestController`. The controller can get multiple requests simultaneously, which are processed by different threads. If the object is not thread-safe, multiple requests can lead to data loss and other unexpected errors.
+
+
+
+
+
+
+
+#### `@RequestParam`
+
+A `@RequestParam` is a variable provided by a user through the **query parameters**. It can be provided in two ways:
+
+1. In the query parameters section of a REST request (in postman, `Params -> Query Params`).
+2. In the URL path (`localhost:<port>/<api-path>?<param>=<value>&<param>=<value>`).
+
+When we provide a parameter through the query parameters, we need to set a name and a value. The name and the type of the parameter should match the name and the type of the `@RequestParam`.
+
+If a `@RequestParam` parameter is either missing or invalid, a user receives a `400 (Bad Request)`.
+
+
+
+
+
+
+
+#### `@PostMapping`
+
+The server should be able to receive data and store it somewhere. To make this possible, the `@PostMapping` annotation.
+
+To show how it works, we will extend the example with tasks:
+
+```java
+@RestController
+public class TaskController {
+    private int nextId = 0;
+    private final List<Task> taskList = new ArrayList<>();
+    
+    // methods for `GET` requests
+    
+    @PostMapping("/tasks/addTask")
+    public Task addTask(@RequestParam String name, @RequestParam String descr) {
+        Task createdTask = new Task(nextId, name, descr);
+        nextId++;
+        
+        taskList.add(createdTask);
+        return createdTask;
+    }
+}
+```
+
+The url `http://localhost:8080/tasks/addTask?name=sing&descr=sing%20a%20song` will add a new task with the name `sing` and description `sing a song`  to the `taskList`.
+
+
+
+
+
+
+
+#### `@RequestBody`
+
+The `@RequestBody` annotation is commonly used in POST requests to extract the request payload or body. It helps map the data to a specific parameter in the controller method. It tells Spring to deserialize the request body into the corresponding Java object automatically.
+
+```java
+@PostMapping("tasks/addTask")
+public boolean addTask(@RequestBody Task task) {
+    nextFreeId = task.getId() + 1;
+    taskList.add(task);
+    return true;
+}
+```
+
+
+
+
+
+
+
+### `PUT`
+
+`PUT` requests allow users to  update or replace an existing resource with the request payload.
+
+
+
+#### `@PutMapping`
+
+The `@PutMapping` annotation is used to execute `PUT` requests. 
+
+```java
+@RestController
+public class TaskController {
+    private int nextId = 0;
+    private final List<Task> taskList = new ArrayList<>();
+    
+    // methods for `GET` requests
+    // methods for `POST` requests
+    
+    @PutMapping("tasks/updateTaskNameById/{id}")
+    public boolean updateTask(@PathVariable("id") int id,
+                              @RequestParam String name) {
+        for (var task : taskList) {
+            if (task.getId() == id) {
+                task.setName(name);
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+For example, there are three tasks now. The url `http://localhost:8080/tasks/updateTaskNameById/0` updates the task with `id=0` and returns `true` as a response. 
+
+
+
+
+
+
+
+### `DELETE`
+
+`DELETE` requests allow users to remove existing data from an application. They are implemented using a `@DeleteMapping` annotation. 
+
+
+
+#### `@DeleteMapping`
+
+```java
+@RestController
+public class TaskController {
+    private int nextId = 0;
+    private final List<Task> taskList = new ArrayList<>();
+    
+    // methods for `GET` requests
+    // methods for `POST` requests
+    // methods for `PUT` requests
+    
+    @DeleteMapping("tasks/deleteTask")
+    public Task deleteTask(@RequestParam int id) {
+        for (Task task : taskList) {
+            if (task.getId() == id) {
+                taskList.remove(task);
+                return task;
+            }
+        }
+        return null;
+    }
+}
+```
 
 
 
@@ -1209,11 +1810,28 @@ public class Application {
 
 
 
-*NOT EDITED PART*
 
 
 
-## Spring Data JPA 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## *NOT EDITED PART*
+
+
+
+**Spring Data JPA** 
 
 JPA -- *Jakarta Persistence API* -- interface specification that maps java classes to database table. Thus, we can interact with the database without writing any SQL code. 
 
@@ -1221,117 +1839,7 @@ JPA -- *Jakarta Persistence API* -- interface specification that maps java class
 
 
 
-### `@Entity`
-
-We want to have a table with students. Each customer has id (primary key) and name.
-
-```java
-package com.example.demo.student;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-
-@Entity
-public class Student {
-
-  @Id
-  @SequenceGenerator(
-      name = "customer_id_sequence",
-      sequenceName = "customer_id_sequence"
-  )
-  @GeneratedValue(
-      strategy = GenerationType.SEQUENCE,
-      generator = "customer_id_sequence"
-  )
-  private final Long id;
-  private final String name;
-
-  public Student(Long id, String name) {
-    this.id = id;
-    this.name = name;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-}
-```
-
-The code above wil generate a table called *Student* where entities are pairs `<id, name>`:
-
-```shell
-Hibernate: 
-    create sequence customer_id_sequence start with 1 increment by 50
-Hibernate: 
-    create table student (
-        id bigint not null,
-        name varchar(255),
-        primary key (id)
-    )
-```
-
-
-
-
-
-
-
-### `@RestController`
-
-```java
-package com.example.demo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@SpringBootApplication
-@RestController
-public class DemoApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
-    @GetMapping("hello")
-    public String hello() {
-        return "hello world";
-    }
-}
-```
-
-`@RestController = @Controller + @RequestBody`. It means the class is the controller from MVC architecture and it generates an http response in a json format:
-
-```java
-//public class Student {
-//  private final Long id;
-//  private final String name;
-//  ...
-//}
-
-@GetMapping("")
-public Student generateStudent() {
-    return new Student(1L, "Aboba");
-}
-
-// output (json format) = {"id":1,"name":"Aboba"}
-```
-
-The `@GetMapping(“/hello”)` tells Spring to use `hello()` method to answer requests that are sent to the `localhost:8080/hello` address. The annotation is used to handle HTTP GET requests for a specific URL mapping. 
-
-
-
-
-
-
-
-### `@RequestMapping`
+**`@RequestMapping`**
 
 ```java
 @RestController
@@ -1353,7 +1861,9 @@ public class StudentController {
 
 
 
-### JpaRepository
+
+
+**JpaRepository**
 
 A default interface that maps [Entity class](###`@Entity`) to a database table. The name of the table is the same as the name of the class. 
 
@@ -1391,227 +1901,3 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 ```
 
  The second parameter is `Long` since `id` of `Student` class is a primary key and has a type `Long`. 
-
-
-
-
-
-
-
-#### `@GetMapping`
-
-GET = retrieve data
-
-`JpaRepository#findAll()` function is used to get entries from the table:
-
-```java
-@SpringBootApplication
-@RestController
-@RequestMapping("customers")
-public class DemoApplication {
-
-  private final StudentRepository studentRepository;
-
-  public DemoApplication(StudentRepository studentRepository) {
-    this.studentRepository = studentRepository;
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(DemoApplication.class, args);
-  }
-
-  @GetMapping("")
-  public List<Student> getStudents() {
-    return studentRepository.findAll();
-  }
-}
-```
-
-
-
-
-
-
-
-#### `@PostMapping`
-
-POST = add new data
-
-`addStudent()` function requires an argument to be in a json format. We use a `NewStudentRequest` record to achieve it. 
-
-`JpaRepository#save()` function is used to add new entry to the table:
-
-```java
-@SpringBootApplication
-@RestController
-@RequestMapping("customers")
-public class DemoApplication {
-  private final StudentRepository studentRepository;
-
-  // constructor
-  // main function 
-  // GET function 
-
-  record NewStudentRequest(String name, Integer age) {}
-
-  @PostMapping("")
-  public void addStudent(@RequestBody NewStudentRequest newStudentRequest) {
-    Student newStudent = new Student(newStudentRequest.name, newStudentRequest.age);
-    studentRepository.save(newStudent);
-  }
-}
-```
-
-
-
-
-
-
-
-#### `@DeleteMapping`
-
-DELETE = delete data
-
-`JpaRepository` has various delete-functions. For example, let us delete by the primary key. We retrieve id from the url address. If the url address is `http://localhost:8080/customers/1`, then `studentId = 1`. 
-
-```java
-@SpringBootApplication
-@RestController
-@RequestMapping("customers")
-public class DemoApplication {
-  private final StudentRepository studentRepository;
-
-  // constructor
-  // main function 
-  // GET function 
-  // POST function
-
-  @DeleteMapping("{studentId}")
-  public void deleteStudent(@PathVariable("studentId") Long id) {
-    studentRepository.deleteById(id);
-  }
-}
-```
-
-
-
-
-
-
-
-#### `@PutMapping`
-
-PUT = update data or create it
-
-```java
-@SpringBootApplication
-@RestController
-@RequestMapping("customers")
-public class DemoApplication {
-  private final StudentRepository studentRepository;
-
-  // constructor
-  // main function 
-  // GET function 
-  // POST function
-  // DELETE function 
-  
-  @PutMapping("{studentId}")
-  public void updateStudent(@PathVariable("studentId") Long id, String newName) {
-    Optional<Student> studentOptional = studentRepository.findById(id);
-    deleteStudent(id);
-    if (studentOptional.isPresent()) {
-      Student student = studentOptional.get();
-      addStudent(new NewStudentRequest(newName, student.getAge()));
-    }
-  }
-}
-```
-
-
-
-
-
-
-
-#### All code together
-
-```java
-package com.example.demo;
-import com.example.demo.student.Student;
-import com.example.demo.student.StudentRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@SpringBootApplication
-@RestController
-@RequestMapping("customers")
-public class DemoApplication {
-  private final StudentRepository studentRepository;
-
-  public DemoApplication(StudentRepository studentRepository) {
-    this.studentRepository = studentRepository;
-  }
-
-  public static void main(String[] args) {
-    SpringApplication.run(DemoApplication.class, args);
-  }
-
-    
-    
-  @GetMapping("")
-  public List<Student> getStudents() {
-    return studentRepository.findAll();
-  }
-
-    
-    
-  record NewStudentRequest(String name, Integer age) {}
-
-  @PostMapping("")
-  public void addStudent(@RequestBody NewStudentRequest newStudentRequest) {
-    Student newStudent = new Student(newStudentRequest.name, newStudentRequest.age);
-    studentRepository.save(newStudent);
-  }
-
-    
-    
-  @DeleteMapping("{studentId}")
-  public void deleteStudent(@PathVariable("studentId") Long id) {
-    studentRepository.deleteById(id);
-  }
-
-    
-    
-  @PutMapping("{studentId}")
-  public void updateStudent(@PathVariable("studentId") Long id, String newName) {
-    Optional<Student> studentOptional = studentRepository.findById(id);
-    deleteStudent(id);
-    if (studentOptional.isPresent()) {
-      Student student = studentOptional.get();
-      addStudent(new NewStudentRequest(newName, student.getAge()));
-    }
-  }
-}
-```
-
-
-
-
-
-
-
-
-
-
-
