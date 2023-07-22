@@ -2990,7 +2990,250 @@ Path p = Path.of("foo", "bar", "baz");
 
 
 
+## 23-07-21
+
+### Thread synchronization
+
+- A **critical section** is a region of code that accesses shared resources and should not be executed by more than one thread at the same time. A shared resource may be a variable, file, input/output port, database or something else.
+- The **monitor** is a special mechanism to control concurrent access to an object. In Java, <u>each object and class</u> has an associated implicit monitor. A thread can acquire a monitor, then other threads cannot acquire this monitor at the same time. They will wait until the owner (the thread that acquired the monitor) releases it.
 
 
 
 
+
+### `synchronized`
+
+The keyword `synchronized` means the method or the block can be accessed only by one thread at a time. 
+
+The keyword can be used in two forms:
+
+- synchronized method (a static or an instance method)
+- synchronized block (inside a static or an instance method)
+
+
+
+
+
+#### Static synchronized methods
+
+= synchronization on the class.
+
+Only one thread can execute the body of a synchronized static method at the same time. 
+
+```java
+class SomeClass {
+    public static synchronized void doSomething() {
+        String threadName = Thread.currentThread().getName();
+        System.out.println(threadName + " entered the static method");
+        System.out.println(threadName + " leaves the static method");
+    }
+}
+
+
+
+class MyThread extends Thread {
+
+    @Override
+    public void run() {
+        SomeClass.doSomething();
+    }
+}
+
+
+
+public class Main {
+    public static void main(String[] args) {
+
+        MyThread first = new MyThread();
+        MyThread second = new MyThread();
+        MyThread third = new MyThread();
+
+        first.start();
+        second.start();
+        third.start();
+    }
+}
+```
+
+```shell
+Thread-0 entered the static method
+Thread-0 leaves the static method
+Thread-2 entered the static method
+Thread-2 leaves the static method
+Thread-1 entered the static method
+Thread-1 leaves the static method
+```
+
+
+
+
+
+
+
+#### Instance synchronized methods
+
+= synchronization on the class instance.
+
+Only one thread can execute code in a synchronized instance method of a particular instance. This can be summarized as *"one thread per instance"*.
+
+```java
+class SomeClass {
+    private final String name;
+
+    SomeClass(String name) {
+        this.name = name;
+    }
+
+    public synchronized void doSomething() {
+        String threadName = Thread.currentThread().getName();
+        System.out.println(threadName + " entered the method of " + name);
+        System.out.println(threadName + " leaves the method of " + name);
+    }
+}
+
+
+
+class MyThread extends Thread {
+    private final SomeClass someClass;
+
+    public MyThread(SomeClass someClass) {
+        this.someClass = someClass;
+    }
+
+    @Override
+    public void run() {
+        someClass.doSomething();
+    }
+}
+
+
+
+public class Main {
+    public static void main(String[] args) {
+        SomeClass instance1 = new SomeClass("instance-1");
+        SomeClass instance2 = new SomeClass("instance-2");
+
+        MyThread first = new MyThread(instance1);
+        MyThread second = new MyThread(instance1);
+        MyThread third = new MyThread(instance2);
+
+        first.start();
+        second.start();
+        third.start();
+    }
+}
+```
+
+```shell
+Thread-2 entered the method of instance-2
+Thread-0 entered the method of instance-1
+Thread-2 leaves the method of instance-2
+Thread-0 leaves the method of instance-1
+Thread-1 entered the method of instance-1
+Thread-1 leaves the method of instance-1
+```
+
+
+
+
+
+
+
+#### Synchronized blocks
+
+Here is a class with a static and an instance method. Both methods are unsynchronized but have synchronized parts inside.
+
+```java
+class SomeClass {
+
+    public static void staticMethod() {
+        // unsynchronized code
+        synchronized (SomeClass.class) { // synchronization on the class
+            // synchronized code
+        }
+    }
+
+    public void instanceMethod() {
+        // unsynchronized code
+        synchronized (this) { // synchronization on this instance
+            // synchronized code
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+#### One monitor and multiple synchronized methods and blocks
+
+1. If a class has several synchronized instance methods and a thread invokes one of them, other threads cannot execute either of these methods on the same instance until the first thread releases the monitor of the instance.
+
+2. A thread can acquire a lock that it already owns. This behavior is called **reentrant synchronization**. For example, the class has synchronized methods `method1()` and `method2()`. When a thread is inside `method1` it can invoke `method2`, because both methods are synchronized on the same class/instance.
+
+
+
+
+
+#### Multiple monitors 
+
+To improve the concurrency rate it's possible to use an idiom with additional objects as monitors.
+
+Here is an example: a class with two methods. The class stores the number of calls to each method in a special field.
+
+```java
+class SomeClass {
+
+    private int numberOfCallingMethod1 = 0;
+    private int numberOfCallingMethod2 = 0;
+
+    final Object lock1 = new Object(); // an object for locking
+    final Object lock2 = new Object(); // another object for locking
+
+    public void method1() {
+        System.out.println("method1...");
+
+        synchronized (lock1) {
+            numberOfCallingMethod1++;
+        }
+    }
+
+    public void method2() {
+        System.out.println("method2...");
+        
+        synchronized (lock2) {
+            numberOfCallingMethod2++;
+        }
+    }
+}
+```
+
+As you can see, the class has two additional fields that are the locks for separating monitors for each critical section.
+
+If we have an instance of the class, one thread may work inside the synchronized block of the first method and, at the same time, another thread may work inside the synchronized block of the second method.
+
+
+
+
+
+
+
+### Collections and thread-safety
+
+It is a bad idea to use <u>standard collections</u> in multi-threaded environments without explicit synchronization (though, such synchronization may lead to poor performance and hard-to-find errors in large programs):
+
+- most of the classic collections like `ArrayList`, `LinkedList`, `HashMap` and others are non-synchronized
+- there is a set of old collections like `Vector`, `Stack`, and `Hashtable` that are totally synchronized and thread-safe, but they have low performance
+- when one thread is iterating over a non-thread-safe collection and another thread tries to add a new element to it then we get a runtime exception called `ConcurrentModificationException`
+- when multiple threads write to and read from a non-thread-safe collection, some writes made by one thread may not be visible to the other threads
+
+
+
+Java Class Library provides alternative collection implementations that are adapted to be used in multithreaded applications and they are fully thread-safe. You may find them in the `java.util.concurrent` package.
+
+These concurrent collections allow you to avoid custom synchronization. They have high performance close to classic collections. Concurrent collections do not use the `synchronized` keyword but rely on more complex synchronization primitives and lock-free algorithm that allows them to be both thread-safe and high-performance.
+
+However, if you do not really need multi-threading, use classic collections, since they are still more efficient than concurrent ones. than concurrent ones
