@@ -1039,6 +1039,13 @@ class Main {
 
 
 
+##### Tempate method
+
+The Template Method pattern defines the skeleton of an algorithm in the superclass, and lets subclasses override some needed steps of the algorithm without changing its structure. 
+
+<img src="./pics for conspects/SE/template_method_pattern.png" alt="template_method_pattern" style="zoom:80%;" />
+
+Simply, the idea is to break down the algorithm into a series of methods, then put a series of calls to these methods (called *steps*) inside a single "template method". The steps can be abstract, or have some default implementation inside the parent class.
 
 
 
@@ -1046,6 +1053,9 @@ class Main {
 
 
 
+##### Mediator
+
+Defines an object that encapsulates how a set of objects interact with one another. It restricts direct communications between objects and forces them to collaborate via a mediator, hence reducing the dependencies between them (a real example, a dispatcher and pilots). 
 
 
 
@@ -1053,6 +1063,70 @@ class Main {
 
 
 
+##### Memento
+
+ Delegates creating the snapshots to the actual owner of that state. Thus, the Single Responsibility principle is not violated. 
+
+- The implementation of the Memento pattern relies on the nested classes (in the example, they are `TextArea` and `Momento`). 
+- The <u>full</u> copies of the object are done.  
+- The Caretaker class (in the example, `Editor`) <u>delegates the creation</u> of the object's state snapshot to the object itself.
+
+```java
+class TextArea {
+    private String text;
+    
+    public void set(String text) {
+    	this.text = text;
+    }
+    
+    public Memento takeSnapshot() {
+    	return new Memento(this.text);
+    }
+    
+    public void restore(Memento memento) {
+    	this.text = memento.getSavedText();
+    }
+    
+    public static class Memento {
+        private final String text;
+
+        // avaiable only for `TextArea`
+        private Memento(String textToSave) {
+        	text = textToSave;
+        }
+        
+        private String getSavedText() {
+        	return text;
+        }
+	}
+}
+
+
+class Editor {
+    private Deque<Memento> history;
+    private TextArea textArea;
+    
+    public Editor() {
+        history = new LinkedList<>();
+        textArea = new TextArea();
+    }
+    
+    public void write(String text) {
+        textArea.set(text);
+        history.add(textArea.takeSnapshot());
+    }
+    
+    public void undo() {
+        textArea.restore(history.pop());
+    }
+}
+```
+
+
+
+The diagram of the pattern:
+
+<img src="./pics for conspects/SE/memento_pattern.png" alt="memento_pattern" style="zoom:80%;" />
 
 
 
@@ -1060,12 +1134,122 @@ class Main {
 
 
 
+##### Observer
+
+Allows to change of <u>take action on a set of objects</u> when the state of <u>another object changes</u>. This can be done even if the set of objects is unknown or changes dynamically. 
+
+A simple example of notification system. A `Publisher` (i.e., the shop) sends emails or push notifications to `Subscribers` (i.e., customers). 
+
+The diagram of the pattern: 
+
+<img src="./pics for conspects/SE/observer_pattern.png" alt="observer_pattern" style="zoom:80%;" />
 
 
 
+The Observer pattern comes in handy, when there are different types of notifications (i.e., by email or in the app). If there is only one way of notifying subscribers, please, **do not use the pattern**.
 
 
 
+So, in the example below, the store sends notifications about new items. It can do it both by email and in the app:
+
+```java
+public class NotificationService {
+    private final List<Subscriber> customers;
+
+    public NotificationService() {
+        customers = new LinkedList<>();
+    }
+
+    public void subscribe(Subscriber subscriber) {
+        customers.add(subscriber);
+    }
+
+    public void unsubscribe(Subscriber subscriber) {
+        customers.remove(subscriber);
+    }
+
+    public void notifySubscribers() {
+        customers.forEach(Subscriber::update);
+    }
+}
+
+
+public class Store {
+    private final NotificationService notificationService;
+
+    public Store() {
+        notificationService = new NotificationService();
+    }
+
+    public void newItemPromotion() {
+        notificationService.notifySubscribers();
+    }
+    
+    public NotificationService getNotificationService() {
+        return notificationService;
+    }
+}
+```
+
+
+
+The subscribers are:
+
+```java
+public abstract class Subscriber {
+    abstract public void update();
+}
+
+
+public class EmailSubscriber extends Subscriber {
+    private final String email;
+
+    public EmailSubscriber(String email) {
+        this.email = email;
+    }
+
+    public void update() {
+        // Actually send an email
+    }
+}
+
+
+public class PushNotificationSubscriber extends Subscriber {
+    private final String username;
+
+    public PushNotificationSubscriber(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public void update() {
+        // Actually send a push notification
+        System.out.println("Sending push notification to " + username);
+    }
+}
+```
+
+
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Store store = new Store();
+        store.getNotificationService()
+                .subscribe(new EmailSubscriber("aboba@gmail.com"))
+                .subscribe(new EmailSubscriber("abober@mail.ru"))
+                .subscribe(new PushNotificationSubscriber("aboba2003"));
+
+        store.newItemPromotion();
+    }
+}
+```
+
+```sh
+Sending email to aboba@gmail.com
+Sending email to abober@mail.ru
+Sending push notification to aboba2003
+```
 
 
 
@@ -1151,17 +1335,17 @@ class Main {
 
   • Iterator -- Sequentially access the elements of a collection 
 
-  • Mediator -- Defines simplified communication between classes 
+  • + Mediator -- Defines simplified communication between classes 
 
-  • Memento -- Capture and restore an object's internal state 
+  • + Memento -- Capture and restore an object's internal state 
 
-  • Observer -- A way of notifying change to a number of classes 
+  • + Observer -- A way of notifying change to a number of classes 
 
   • State -- Alter an object's behavior when its state changes 
 
   • Strategy -- Encapsulates an algorithm inside a class 
 
-  • Template Method -- Defer the exact steps of an algorithm to a subclass 
+  • + Template Method -- Defer the exact steps of an algorithm to a subclass 
 
   • Visitor -- Defines a new operation to a class without change
 

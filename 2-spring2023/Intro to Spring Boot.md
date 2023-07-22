@@ -941,17 +941,42 @@ public class Runner implements CommandLineRunner {
 > 12:05:30.102 [main] INFO com.example.app.LoggingApplication - Spring Boot application was launched!
 ```
 
-The `Logger` class has several methods, each of them provides logging at different levels:
 
-1. **Error:** used to track information when an application fails to execute successfully.
-2. **Warn:** used when unexpected events happen that are not critical to the functionality of the application.
-3. **Info:** used to log general information about the execution of the program.
-4. **Debug:** used to help track program execution for fixing bugs or issues.
+
+
+
+
+
+### General info
+
+The `Logger` class has several methods, each of them provides logging at different levels (from the least critical level to the most critical one):
+
+1. **Debug:** used to help track program execution for fixing bugs or issues.
+2. **Info:** used to log general information about the execution of the program, for example, service start, service stop, configurations and many more.
+3. **Warn:** used when unexpected events happen that do not affect the user. For example, repeated attempts to access a resource, missing secondary data, switching from a primary server to a back-up server, or a possible disconnection with the server.
+4. **Error:** used to track issues that affect the result of the operation but do not terminate the program. For example, when a database is temporarily unavailable. 
 5. **Trace:** used to create more detailed and high-volume sets of information about program execution.
 
 
 
 In the example above, the level (`INFO`) and the logger name (`LoggingApplication`) are shown. 
+
+
+
+The **format** of the log message is usually:
+
+```she
+[date time] [log level] [message]
+```
+
+Examples:
+
+```shell
+[2021-02-02 15:00:00] [INFO] User 'demo' has registered
+[2021-02-02 01:00:10] [ERROR] User 'alex98' cannot log in because the database is temporarily unavailable
+```
+
+
 
 
 
