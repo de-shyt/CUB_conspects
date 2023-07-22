@@ -1287,6 +1287,8 @@ System.out.println(json);
 
 #### `@JsonProperty`
 
+Basically, the `@JsonProperty` annotations shows where the value for the property can be found. You can either create class getters or use the annotation in two ways:
+
 1. The `@JsonProperty` annotation allows you to change the name used in JSON as a key:
 
    ```java
@@ -1508,6 +1510,40 @@ The `@RestController` annotation makes a class provide exact endpoints (URLs) to
 
 
 
+### `@RequestMapping`
+
+`@RequestMapping` is an annotation used to map HTTP requests to handler methods in a controller class. It defines the routes and endpoints for incoming HTTP requests and specifies how these requests should be handled.
+
+
+
+Simple, the `@RequestMapping` annotation allows you to define the URL pattern that should be used to invoke a specific method within the controller class:
+
+```java
+@RestController
+@RequestMapping("/tasks")
+public class TaskController { ... }
+```
+
+Here, the <u>base path</u> for the controller is set to `localhost:<port>/tasks`. So you only need to specify the additional part of the URL for such annotations as `@GetMapping` and `@PostMapping`. 
+
+
+
+`@RequestMapping` has some attributes:
+
+- `method` -- specifies the type of HTTP request
+-  `value` or `path` -- defines the URL pattern 
+- `produces` and `consumes` -- specify the media types that the method can produce and consume, respectively
+
+
+
+`@GetMapping`, `@PostMapping`, etc. are *shortcut annotations* used for defining HTTP requests (you can read about them below). For example, `GetMapping("/tasks")` is equal to `@RequestMapping(calue = "/tasks", method = RequestMethod.GET)`.
+
+
+
+
+
+
+
 ### `GET`
 
 #### `@GetMapping`
@@ -1676,7 +1712,7 @@ The url `http://localhost:8080/tasks/addTask?name=sing&descr=sing%20a%20song` wi
 
 #### `@RequestBody`
 
-The `@RequestBody` annotation is commonly used in POST requests to extract the request payload or body. It helps map the data to a specific parameter in the controller method. It tells Spring to deserialize the request body into the corresponding Java object automatically.
+The `@RequestBody` annotation is commonly used in `POST` requests to extract the request payload or body. It helps map the data to a specific parameter in the controller method. It tells Spring to deserialize the request body into the corresponding Java object automatically.
 
 ```java
 @PostMapping("tasks/addTask")
@@ -1686,6 +1722,32 @@ public boolean addTask(@RequestBody Task task) {
     return true;
 }
 ```
+
+It is possible to send multiple JSON objects in a single request (as a JSON array) using a list of objects in the `@RequestBody`:
+
+```java
+@PostMapping("tasks/addTask")
+public boolean addTask(@RequestBody List<Task> taskList) {
+    this.taskList.addAll(taskList);
+    nextFreeId = taskList.last().getId() + 1;
+    return true;
+}
+```
+
+
+
+In addition to JSON arrays, it is also possible to use a different format. For example, we can use XML. To do this, we need to add `consumes = MediaType.APPLICATION_XML_VALUE` to the `@PostMapping` annotation:
+
+```java
+@PostMapping(value = "tasks/addTask", consumes = MediaType.APPLICATION_XML_VALUE)
+public boolean addTask(@RequestBody Task task) {
+    taskList.add(task);
+    nextFreeId = task.getId() + 1;
+    return true;
+}
+```
+
+If a `consumes` argument is not provided, it will be JSON by default. There are many other `MediaType` values. For example, `TEXT_PLAIN` can be used for plain text, and `TEXT_HTML` can be used for HTML.
 
 
 
@@ -1834,30 +1896,6 @@ public class TaskController {
 **Spring Data JPA** 
 
 JPA -- *Jakarta Persistence API* -- interface specification that maps java classes to database table. Thus, we can interact with the database without writing any SQL code. 
-
-
-
-
-
-**`@RequestMapping`**
-
-```java
-@RestController
-@RequestMapping(path = "v1/student")
-public class StudentController {
-  @GetMapping
-  public List<Student> getStudents() {
-    return List.of(
-        new Student(1L, "Aboba1"),
-        new Student(2L, "Aboba2")
-    );
-  }
-}
-```
-
-`@RequestMapping(path = "v1/student")` $\Rightarrow$ function `getStudents()` shows mapping on the `localhost:8080/v1/student` address.
-
-
 
 
 
