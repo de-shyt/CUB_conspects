@@ -3237,3 +3237,96 @@ Java Class Library provides alternative collection implementations that are adap
 These concurrent collections allow you to avoid custom synchronization. They have high performance close to classic collections. Concurrent collections do not use the `synchronized` keyword but rely on more complex synchronization primitives and lock-free algorithm that allows them to be both thread-safe and high-performance.
 
 However, if you do not really need multi-threading, use classic collections, since they are still more efficient than concurrent ones. than concurrent ones
+
+
+
+
+
+
+
+#### Thread-safe maps
+
+Simple implementations of `Map`, such as `TreeMap`, `HashMap` and `LinkedHashMap`, are not thread-safe. 
+
+There are two thread-safe implementations of a Map interface in the standard library: `ConcurrentHashMap` and `Collections.synchronizedMap`.
+
+- `Collections.synchronizedMap` inputs a classic Java map and wraps its methods by synchronized blocks
+- `ConcurrentHashMap` uses a lock-striping approach
+
+In practice, `ConcurrentHashMap` is a more preferred choice because of better performance. It performs both the `get` and `put` operations faster than `Collections.synchronizedMap`.
+
+
+
+
+
+
+
+##### `synchronizedMap`
+
+`Collections.synchronizedMap` first appeared in Java 2 and it is a static method of the standard `java.util.Collections` class.
+
+The `synchronizedMap` method inputs a classic Java map and returns a thread-safe map. The returned map is backed by the input map and contains the same elements:
+
+```java
+Map<String, String> map = new HashMap<>();
+map.put("a", "Apple");
+map.put("b", "Banana");
+
+Map<String, String> synchronizedMap = Collections.synchronizedMap(map); // contains the same as the input map
+// Use only the returned map, otherwise, you won't be able to ensure thread safety.
+```
+
+- The synchronization is performed by an object.
+
+- The methods (and as a result, all operations) of a `synchronizedMap` are protected by a lock, which provides thread-safe access.
+
+- Only one thread at a time has access to the map, other threads are blocked.
+
+- To iterate over a `synchronizedMap` you need to use a **synchronized block**:
+
+  ```java
+  synchronized (synchronizedMap) {
+      Iterator<String> iterator = synchronizedMap.keySet().iterator();
+      while (iterator.hasNext()) {
+          // do important things
+          iterator.next();
+      }
+  }
+  ```
+
+  Without the synchronized block the iterator may throw `ConcurrentModificationException`. This will happen if one thread is iterating over a map and another thread is trying to modify our map.
+
+
+
+
+
+
+
+##### `ConcurrentHashMap`
+
+The `ConcurrentHashMap` class was created to allow multiple threads access the same map without blocking each other and, as a consequence, to increase their performance. You can find `ConcurrentHashMap` in the `java.util.concurrent` package.
+
+The **Lock Striping** technique is used in the `CuncurrentHashMap` implementation. It means that the lock mechanism occurs only on separate stripes (or buckets), but not on the whole data structure.
+
+Here are the main features of `ConcurrentHashMap`:
+
+- The synchronization is performed at the bucket level.
+- `get()` operations don't require a block.
+- The iterator won't throw `ConcurrentModificationException` when one thread is iterating over a map and another thread is trying to modify it. However, there is no guarantee that the iterator will see changes made by another thread.
+- The number of threads working simultaneously with the `ConcurrentHashMap` can increase if the size of the `ConcurrentHashMap` has been increased.
+- `ConcurrentHashMap` doesn't allow using `null` as a key or a value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
