@@ -1,4 +1,4 @@
-# Introduction to Spring Boot 
+# Spring Boot 
 
 [TOC]
 
@@ -6,7 +6,11 @@
 
 
 
-## Idea
+
+
+## Part I - Introduction
+
+### Idea
 
 Spring Boot is a framework built on top of the Spring framework. It provides a set of defaults and conventions, allowing developers to quickly create applications with minimal configuration.
 
@@ -18,7 +22,7 @@ Apache Tomcat is used to provide a web server environment in which Java code can
 
 
 
-## Changing the logo :)
+### Changing the logo :)
 
 As you know, when starting the demo Spring Boot application, you see the default Spring logo.
 
@@ -32,7 +36,7 @@ To create a stunning logo, you can use this [Spring Boot Banner Generator](https
 
 
 
-## Project structure
+### Project structure
 
 - `.gradle` -- if gradle is used
 
@@ -59,7 +63,7 @@ To create a stunning logo, you can use this [Spring Boot Banner Generator](https
 
 
 
-### `build.gradle`
+#### `build.gradle`
 
 Dependencies used by Spring Boot application are specified in the `build.gradle` file.
 
@@ -78,7 +82,7 @@ There are more of starters dependencies. All the starters use a similar naming p
 
 
 
-### `application.properties`
+#### `application.properties`
 
 Spring Boot uses the **convention-over-configuration** approach. As such, a developer only needs to specify unconventional aspects of the application, while all other aspects work by default.
 
@@ -92,7 +96,7 @@ The properties can also be stored in the YAML format within the `application.yml
 
 
 
-## Dependency injection
+### Dependency injection
 
 *Dependency injection (DI)* is a way of organizing and connecting different parts of a software application. It allows the dependencies of a class to be provided <u>externally</u> rather than being created or managed <u>within the class itself</u>.
 
@@ -139,7 +143,7 @@ There are three types of DI:
 
 
 
-## IoC containers
+### IoC containers
 
 **IoC**, which stands for **Inversion of Control**, is the principle used by frameworks. IoC means that, first, the framework calls the source code, then the source code calls the library functions. 
 
@@ -149,7 +153,7 @@ IoC is used by Spring to implement dependency injection. Thus, objects can defin
 
 
 
-### Spring IoC containers
+#### Spring IoC containers
 
 For the Spring application, we need a few components -- *containers* -- to implement the required functionality. 
 
@@ -165,7 +169,7 @@ The annotations allow us to build objects with the required features and configu
 
 
 
-### POJO
+#### POJO
 
 The term **POJO** stands for **Plain Old Java Object**. A POJO is the most basic object type and contains no ties to frameworks. This means that POJOs are valid objects for any application.
 
@@ -175,7 +179,7 @@ POJOs can have properties, getters and setters, methods, but it cannot extend or
 
 
 
-### JavaBeans
+#### JavaBeans
 
 A **JavaBean** is a POJO with some additional requirements and restrictions:
 
@@ -190,7 +194,7 @@ With annotations, it is possible to add any configurations to preexisting classe
 
 
 
-### `BeanFactory`
+#### `BeanFactory`
 
 The **`BeanFactory`** is an interface that allows for the configuration and management of objects. It can produce container-managed objects known as *beans*, which can organize the backbone of your application. These beans look like regular Java objects, but they can be created during application startup, registered, and injected into different parts of the application by the container.
 
@@ -198,7 +202,7 @@ The **`BeanFactory`** is an interface that allows for the configuration and mana
 
 
 
-### `ApplicationContext`
+#### `ApplicationContext`
 
 The **`ApplicationContext`** is an interface extending the `BeanFactory`. `ApplicationContext` objects provide bean configurations for the application setup. There are three main implementations that we typically see in applications:
 
@@ -224,7 +228,7 @@ public class Application {
 
 
 
-## Spring beans
+### Spring beans
 
 Spring can create all the necessary objects during the application startup and put them in a container. Then, each class can retrieve the objects it needs from this container.
 
@@ -236,7 +240,7 @@ These container-managed objects are known as **beans,** and they organize the ba
 
 
 
-### Declaring beans
+#### Declaring beans
 
 Beans are usually declared in classes with the `@Configuration` annotation. It is also possible to declare them in the class containing the `@SpringBootApplication` annotation.
 
@@ -261,7 +265,7 @@ public class Addresses {
 
 
 
-### Autowiring beans
+#### Autowiring beans
 
 Now that you have declared a bean, you can use it to create other beans that depend on it.
 
@@ -269,7 +273,7 @@ The Spring IoC container provides the DI mechanism that allows us to do that. A 
 
 
 
-#### Example 1
+**Example 1**
 
 ```java
 @Configuration
@@ -332,7 +336,7 @@ is written into `stdout`.
 
 
 
-#### Example 2
+**Example 2**
 
 ```java
 @Configuration
@@ -359,7 +363,7 @@ public class MyComponent {
 
 
 
-### `@Qualifier`
+#### `@Qualifier`
 
 When using `@Autowired`, the location of an injection point is determined only by the type of bean. But what if we have several beans of the same type and want to use a particular one?
 
@@ -390,7 +394,7 @@ Without it, we get an error that several beans can be injected.
 
 
 
-## Components
+### Components
 
 A **component** is a special kind of class that can be auto-detected by Spring IoC and used for dependency injection. It is typically annotated with `@Component` or one of its specialized annotations (`@Service`, `@Repository`, or `@Controller`). Components are automatically detected and instantiated by the Spring container. 
 
@@ -425,7 +429,7 @@ A bean created with `@Component` is a <u>singleton</u> by default.
 
 
 
-### Autowiring components
+#### Autowiring components
 
 Lets autowire the `PasswordGenerator` class, used above, to the `Runner` class: 
 
@@ -481,7 +485,7 @@ public class Runner implements CommandLineRunner {
 
 
 
-### Specializations of components
+#### Specializations of components
 
 As mentioned above, there are several specializations of components depending on their role in the Spring application:
 
@@ -498,7 +502,7 @@ If your component doesn't need to communicate with a database or return an HTTP 
 
 
 
-## `CommandLineRunner`
+### `CommandLineRunner`
 
 In Spring Boot, the `CommandLineRunner` interface is used to run code that needs to be executed after the Spring Boot application has started up and the Spring application context has been fully initialized.
 
@@ -536,7 +540,7 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
 
-## More about `ApplicationContext`
+### More about `ApplicationContext`
 
 `BeanFactory` is a **root** interface for accessing the Spring IoC container. `ApplicationContext` is an interface that extends `BeanFactory`. Since`ApplicationContext` has more functionality, it is more preferable than `BeanFactory`.
 
@@ -590,7 +594,7 @@ public class DemoApplication {
 
 
 
-### `getBean()`
+#### `getBean()`
 
 `ApplicationContext` overloads the `getBean()` methods inherited from `BeanFactory`:
 
@@ -607,7 +611,7 @@ context.getBean("personMary", Person.class) // returns a Person object
 
 
 
-### `@ComponentScan`
+#### `@ComponentScan`
 
 Imagine we create beans, using `@Component` annotation. We want to put these components into the same application context as some `@Bean` objects. For the configuration class to know about the existence of the `@Component` classes, the `@ComponentScan` annotation is used.
 
@@ -658,7 +662,7 @@ By default, the start package is the current one. You can change the default beh
 
 
 
-## Scopes of beans
+### Scopes of beans
 
 Be default, the bean is singleton. Still, Spring supports six bean scopes: singleton, prototype, request, session, application, and websocket. The first two scopes can be used in any Spring application, including console-based ones, while the other four are only available in web applications and rely on HTTP-based concepts such as HTTP requests, sessions, etc.
 
@@ -758,7 +762,7 @@ To set up a scope, you should use the `@Scope` annotation. It can be applied to 
 
 
 
-## Bean lifecycle
+### Bean lifecycle
 
 When a Spring application is launched, the Spring Container gets started. The container is mainly responsible for managing the **lifecycle** of beans from their creation to destruction.
 
@@ -780,7 +784,7 @@ A significant difference exists between singletons and beans annotated with `@Sc
 
 
 
-### Initialization and destruction
+#### Initialization and destruction
 
 The Spring container performs this initialization automatically, but it also allows us to customize the initialization. We may want to load resources, read a file, connect to a database, etc. 
 
@@ -793,7 +797,7 @@ The same is about destruction. Before destroying the bean, some custom cleanup m
 
 
 
-#### Option 1: using annotations
+##### Option 1: using annotations
 
 **When it comes to a `@Component` class**, we can use `@PostConstruct` and `@PreDestroy` annotations to the methods. Spring will can methods annotated this way only once:
 
@@ -861,7 +865,7 @@ Instead of using attributes inside `@Bean` annotation, we still can add the `@Po
 
 
 
-#### Option 2: implement some interfaces
+##### Option 2: implement some interfaces
 
 Another way to customize the initialization and destruction of beans is to implement the `InitializingBean` and `DisposableBean` interfaces and override their `afterPropertiesSet` and `destroy` methods:
 
@@ -893,7 +897,7 @@ After the bean instance is created and all its properties have been set (via dep
 
 
 
-#### Option 3: use an XML bean definition file
+##### Option 3: use an XML bean definition file
 
 This is an outdated way mostly used for legacy applications. Forget it. 
 
@@ -903,7 +907,7 @@ This is an outdated way mostly used for legacy applications. Forget it.
 
 
 
-### Post-processors
+#### Post-processors
 
 You can customize beans using the `BeanPostProcessor` interface. Some custom operations will be run before or after the bean is initialized. To use this feature, the `postProcessBeforeInitialization` or `postProcessAfterInitialization` methods need to be overriden.
 
@@ -917,7 +921,7 @@ Post-processors are an advanced concept. Unlike `@PostConstruct`, `@PreDestroy`,
 
 
 
-## Logging
+### Logging
 
 For our logging, we are going to use a **Logback** component. It is automatically added via `spring-boot-starter`. 
 
@@ -947,7 +951,7 @@ public class Runner implements CommandLineRunner {
 
 
 
-### General info
+#### General info
 
 The `Logger` class has several methods, each of them provides logging at different levels (from the least critical level to the most critical one):
 
@@ -982,7 +986,7 @@ Examples:
 
 
 
-### File Output
+#### File Output
 
 By default, Spring Boot logs only to the console and does not write log files. If you want to write log files in addition to the console output, you need to set a `logging.file.name` or `logging.file.path` property in the `application.properties` file located in `src/main/resources/`.
 
@@ -1007,7 +1011,7 @@ Also, we defined the lowest level of logging  which is important for us. Here th
 
 
 
-## HTTP messages
+### HTTP messages
 
 There are two types of messages: **requests** and **responses**. A request is an operation that a client wants to perform on the server, and a response is an answer from the server to an incoming request.
 
@@ -1015,7 +1019,7 @@ There are two types of messages: **requests** and **responses**. A request is an
 
 
 
-### Format
+**Format:**
 
 In the HTTP protocol, all messages consist of text strings. Both requests and responses have roughly the same standardized format:
 
@@ -1029,7 +1033,7 @@ In the HTTP protocol, all messages consist of text strings. Both requests and re
 
 
 
-### HTTP interaction
+**HTTP interaction:**
 
 <img src="./pics for conspects/spring_boot/http_messages.png" alt="http_messages" style="zoom:80%;" />
 
@@ -1037,7 +1041,7 @@ In the HTTP protocol, all messages consist of text strings. Both requests and re
 
 
 
-### Methods
+**HTTP methods:**
 
 HTTP defines a set of request types (methods) to interact with web resources. Here are the most commonly used query methods:
 
@@ -1051,7 +1055,7 @@ HTTP defines a set of request types (methods) to interact with web resources. He
 
 
 
-### Status code
+**Returned status code:**
 
 | code pattern | description                                                  |
 | :----------- | ------------------------------------------------------------ |
@@ -1067,7 +1071,7 @@ HTTP defines a set of request types (methods) to interact with web resources. He
 
 
 
-## Spring repositories
+### Spring repositories
 
 We might want to update or delete the data from the database. These operations are called **CRUD** operations, short for Create, Read, Update, and Delete.
 
@@ -1121,7 +1125,7 @@ It has the same declared methods for the `Create` and `Update` operations. Under
 
 
 
-### Declaring a repository
+#### Declaring a repository
 
 Lets use a `Treadmill` class as an entity:
 
@@ -1188,7 +1192,7 @@ public class Application {
 
 
 
-## REST
+### REST
 
 **REST (Representational State Transfer)** is a fairly common way of interaction between client applications and services on the Internet. It is one of the possible ways to use HTTP. It is not a standard, but rather a set of useful recommendations.
 
@@ -1218,7 +1222,7 @@ In the REST concept, interaction with resources is performed by calling the URL 
 
 
 
-## SOLID
+### SOLID
 
 Each letter in SOLID refers to a distinct design principle:
 
@@ -1244,7 +1248,7 @@ Each letter in SOLID refers to a distinct design principle:
 
 
 
-## Jackson
+### Jackson
 
 Jackson is a powerful, lightweight, and flexible Java library that provides a way to convert Java objects to JSON and vice versa. The  `jackson-databind` dependency can be used in Spring applications. 
 
@@ -1254,7 +1258,7 @@ Jackson is a powerful, lightweight, and flexible Java library that provides a wa
 
 
 
-### Serialization
+#### Serialization
 
 Imagine we have a class `Task`:
 
@@ -1310,7 +1314,7 @@ System.out.println(json);
 
 
 
-#### `@JsonProperty`
+##### `@JsonProperty`
 
 Basically, the `@JsonProperty` annotations shows where the value for the property can be found. You can either create class getters or use the annotation in two ways:
 
@@ -1379,7 +1383,7 @@ Basically, the `@JsonProperty` annotations shows where the value for the propert
 
 
 
-#### `@JsonIgnore`
+##### `@JsonIgnore`
 
 `@JsonIgnore` helps us ignore some Java class fields:
 
@@ -1412,7 +1416,7 @@ public class Post {
 
 
 
-#### `@JsonPropertyOrder`
+##### `@JsonPropertyOrder`
 
 By default, the ordering of the fields in the serialized JSON depends on the JDK. `@JsonPropertyOrder` allows us to set a specific order when serializing a Java object:
 
@@ -1451,7 +1455,7 @@ public class Post {
 
 
 
-### Deserialization
+#### Deserialization
 
 To convert a JSON object to a Java object, the `readValue()` method from the `ObjectMapper` is used. 
 
@@ -1473,7 +1477,7 @@ Task task = objectMapper.readValue(json, Task.class);
 
 
 
-#### Restrictions
+##### Restrictions
 
 For Jackson to be able to convert JSON into a Java object of some class, this class must satisfy several conditions:
 
@@ -1507,13 +1511,39 @@ For Jackson to be able to convert JSON into a Java object of some class, this cl
   }
   ```
 
-  
 
 
 
 
 
-## `@RestController`
+##### Are getters and setters mandatory? 
+
+Jackson uses getters and setters of a class to access and modify the class's properties during (de)serialization. The getters and setters should be <u>public</u>. 
+
+However, Jackson can work with fields *directly* as well by using field access instead of method access. Jackson will use direct field access to read and write the properties, and getters and setters are no longer required. You can enable field access using `@JsonAutoDetect` annotation:
+
+```java
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class Task {
+    private int id;
+
+
+    private String name;
+    private String description;
+    private Date date;
+
+    // constructor
+    // other methods
+}
+```
+
+
+
+
+
+
+
+### `@RestController`
 
 A **controller** is a part of the application that handles these API methods. A basic **REST-based controller** (server) is used for retrieving data through `GET` requests. 
 
@@ -1535,7 +1565,7 @@ The `@RestController` annotation makes a class provide exact endpoints (URLs) to
 
 
 
-### `@RequestMapping`
+#### `@RequestMapping`
 
 `@RequestMapping` is an annotation used to map HTTP requests to handler methods in a controller class. It defines the routes and endpoints for incoming HTTP requests and specifies how these requests should be handled.
 
@@ -1569,9 +1599,9 @@ Here, the <u>base path</u> for the controller is set to `localhost:<port>/tasks`
 
 
 
-### `GET`
+#### `GET`
 
-#### `@GetMapping`
+##### `@GetMapping`
 
 To implement a `GET` request, we can use the `@GetMapping` annotation. It indicates what URL path should be associated with a `GET` request:
 
@@ -1617,7 +1647,7 @@ When we work with Spring, we can face a lot of `GET` requests at the same time. 
 
 
 
-#### Returning a status code
+##### Returning a status code
 
 By default, a method annotated with `@GetMapping` returns a response with the status code `200 OK` if a request was processed successfully and the status code `500` if there is an uncaught exception. 
 
@@ -1636,7 +1666,7 @@ public ResponseEntity<List<Task>> getTasks() {
 
 
 
-#### `@PathVariable`
+##### `@PathVariable`
 
 There is an option to get a value from the URL. To do this, the `@PathVariable` annotation is used:
 
@@ -1671,7 +1701,7 @@ public class TaskController {
 
 
 
-### `POST`
+#### `POST`
 
 With `POST` requests, users can add information by sending **values** they wish to upload. The `POST` requests are implemented using a `@PostMapping` annotation. 
 
@@ -1685,7 +1715,7 @@ We advise using a **thread-safe object** to work with data in a `@RestController
 
 
 
-#### `@RequestParam`
+##### `@RequestParam`
 
 A `@RequestParam` is a variable provided by a user through the **query parameters**. It can be provided in two ways:
 
@@ -1702,7 +1732,7 @@ If a `@RequestParam` parameter is either missing or invalid, a user receives a `
 
 
 
-#### `@PostMapping`
+##### `@PostMapping`
 
 The server should be able to receive data and store it somewhere. To make this possible, the `@PostMapping` annotation.
 
@@ -1735,7 +1765,7 @@ The url `http://localhost:8080/tasks/addTask?name=sing&descr=sing%20a%20song` wi
 
 
 
-#### `@RequestBody`
+##### `@RequestBody`
 
 The `@RequestBody` annotation is commonly used in `POST` requests to extract the request payload or body. It helps map the data to a specific parameter in the controller method. It tells Spring to deserialize the request body into the corresponding Java object automatically.
 
@@ -1780,13 +1810,13 @@ If a `consumes` argument is not provided, it will be JSON by default. There are 
 
 
 
-### `PUT`
+#### `PUT`
 
 `PUT` requests allow users to  update or replace an existing resource with the request payload.
 
 
 
-#### `@PutMapping`
+##### `@PutMapping`
 
 The `@PutMapping` annotation is used to execute `PUT` requests. 
 
@@ -1821,13 +1851,13 @@ For example, there are three tasks now. The url `http://localhost:8080/tasks/upd
 
 
 
-### `DELETE`
+#### `DELETE`
 
 `DELETE` requests allow users to remove existing data from an application. They are implemented using a `@DeleteMapping` annotation. 
 
 
 
-#### `@DeleteMapping`
+##### `@DeleteMapping`
 
 ```java
 @RestController
@@ -1858,6 +1888,173 @@ public class TaskController {
 
 
 
+### Exception handling
+
+Here you will find two ways to return an error message in Spring Boot applications. You can either use the `ResponseStatusException` Spring class or create your own exception using the `@ResponseStatus` annotation. 
+
+
+
+
+
+
+
+#### `ResponseStatusException`
+
+The `ResponseStatusException` class is introduced in Spring 5 for basic error handling and is a part of `org.springframework.web.server` package.
+
+It provides three constructors where `HttpStatus status` (mandatory), `java.lang.String reason` (optional) and `java.lang.Throwable cause` (optional) are specified. By default, Spring Boot doesn't include the `message` field in a response. To enable it, add `server.error.include-message=always` in the `application.properties` file.
+
+The most common `HttpStatus` types are `200 OK`, `404 NOT_FOUND`, `400 BAD_REQUEST`, `403 FORBIDDEN`, and `500 INTERNAL_SERVER_ERROR`.
+
+```java
+@RestController
+public class TaskController {
+    private final List<Task> taskList = new ArrayList<>();
+    
+    // constructor
+    //getters and setters 
+    
+    @GetMapping("/tasks/byId/{id}")
+    public Task getTask(@PathVariable int id) {
+        if (id >= taskList.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                String.format("The task with id=%d does not exist", id));
+
+        }
+        return taskList.get(id);
+    }
+}
+```
+
+```shell
+http://localhost:8080/tasks/byId/666
+```
+
+```json
+{
+    "timestamp": "2023-07-23T13:00:45.788+00:00",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "The task with id=666 does not exist",
+    "path": "/tasks/byId/666"
+}
+```
+
+If the exception without a specified HTTP status is thrown (i.e. `RuntimeException` or `IllegalArgumentException`), it will be converted to `500 Internal Server Error`.
+
+
+
+
+
+
+
+#### Custom exceptions
+
+We can write a class that extends `RuntimeException` and add the `@ResponseStatus` annotation:
+
+```java
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+class TaskNotFoundException extends IllegalArgumentException {
+    public TaskNotFoundException(String message) {
+        super(message);
+    }
+}
+```
+
+```java
+@RestController
+public class TaskController {
+    private final List<Task> taskList = new ArrayList<>();
+    
+    // constructor
+    //getters and setters 
+    
+    @GetMapping("/tasks/byId/{id}")
+    public Task getTask(@PathVariable int id) {
+        if (id >= taskList.size()) {
+            throw new TaskNotFoundException(
+                String.format("The task with id=%d does not exist", id));
+        }
+        return taskList.get(id);
+    }
+}
+```
+
+
+
+
+
+
+
+#### Custom exception handler
+
+ `@ExceptionHandler` annotation lets us customize error responses. 
+
+`@ControllerAdvice` annotation allows to create a global class for intercepting various exceptions from different parts of an application. In the `@ControllerAdvice` class, we can handle not only custom exceptions but also standard exceptions thrown by Spring itself (i.e., `MethodArgumentNotValidException` invoked by `@Valid` annotation).
+
+
+
+The method annotated with `@ExceptionHandler` can be put:
+
+- inside a specific controller = the method can handle exceptions only from that controller;
+- inside `@ControllerAdvice` class = the method will handle exceptions thrown from any controller within your application.
+
+
+
+
+
+**Example**
+
+The `ErrorResponse` class is used to generate a custom error response. It sets properties that will be shown in JSON format:
+
+```java
+public record ErrorResponse(LocalDateTime timestamp,
+                            int statusCode,
+                            String error) {}
+```
+
+
+
+```java
+public class TaskNotFoundException extends RuntimeException {
+    public TaskNotFoundException(String details) {
+        super("The task with " + details + " does not exist");
+    }
+}
+
+
+
+@ControllerAdvice
+public class CustomExceptionHandler 
+    extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTaskNotFoundException(TaskNotFoundException e) {
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                e.getMessage()
+        );
+        
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        // return ResponseEntity.badRequest().body(response);
+    }
+}
+```
+
+The `CustomExceptionHandler` class intercept the thrown exception and gives it to the corresponding method. 
+
+
+
+The example of the possible output: 
+
+```json
+{
+    "timestamp": "2023-07-25T14:44:44.796423346",
+    "statusCode": 400,
+    "error": "The task with id=666 does not exist"
+}
+```
 
 
 
@@ -1867,28 +2064,7 @@ public class TaskController {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## Part II - Spring Security 
 
 
 
