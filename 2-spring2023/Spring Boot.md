@@ -204,22 +204,131 @@ The **`BeanFactory`** is an interface that allows for the configuration and mana
 
 #### `ApplicationContext`
 
-The **`ApplicationContext`** is an interface extending the `BeanFactory`. `ApplicationContext` objects provide bean configurations for the application setup. There are three main implementations that we typically see in applications:
+`BeanFactory` is a **root** interface for accessing the Spring IoC container. `ApplicationContext` is an interface that extends `BeanFactory`. Since`ApplicationContext` has more functionality, it is more preferable than `BeanFactory`.
+
+`ApplicationContext` objects provide bean configurations for the application setup. 
+
+There are two ways to create metadata (bean definitions): by using an XML configuration file or annotations. `BeanFactory` doesn't support annotation-based configuration, while `ApplicationContext` does. 
+
+Options for creating `ApplicationContext`:
 
 - **`FileSystemXmlApplicationContext`** -- loads bean definitions from an XML file that is provided to the constructor through its full file path.
 - **`ClassPathXmlApplicationContext`** -- loads bean definitions from an XML file that is provided as a classpath property. 
 - **`WebApplicationContext`** -- loads the servlet configuration from a file `web.xml`. Inside this file, configurations for each servlet are set. 
 - **`AnnotationConfigApplicationContext`** -- creates and annotation-based context from a `@Configuration` class (= the class contains Spring bean configurations.)
 
-One way to create an application context:
+
+
+
+
+Since XML configurations files are seldom used nowadays, lets forget about them and look at annotation-based application context:
 
 ```java
-public class Application {
+public class Person {
+   private String name;
 
-    public static void main(String[] args) {
-        var context = new AnnotationConfigApplicationContext(Config.class);
+   public Person(String name) {
+       this.name = name;
+   }
+}
+
+
+
+@Configuration
+public class Config {
+
+    @Bean
+    public Person personMary() {
+        return new Person("Mary");
     }
 }
+
+
+
+public class DemoApplication {
+    public static void main(String[] args) {
+        var context = new AnnotationConfigApplicationContext(Config.class);
+        System.out.println(
+            Arrays.toString(context.getBeanDefinitionNames())
+        ); 
+
+// output: [ <several internal beans for the Spring app>, config, personMary ]
+    }
+}
+```
+
+
+
+❗`@Configuration` contains the `@Component` annotation inside, which also tells `ApplicationContext` to create a bean based on the `Config` class. So, before creating the `personMary` bean, `ApplicationContext` also creates a `config` bean and places it in the IoC container.
+
+
+
+
+
+
+
+##### `getBean()`
+
+`ApplicationContext` overloads the `getBean()` methods inherited from `BeanFactory`:
+
+- `T getBean(Class<T> requiredType)`
+- `Object getBean(String name)`   <--------   returns an Object class!
+- `T getBean(String name, Class<T> requiredType)`
+
+```java
+context.getBean("personMary"); // returns an Object object
+context.getBean("personMary", Person.class) // returns a Person object
+```
+
+
+
+
+
+
+
+##### `@ComponentScan`
+
+Imagine we create beans, using `@Component` annotation. We want to put these components into the same application context as some `@Bean` objects. For the configuration class to know about the existence of the `@Component` classes, the `@ComponentScan` annotation is used.
+
+```java
+@Component
+public class Book { ... }
+
+@Component
+public class Movie { ... }
+
+
+
+@ComponentScan
+@Configuration
+public class Config {
+
+    @Bean
+    public Person personMary() {
+        return new Person("Mary");
+    }
+}
+
+
+
+public class Application {
+    public static void main(String[] args) {
+        var context = new AnnotationConfigApplicationContext(Config.class);
+        System.out.println(Arrays.toString(context.getBeanDefinitionNames()));
+    }
+}
+```
+
+`@ComponentScan` scans all the classes stored in the start package and all its sub-packages. It looks for `@Component` classes or its specializations(`@Service`, `@Controll` etc). 
+
+By default, the start package is the current one. You can change the default behavior of `@ComponentScan` and explicitly specify one or more base packages for scanning:
+
+```java
+@ComponentScan(basePackages = "packageName")
+// OR
+@ComponentScan(value = "packageName")
+// OR 
+@ComponentScan("packageName")
 ```
 
 
@@ -540,128 +649,6 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
 
 
-### More about `ApplicationContext`
-
-`BeanFactory` is a **root** interface for accessing the Spring IoC container. `ApplicationContext` is an interface that extends `BeanFactory`. Since`ApplicationContext` has more functionality, it is more preferable than `BeanFactory`.
-
-There are two ways to create metadata (bean definitions): by using an XML configuration file or annotations. `BeanFactory` doesn't support annotation-based configuration, while `ApplicationContext` does. 
-
-
-
-An application context is created based on a configuration class, which describes what objects (beans) will be created inside the IoC container.
-
-One way to create an application context:
-
-```java
-public class Person {
-   private String name;
-
-   public Person(String name) {
-       this.name = name;
-   }
-}
-
-
-
-@Configuration
-public class Config {
-
-    @Bean
-    public Person personMary() {
-        return new Person("Mary");
-    }
-}
-
-
-
-public class DemoApplication {
-    public static void main(String[] args) {
-        var context = new AnnotationConfigApplicationContext(Config.class);
-        System.out.println(
-            Arrays.toString(context.getBeanDefinitionNames())
-        ); 
-
-// output: [ <several internal beans for the Spring app>, config, personMary ]
-    }
-}
-```
-
-
-
-❗`@Configuration` contains the `@Component` annotation inside, which also tells `ApplicationContext` to create a bean based on the `Config` class. So, before creating the `personMary` bean, `ApplicationContext` also creates a `config` bean and places it in the IoC container.
-
-
-
-
-
-#### `getBean()`
-
-`ApplicationContext` overloads the `getBean()` methods inherited from `BeanFactory`:
-
-- `T getBean(Class<T> requiredType)`
-- `Object getBean(String name)`   <--------   returns an Object class!
-- `T getBean(String name, Class<T> requiredType)`
-
-```java
-context.getBean("personMary"); // returns an Object object
-context.getBean("personMary", Person.class) // returns a Person object
-```
-
-
-
-
-
-#### `@ComponentScan`
-
-Imagine we create beans, using `@Component` annotation. We want to put these components into the same application context as some `@Bean` objects. For the configuration class to know about the existence of the `@Component` classes, the `@ComponentScan` annotation is used.
-
-```java
-@Component
-public class Book { ... }
-
-@Component
-public class Movie { ... }
-
-
-
-@ComponentScan
-@Configuration
-public class Config {
-
-    @Bean
-    public Person personMary() {
-        return new Person("Mary");
-    }
-}
-
-
-
-public class Application {
-    public static void main(String[] args) {
-        var context = new AnnotationConfigApplicationContext(Config.class);
-        System.out.println(Arrays.toString(context.getBeanDefinitionNames()));
-    }
-}
-```
-
-`@ComponentScan` scans all the classes stored in the start package and all its sub-packages. It looks for `@Component` classes or its specializations(`@Service`, `@Controll` etc). 
-
-By default, the start package is the current one. You can change the default behavior of `@ComponentScan` and explicitly specify one or more base packages for scanning:
-
-```java
-@ComponentScan(basePackages = "packageName")
-// OR
-@ComponentScan(value = "packageName")
-// OR 
-@ComponentScan("packageName")
-```
-
-
-
-
-
-
-
 ### Scopes of beans
 
 Be default, the bean is singleton. Still, Spring supports six bean scopes: singleton, prototype, request, session, application, and websocket. The first two scopes can be used in any Spring application, including console-based ones, while the other four are only available in web applications and rely on HTTP-based concepts such as HTTP requests, sessions, etc.
@@ -773,7 +760,7 @@ dependencies injected
 ⇓
 Bean initialized. Ready for use
 ⇓
-bean s used by the app
+bean is used by the app
 ⇓
 Bean destroyed
 ```
@@ -1816,9 +1803,7 @@ If a `consumes` argument is not provided, it will be JSON by default. There are 
 
 
 
-##### `@PutMapping`
-
-The `@PutMapping` annotation is used to execute `PUT` requests. 
+The **`@PutMapping`** annotation is used to execute `PUT` requests. 
 
 ```java
 @RestController
@@ -1853,11 +1838,9 @@ For example, there are three tasks now. The url `http://localhost:8080/tasks/upd
 
 #### `DELETE`
 
-`DELETE` requests allow users to remove existing data from an application. They are implemented using a `@DeleteMapping` annotation. 
+`DELETE` requests allow users to remove existing data from an application. 
 
-
-
-##### `@DeleteMapping`
+They are implemented using a **`@DeleteMapping`** annotation:
 
 ```java
 @RestController
@@ -2066,9 +2049,371 @@ The example of the possible output:
 
 ## Part II - Spring Security 
 
+### Insecure cryptographic storage
+
+**Insecure cryptographic storage** refers to the weak implementation of cryptographic techniques when storing sensitive data. This can result in data breaches, unauthorized disclosure of confidential information, and other security risks. 
+
+One example of insecure cryptographic storage is storing data in **plain text** without any hashing or encryption.
 
 
 
+
+
+#### What is salting?
+
+**Salting** is the process of adding random strings to the data before it's hashed (the same input will produce different hash values). 
+
+How does the salting work? For example, the user sets a password. The system generates a random and unique salt value. The salt is not kept secret and is usually stored alongside the hashed password. The combination of the user's password and the salt is then hashed. The hash value is stored in the database. 
+
+When a user attempts to log in, they provide their password. The system retrieves the salt associated with that user's account from the database. The salt and the provided password are combined, and the resulting value is hashed using the same hash function. The newly generated hash value is then compared to the stored hash value in the database. 
+
+The purpose of salting is to add randomness to each user's password before hashing it. This prevents attackers from using precomputed tables (rainbow tables) to quickly look up hash values for commonly used passwords. Even if two users have the same password, the salts make their hashed values different.
+
+
+
+
+
+#### Weak hashing
+
+Another example of insecure cryptographic storage is using **weak hashing** algorithms. Such algorithms as `MD5` and `SHA1` have been proven to be inadequate to hash sensitive information. These algorithms are designed to be **fast**, but they are **unsalted**, which means the same input will produce the same hash value.  As a result, attackers can use **rainbow table attacks** to quickly find matches for hashed values and reveal the original passwords.
+
+Now, what is a random table attack? A **rainbow table** is a precomputed table containing a large number of hashes and their corresponding original passwords. The rainbow table is generated by hashing many possible passwords in advance and storing the password-hash pairs in a table. 
+
+Attackers can use **rainbow table attacks** for unsalted algorithms. When an attacker gets hold of the hashed passwords from a compromised system, they can compare these hashes with the entries in a rainbow table to find matches quickly, effectively revealing the original passwords. 
+
+To defend against rainbow table attacks, **salted** hashing algorithms like `Bcrypt` are used. In `Bcrypt` algorithm, the hash value varies every time it is computed because of the added salt, making it impractical to use a rainbow table attack. 
+
+```txt
+$2a$12$gIB2JLgILNgDIisKsi...  // possible result of `Bcrypt` hashing
+// `$2a` means it's using bcrypt version 2a
+// `$12` means its cost-factor is 12 rounds = 2^12 = 4096 iterations
+```
+
+`Bcrypt` is also designed to be slow. The speed can be adjusted with the cost factor.
+
+
+
+
+
+
+
+#### Weak encryption
+
+Encryption is another technique used for storing sensitive data, especially when the data needs to be **accessed in its original form**. Hashing is not intended to retrieve the original data but rather to confirm the original data matches the stored data's hash. 
+
+Encryption uses a **key** to encode the original content into ciphertext. Without the proper key, it's impossible to decode the original data.
+
+One of the attributes that makes encryption algorithms weak is **insufficient key size**. Such algorithms can be susceptible to **brute force attacks**, where attackers systematically try every possible key until they find the correct one.
+
+
+
+To ensure secure cryptographic storage, it is crucial to use strong encryption algorithms with appropriate key sizes and follow best practices for key management. Additionally, a combination of hashing and encryption may be used to protect sensitive data, depending on the use case and security requirements.
+
+
+
+
+
+
+
+### Spring Security Crypto
+
+#### Encryption and hashing principles
+
+One of the ways to protect personal data is **encryption**. There are two kinds of encryption: **symmetric** and **asymmetric**. The major difference between them is in the keys used to encrypt and decrypt data. 
+
+The symmetric encryption uses the same key to encrypt and decrypt data. One of the most widely known and simple examples of symmetric encryption algorithms is **Caesar Cipher**. 
+
+As for the passwords, in general, they should be **hashed**. Every time a user logs into the system, we will hash their password and compare it with the stored hash in the database. For this reason, in cases where the user forgets the password, they can only reset it, but not retrieve the original password from the system. 
+
+Nevertheless, there is still the risk of the hashed passwords getting hacked through a **brute force** or **rainbow table attack**. To slow down the brute force, you can use a solid hashing algorithm, which makes it too time-consuming for hackers. As for the rainbow table, adding salt to the password before hashing protects against it.
+
+
+
+
+
+
+
+#### Adding Spring Crypto to your project
+
+Hashing, salting, and encrypting are very complex procedures. The **Spring Crypto** module includes encryptors, key generators, and password encoders, making it easier to use in your system.
+
+If you are using Spring Boot Security starter, you don't need to add any additional dependencies to use Spring Crypto: they are already included.
+
+```xml
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.2'
+}        
+```
+
+You can also add Spring Crypto as a separate dependency, even without using the whole Spring Framework:
+
+```xml
+dependencies {
+    implementation 'org.springframework.security:spring-security-crypto:5.7.2'
+}   
+```
+
+
+
+
+
+
+
+#### Encryptors and key generators
+
+For **key generators**, there are two easiest options:
+
+- ```java
+  String key = KeyGenerators.string().generateKey();
+  ```
+
+  Generates a random string with the length of 16 characters. The length is fixed. The generated string consists of uppercase and lowercase letters, numbers and special characters. 
+
+- ```java
+  byte[] key = KeyGenerators.secureRandom(16).generateKey();
+  ```
+
+  Generate a random key as a byte array. `16` means a random key of 16 bytes (128 bits) will be generated. 
+
+
+
+When it comes to **encryptors**, Spring Crypto has two main interfaces for them:
+
+- `BytesEncryptor` -- declares the encryption and decryption of the byte array
+- `TextEncryptor` -- declares the encryption and decryption of the `string` objects.
+
+
+
+
+
+
+
+##### `BytesEncryptor`
+
+```java
+	@Bean
+	public static BytesEncryptor aesBytesEncryptor() {
+		String password = "hackme"; // should be kept in a secure place and not be shared    
+        byte[] salt = new byte[16]; // Generate a random 16-byte salt
+        new SecureRandom().nextBytes(salt);
+        return Encryptors.standard(password, salt);
+	}
+```
+
+The `BytesEncryptor` instance returned by `Encryptors.standard(password, salt)` uses the randomly generated salt during the initialization phase to **derive an encryption key**. This derived encryption key is then used for the actual encryption and decryption operations:
+
+```java
+@SpringBootApplication
+public class DemoApplication {
+	public static void main(String[] args) throws JsonProcessingException {
+		SpringApplication.run(DemoApplication.class);
+
+		BytesEncryptor bytesEncryptor = aesBytesEncryptor();
+
+		byte[] inputData = {104, 121, 112, 101, 114, 115, 107, 105, 108, 108};
+		byte[] encryptedData = bytesEncryptor.encrypt(inputData);
+		byte[] decryptedData = bytesEncryptor.decrypt(encryptedData);
+		System.out.println("Input data: " + new String(inputData));
+		System.out.println("Encrypted data: " + new String(encryptedData));
+		System.out.println("Decrypted data: " + new String(decryptedData));
+	}
+}
+```
+
+
+
+
+
+
+
+##### `TextEncryptor`
+
+Most of the time, data that needs to be encrypted can be represented as `String`. In that case, it's better to use `TextEncryptor`. It has two implementations:
+
+- `NoOpTextEncryptor` -- leaves data as it is;
+- `HexEncodingTextEncryptor` -- uses the previously discussed `BytesEncryptor` under the hood. The encrypted data will be hex-encoded, so it's easier to store it in a database.
+
+```java
+@Bean
+public TextEncryptor hexEncodingTextEncryptor() {
+    String password = "hackme"; // should be kept in a secure place and not be shared
+    String salt = KeyGenerators.string().generateKey(); // Generate a random 16-byte salt
+    return Encryptors.text(password, salt);
+}
+```
+
+
+
+
+
+
+
+#### Passwords encoders
+
+Hashing is done with the use of `PasswordEncoder`. This interface declares methods to encode input and match hash with raw password.
+
+The most simple encoder implementation is `NoOpPasswordEncoder`:
+
+```java
+PasswordEncoder noOpEncoder = NoOpPasswordEncoder.getInstance();
+```
+
+It leaves data in plain text, which means it is deprecated. 
+
+
+
+The recommended implementations of the strong password encoder:
+
+- `BCryptPasswordEncoder`
+- `PbkdfPasswordEncoder`
+- `SCryptPasswordEncoder`
+
+
+
+
+
+
+
+##### `BCryptPasswordEncoder`
+
+`Bcrypt` is a salted hashing algorithm designed to be computationally expensive, making it more resistant to brute-force attacks. 
+
+The cost factor represents the number of rounds the algorithm will perform to hash the password. The higher the cost factor, the more rounds the algorithm will execute, increasing the time and computational resources required to hash a password. Typically, the cost factor varies from 4 to 31. If the cost factor is $X$, then $2^X$ rounds will be performed. 
+
+```java
+@SpringBootApplication
+public class DemoApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(DemoApplication.class);
+
+		int costFactor = 7;
+		PasswordEncoder bCryptEncoder = new BCryptPasswordEncoder(costFactor);
+
+		String rawPassword = "aboba";
+		String firstEncodedPassword = bCryptEncoder.encode(rawPassword);
+		String secondEncodedPassword = bCryptEncoder.encode(rawPassword);
+
+		System.out.println("First encoded password: " + firstEncodedPassword);
+		System.out.println("Second encoded password: " + secondEncodedPassword);
+	}
+}
+```
+
+The encoded passwords are different, since the algorithm is salted: 
+
+```txt
+First encoded password: $2a$07$ezNryhSQjgmzwGFU9PPuWuue7De1Lcytc2vCGNLnFcp1KyBVKD3Um
+Second encoded password: $2a$07$sTwUnWVUkm9Q.fJFaHSy3OwAg/o6n6r7ZkKjt6BjcaIoMT60eVtiK
+```
+
+
+
+As you know, the **salt** should be stored in the system in order to get a correct hash value. The `BCryptPasswordEncoder` takes care of generating a random salt internally and includes it as part of the resulting hash value. The salt is then used during the authentication process to verify the password without the need for explicit salt storage:
+
+```java
+String firstPwd = "aboba";
+String firstEncodedPwd = bCryptEncoder.encode(firstPwd);
+
+String secondPwd = "aboba";
+System.out.println(bCryptEncoder.matches(secondPwd, firstEncodedPwd)); // true
+```
+
+
+The bcrypt algorithm remains secure, even if the salt and hash value are stored together, due to several reasons. Some of them are:
+
+1. **Computational Cost**: The cost factor makes it difficult and time-consuming for attackers to perform brute-force or dictionary attacks, even if they have access to both the salt and the hash value.
+2. **Unique Salt for Each User**: Bcrypt uses a random salt. This means that if two users have the same password, their hashes will be different due to different salts. Having unique salts for each user prevents the use of rainbow tables to quickly look up hash values for commonly used passwords.
+3. **Length of Hashed Value**: The output of bcrypt is a fixed-length string, regardless of the input password length. This ensures that an attacker cannot infer anything about the password's length from the hashed value.
+
+
+
+
+
+
+
+##### `DelegatingPasswordEncoder`
+
+There is one more implementation left, namely `DelegatingPasswordEncoder`. It acts as a facade to all password encoding algorithms and makes it possible to select an algorithm at runtime.
+
+The algorithm that was used is stored with a password in the following format: `{id}encodedPassword`. 
+
+
+
+
+
+
+
+### Web security, OWASP
+
+**Web security** is a set of measures and protocols aimed at protecting data from viruses, spam, and other threats that can harm the system. 
+
+Generally, users face the following threats:
+
+- *Malware* (вредоносная программа) such as viruses or Trojans;
+- *Dos attack* is a type of hacker attack on a system in which real users receive a denial of service;
+- *Phishing* is a type of online fraud in which attackers gain access to confidential user information such as username and password. Two-step user authentication is used to reduce the likelihood of such an attack;
+- *Application vulnerabilities*. If a site or program can be hacked, then it has a weak point, which is called a vulnerability.
+
+
+
+**Web security vulnerabilities** are prioritized depending on exploitability, detectability, and impact on software.
+
+- *Exploitability* is what hackers should do to exploit the security vulnerability. The high exploitability is when an attacker needs only a web browser, and the low one is when an attacker needs advanced programming and tools.
+- *Detectability* answers the question of how easy it is to detect the threat. It is easy to detect if the information is displayed in the URL or error message. In this case, we get the highest detectability level. And if it is in the source code, then it is much more difficult to find. Then the level of detectability will be very low.
+- *Impact or Damage* stands for the amount of damage that will be done if the security vulnerability is exposed or attacked. The highest impact will cause a complete system crash and the lowest one does nothing at all.
+
+
+
+**OWASP** stands for an **Open Web Application Security Project**, an online community that publishes articles on the topic of web application security, as well as documentation, various tools, and technologies. 
+
+There are many risks and weaknesses that may lead to vulnerabilities, the most frequent ones can be found in the [OWASP TOP-10 rating](https://owasp.org/Top10/), which is updated every three to four years.
+
+
+
+Also, companies can hire people to search for vulnerabilities using the **Bug Bounty** program. Through it, people can be recognized and rewarded for finding bugs, especially those related to vulnerabilities. With these programs developers can detect and fix bugs before the general public knows about them, preventing hacking.
+
+In general, they work like this: the company establishes the rules indicating what exactly one can try to break and get a reward for. These can be new features in the application, functional updates, integration with other services.
+
+This approach gives the company the ability to constantly test its product and always know where a problem might arise.
+
+
+
+
+
+
+
+### Authentication and Authorization
+
+**Authentication** is the first step in any security process. It is about validating that users are who they claim to be.
+
+The main types of authentication are as follows:
+
+- *Passwords*. If a person enters the correct username and password, the system grants them access.
+- *One-time pins* that grant access for only one session. This level of protection is more reliable than the first, but there is a chance that someone may intercept your one-time pin.
+- *An authentication app*. First, the system fills in a password and username and then generates a long one-time access code that changes every 30 seconds making it difficult to intercept.
+- *Biometrics*. A user presents a fingerprint or eye scan to gain access to the system. The advantage of biometric identification systems is that the characteristics used in these systems are an integral part of the personality so that it is impossible to lose, transfer, or forget them.
+
+Authentication is always visible to the user so that they can pass it. Moreover, they can partially change it by replacing a password or their username, for example.
+
+Often all the data during the authentication moves through an ID token, which is a formatted character string that contains information such as ID, username, account login time, ID Token expiration date.
+
+
+
+**Authorization** often goes after authentication, when the system successfully "recognized" you. 
+
+Authorization checks if you have the right to access the content or resources to which you have requested access. For example, the permission to download a particular file on a server or to provide individual users with administrative access to an application.
+
+Unlike authentication, authorization is not visible to the user and there is no option to change it. That is because only the data owner can provide the permissions. 
+
+
+
+|                                   | **Authentication**                                    | **Authorization**                             |
+| --------------------------------- | ----------------------------------------------------- | --------------------------------------------- |
+| **What does it do?**              | Verifies credentials                                  | Grants or denies permission                   |
+| **How does it work?**             | Through passwords, biometrics, one-time pins, or apps | Through settings maintained by security teams |
+| **Is it visible to the user?**    | Yes                                                   | No                                            |
+| **Is it changeable by the user?** | Partially                                             | No                                            |
+| **How does data move?**           | Through ID tokens                                     | Through access tokens                         |
 
 
 
