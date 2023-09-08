@@ -70,7 +70,7 @@ We need to split data between train, validation and test datasets. It can be don
 
 In simple words, the model "overfits" when it is correct on every ithe training dataset but has poor fit with new, unknown datasets.
 
-<img src="./pics for conspects/ML/23-09-08 2.png" alt="23-09-08 2" style="zoom:80%;" />
+<img src="./pics for conspects/ML/23-09-08 2.png" alt="23-09-08 2" style="zoom:40%;" />
 
 Here, blue and red dots represent different classes, and the model is learning to distinguish between them. The green line is an $\textcolor{green}{\textnormal{overfitted curve}}$, which means the model gives a correct answer on every instance from the training dataset. On the other hand, the black line is more general.  
 
