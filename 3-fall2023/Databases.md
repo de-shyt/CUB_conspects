@@ -24,7 +24,7 @@ When you work on a task `k` in project `n`, you need to:
 
 
 
-### Wrap-up
+### Recap
 
 A **relational database** organizes data into structured tables (two-dimensional structures) with rows and columns, allowing for efficient storage, retrieval, and manipulation of data.
 
