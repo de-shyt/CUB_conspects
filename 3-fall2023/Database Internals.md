@@ -1,4 +1,4 @@
-# Databases Internals
+# Database Internals
 
 
 
@@ -43,9 +43,9 @@ A **relational database** organizes data into structured tables (two-dimensional
 
 
 
-#### SQL commands
+**SQL commands**
 
-**SQL** is a domain-specific language used to interact with relational databases. 
+SQL is a domain-specific language used to interact with relational databases. 
 
 Example of creating tables:
 
