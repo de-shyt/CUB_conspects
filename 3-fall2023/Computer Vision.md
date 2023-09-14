@@ -56,20 +56,6 @@ One of the most well-known examples of a linear color space is CIELAB.
 
 
 
-#### Chromaticity diagram
-
-<img src="./pics for conspects/CV/23-09-07 3.png" alt="23-09-07 3" style="zoom:80%;" />
-
-The chromaticity diagram is a color space on the XY-plane. 
-
-Every color can be represented as a set of coordinates on the chromaticity diagram. It is a two-dimensional simplification of an RGB space, which is three-dimensional. 
-
-You can play with the chromaticity diagram [here](https://company235.com/tools/colour/cie.html). 
-
-
-
-
-
 #### RGB space
 
 <img src="./pics for conspects/CV/23-09-07 4.png" alt="23-09-07 4" style="zoom:80%;" />
@@ -84,13 +70,20 @@ RGB space describes how to express every color as a combination of red, green an
 
 HSV color space is a nonlinear collor space. HSV stands for:
 
-- Hue
-- Saturation
-- Value
+- Hue (0 to 360) - chromaticity angle
+- Saturation (0 to 100) - chromaticity distance from the center of the [chromaticity diagram](https://company235.com/tools/colour/cie.html)
+- Value (0 to 100) - controls luminance. Basically, it is the scale of the RGB cube
 
 
 
-HSV space can be converted into RGB space. 
+HSV space can be converted into RGB space:
+
+- $(R, G, B)$ is the color in the RGB space
+- $r = \frac{R}{255}, \ g = \frac{G}{255}, \ b = \frac{B}{255}$
+- $m_1 = \min(r, g, b), \ m_2 = \max (r, g, b)$
+- $V = m_2 \cdot 100$
+- $S = \frac{m_2 - m_1}{m_2} \cdot 100$
+- \todo
 
 
 
@@ -117,7 +110,251 @@ So, the idea of von Kries adaptation is to multiply each channel by a gain facto
 
 
 
+## 23-09-14
 
+### Vector math
+
+A **vector norm** is any function that satisfies 4 properties:
+
+1. $\forall x \in R^n \ : \ f(x) \geqslant 0$
+2. $f(x) = 0 \Rightarrow x = 0$
+3. $\forall x \in R^n \ : \ f(tx) = |t| f(x)$
+4. $\forall x, y \in R^n \ : \ f(x + y) \leqslant f(x) + f(y)$
+
+$$
+||x|| = \sqrt{\sum \limits_1^n x_i^2} \\
+
+||x||_p = (\sum \limits_1^n x_i^p)^{\frac{1}{p}} \\
+
+||x||_{\infty} = \max \limits_i |x_i|
+$$
+
+
+
+
+
+**Dot product (inner product)**
+
+$x^T y = \sum \limits_1^n x_i y_i$
+
+$x^T y = |x| \cdot |y| \cdot \cos \phi$ where $\phi$ is the angle between $x$ and $y$
+
+The result of $x \cdot y$ gives the length of the component of $x$ which is parallel to $y$:
+
+- positive $\Rightarrow$ $\phi < 90 \textdegree$ and the component lies in the same direction as $y$. 
+- negative $\Rightarrow$ $\phi > 90 \textdegree$ and the component lies in the opposite direction. 
+- zero $\Rightarrow$ $x$ and $y$ are perpenducilar
+
+
+
+
+
+**Cross product**
+
+The result is a vector perpendicular to the plane created by $x$ and $y$.
+
+$x \times y = |x| \cdot |y| \cdot \sin \phi$
+
+
+
+
+
+
+
+### Matrix math
+
+**Multiplication**
+
+- associative: $(AB)C = A(BC)$
+- distributive: $A(B+C) = AB + AC$
+- non-commutative: $AB \neq BA$
+
+
+
+**Transpose**
+
+- $(ABC)^T = C^T B^T A^T$
+
+
+
+**Determinant**
+
+- $\det AB = \det BA$
+- $\det A^{-1} = \frac{1}{\det A}$
+- $\det A^T = \det A$
+- $det A = 0 \Rightarrow A$ is singular (a square matrix that is not invertible)
+
+Besically, a determinant of a matrix $A = \begin{bmatrix} a & c \\ b& d \end{bmatrix}$ is a square of a parallelogram formed by vectors $\begin{bmatrix} a \\ b \end{bmatrix}$ and $\begin{bmatrix} c \\ d \end{bmatrix}$.
+
+
+
+**Trace**
+
+$tr(A) = $ sum of elements on the diagonal. 
+
+- $\textnormal{tr} AB = \textnormal{tr} BA$
+- $\textnormal{tr} (A + B) = \textnormal{tr} A + \textnormal{tr} B$
+
+
+
+**Matrix norm**
+
+Frobenius norm (or Euclidean norm): $||A||_F = \sqrt{\sum \limits_j \sum \limits_i a_{ij}^2} = \sqrt{Tr(A^T A)}$
+
+
+
+
+
+**Rotation**
+
+$R$ is a rotation matrix if it satisfies properties:
+
+- $R \cdot R^T = E$
+- $\det R = 1$
+
+
+
+Rotating a system by $\phi$ is equivalent to rotating a point within that system by the angle $-\phi$. When you rotate a system by $\phi$, you change the directions of the axes. This operation affects all points that are *within that system*. On the other hand, when you rotate a point within the same coordinate system by the angle $-\phi$, you are changing the position of that point while keeping the system's orientation unchanged.
+
+
+
+
+
+
+
+### Homogeneous coordinates
+
+**Translation**
+
+The matrix have the form of $T = \begin{pmatrix} 1 & 0 & \ldots & t_1 \\ 0 & 1 & \ldots & t_2 \\ 0 & 0 & \ldots & t_3 \\ & \ldots \\ 0 & 0 & \ldots & 1 \end{pmatrix}$. 
+
+$\begin{pmatrix} t_1 \\ \ldots \\ t_n \end{pmatrix}$ is an addition of a constants to the initial coordinates. 
+
+<img src="../2-spring2023/pics for conspects/RIS/RIS 23-02-10 1.png" alt="RIS 23-02-10 1" style="zoom:50%;" />
+
+
+
+
+
+**Scaling**
+
+The matrix has a form of $\begin{pmatrix} s_1 & 0 & \ldots & 0 & 0 \\0 & s_2 & \ldots & 0 & 0 \\ && \ldots \\0 & 0 & \ldots & s_n & 0 \\ 0 & 0 & \ldots & 0 & 1 \\ \end{pmatrix}$.
+
+$s_1, ..., s_n$ are scalars for the initial coordinates. 
+
+<img src="../2-spring2023/pics for conspects/RIS/RIS 23-02-10 2.png" alt="RIS 23-02-10 2" style="zoom:50%;" />
+
+
+
+The order of scaling and translation is important. `Scalling * Translating` ends up in a bigger image, then `Translating * Scalling`. 
+
+
+
+
+
+
+
+### Eigenvectors and eigenvalues
+
+Given a matrix $\mathcal{A}$ of size $n \times n$.
+
+$v \in V/\{0\}$ is an *eigenvector* if $\exists \lambda \ : \ \mathcal{A}(v) = \lambda v$.
+
+$\lambda$ is an *eigenvalue*.
+
+
+
+$p_{\mathcal{A}}(\lambda) = \det(\mathcal{A} - \lambda E)$ is a *characteristic polynomial* of matrix $\mathcal{A}$.
+
+$\lambda$ is an eigenvalue  $\Leftrightarrow$  $\lambda$ is the root of the characteristic polynomial, which means $\det(\mathcal{A} - \lambda E) = p_{\mathcal{A}}(\lambda) = 0$. 
+
+
+
+$tr(A) = \sum \limits_i \lambda_i$ ($\lambda_i$ are eigenvalues)
+
+
+
+
+
+**Example**
+
+$\mathcal{A} = \begin{pmatrix} 3 & -1 \\ -3 & 5 \end{pmatrix}$.
+
+$p_{\mathcal{A}}(\lambda) = \det \begin{pmatrix} 3 - \lambda & -1 \\ -3 & 5 - \lambda \end{pmatrix} = \lambda^2 - 8 \lambda + 12 = 0$.
+
+$\lambda_1 = 6, \ \lambda_2 = 2$.
+
+$\mathcal{A} v_1 = \lambda_1 v_1 \ \Rightarrow \ v_1 = \begin{pmatrix} 1 \\ -3 \end{pmatrix}$. Normalized $\frac{1}{\sqrt{10}} \begin{pmatrix} 1 \\ -3 \end{pmatrix}$.  
+
+$\mathcal{A} v_2 = \lambda_2 v_2 \ \Rightarrow \ v_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$. Normalized $\frac{1}{\sqrt{2}} \begin{pmatrix} 1 \\ 1 \end{pmatrix}$.
+
+
+
+
+
+
+
+### Singular Value Deomposition (SVD)
+
+SVD decomposes a matrix into three other matrices, allowing to represent the original matrix in a more interpretable and compact form. 
+$$
+A = U \Sigma V^T
+$$
+where:
+
+- $A$ is the original matrix of size $m \times n$ 
+
+- $U$ is an orthogonal matrix (meaning $U^T U = E$). Its size is $m \times m$.
+
+  Columns of $U$ are called the left singular vectors of $A$.
+
+- $\Sigma$ is a diagonal matrix with non-negative real numbers, called the singular values of A. They are typically arranged in descending order. $rank(\Sigma) = rank(A)$.
+
+- $V$ is an orthogonal matrix of size $n \times n$. 
+
+  Rows of $V^T$ are called the right singular vectors of $A$.
+
+$U$ and $V$ are always rotation matrices. They represent rotations and reflections in the original space that transform the columns of $A$ into the coordinate axes. These transformations preserve the length of vectors. 
+
+$\Sigma$ works like a scalling matrix. The values on the diagonal are the singular values $\sigma_1,..., \sigma_m$ of the matrix $A$ (singular value is a root of eigenvalue for $A^T A$). The values are typically ordered in descending order, meaning the largest singular value is at the top-left corner. Larger singular valueiis correspond to more significant contributions, meaning the karger coefficient of the corresponding component.
+
+ 
+
+**Example**
+
+Given the $A = \begin{bmatrix} 1&1&0 \\ 0&0&1 \end{bmatrix}$, find its SVD.
+
+
+
+- Find eigenvalues and eigenvectors of $A^TA$:
+
+  $A^TA = \begin{bmatrix} 1&1&0 \\ 1&1&0\\ 0&0&1 \end{bmatrix}$
+
+  $\lambda_1 = 2, \ \lambda_2 = 1, \ \lambda_3 = 0$
+
+  $w_1 = \begin{bmatrix} 1\\1\\0 \end{bmatrix}, \ w_2 = \begin{bmatrix} 0\\0\\1 \end{bmatrix}, \ w_3 = \begin{bmatrix} -1\\1\\0 \end{bmatrix}$
+
+- Values of $\Sigma$ are roots of eigenvalues of $A^TA$:
+
+  $\sigma_1 = \sqrt{2}, \ \sigma_2 = 1; \ \ \Sigma = \begin{bmatrix} \sqrt{2} & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix}$
+
+- Columns of $V$ are normalized eigenvectors of $A^TA$:
+
+  $v_1 = \begin{bmatrix} 1/\sqrt{2}\\1/\sqrt{2}\\0 \end{bmatrix}, \ v_2 = \begin{bmatrix} 0\\0\\1 \end{bmatrix}, \ v_3 = \begin{bmatrix} -1/\sqrt{2}\\1/\sqrt{2}\\0 \end{bmatrix}$
+
+  $V = \begin{bmatrix} v_1 & v_2 & v_3 \end{bmatrix}$
+
+- $u_1 = \frac{1}{\sigma_1} A v_1 = \begin{bmatrix} 1\\0 \end{bmatrix}, \ \ u_2 = \frac{1}{\sigma_2} A v_2 = \begin{bmatrix} 0\\1 \end{bmatrix}$
+
+  $U = \begin{bmatrix} u_1 & u_2 \end{bmatrix}$
+
+
+
+
+
+
+
+### Gradient \todo
 
 
 
