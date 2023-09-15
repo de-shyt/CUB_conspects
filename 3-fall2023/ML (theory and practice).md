@@ -118,7 +118,7 @@ Here $p$  is a prediction, it is calculated by our model, and $y$ is a label ($1
 
 ### Linear models
 
-[Jupiter notebook practice](jupiter/ML-23-09-15.ipynb)
+[Jupiter notebook practice](https://github.com/de-shyt/CUB_conspects/blob/main/3-fall2023/jupiter/ML-23-09-15.ipynb)
 
 
 
