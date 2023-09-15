@@ -68,7 +68,7 @@ We need to split data between train, validation and test datasets. It can be don
 
 ### Overfitting
 
-In simple words, the model "overfits" when it is correct on every ithe training dataset but has poor fit with new, unknown datasets.
+In simple words, the model "overfits" when it is correct on every instance of the training dataset but has poor fit with new, unknown datasets.
 
 <img src="./pics for conspects/ML/23-09-08 2.png" alt="23-09-08 2" style="zoom:40%;" />
 
@@ -114,6 +114,24 @@ Here $p$  is a prediction, it is calculated by our model, and $y$ is a label ($1
 
 
 
+## 23-09-15
+
+### Linear models
+
+[Jupiter notebook practice](jupiter/ML-23-09-15.ipynb)
+
+
+
+We have $n$ features ($x_0, ..., x_{n-1}$) and want to find coefficients $a_0,..., a_{n-1}$:
+$$
+y_{pred} = f(A, X) = a_0x_0+...+a_{n-1}x_{n-1}
+$$
+The loss function will be the distance from real and predicted results:
+$$
+L = (y_{pred} - y_{real})^2 = (\sum\limits_0^{n-1}a_ix_i - y_{real})^2 \\
+L \rightarrow \min
+$$
+$\frac{\Delta L}{\Delta a_i} = L'_{a_i} = 2 (a_0x_0+...+a_{n-1}x_{n-1} - y_{real}) x_i$ 
 
 
 
@@ -121,6 +139,15 @@ Here $p$  is a prediction, it is calculated by our model, and $y$ is a label ($1
 
 
 
+### Decision trees
+
+**Boosting forest**
+
+The implementation is `catboost`
 
 
+
+**Random forest**
+
+$y = avg(tree_0(x), tree_1(x),...,tree_{n-1}(x))$
 
