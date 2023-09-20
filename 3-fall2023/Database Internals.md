@@ -233,6 +233,120 @@ When it comes to reading data, random access in SSD is rather fast. But if many 
 
  When it comes to writing, *there are no in-place modifications*. Instead, a new page is created, and the old one is marked invalid and erased. This is because NAND flash memory cells can be written to a limited number of times before they wear out. Spreading out the write and erase operations across different memory cells helps prolong the lifespan of the SSD.
 
-When it comes to erasing pages, *a block is a minimal-erase unit*. In other words, you can't erase individual pages within a block; you must erase the entire block. Garbage collection identifies blocks that contain invalid pages. It copies the valid data to new blocks, and erases the old blocks. 
+When it comes to erasing pages, *a block is a minimal-erase unit*. In other words, you can't erase individual pages within a block; you must erase the entire block. Garbage collector identifies blocks that contain invalid pages. It copies the valid data to new blocks, and erases the old blocks. 
 
 As you can see, large reads/writes are better than small ones. 
+
+
+
+
+
+
+
+
+
+## 23-09-14
+
+I/O operations for secondary stodage are expensive. So the larger the single read/write operation size, the better.
+
+ 
+
+
+
+
+
+### Page layout
+
+A **page** is basically a linear byte array. It begins with a fixed-size header (e.g. page number), the remaining bytes contain records. Records are stored as tuples. 
+
+There are different approaches for storing records inside a page: 
+
+- **linear page layout** - records are stored one by one, after the header. It is a good option if the size of the recod is fixed (e.g. two integers). If the record has an arbitary size (e.g. stores strings), it will be hard to replace records. 
+
+- **page layout with catalog** - uses indexes for records. Indexes are integers written after the header. They point to the corresponding records. The array of records grows from the end of the page to its center. 
+
+  The common approach in databases is to mark a record as "deleted" during the delete operation. Then garbage collector identifies valid records, copies them into a new page and erases the old page. 
+
+
+
+
+
+
+
+### Table layout
+
+A table emay contain lots of pages. 
+
+One way for storing the table is to use a **linked list**. The address of the first page is stored somewhere. Info about next pages in the list is stored in header. 
+
+Another option is to use a **page catalog**. Pages have indexes which point to a piece of secondary memory, where the page is stored. We can access any page with the same cost. 
+
+
+
+
+
+
+
+### Buffer management 
+
+Once a page was read for the first time, it will probably be read again. So we can introduce a buffer layer between the DB engine and the disk. 
+
+The cache has less memory than the disk. If there is no room, we need to find a victim buffer and replace it with a new page. But not all pages can be easily replaced. The page can be marked "dirty" or be in use at the moment. Also, the DB engine process may pin a page to prevent it from eviction. 
+
+
+
+There are different cache replacement policies:
+
+- **FIFO** $\textcolor{gray}{\textnormal{(first in first out)}}$
+
+  Pages form a linked queue. New pages are added at the end of the queue, the victim for replacing is at the head. 
+
+- **LRU** $\textcolor{gray}{\textnormal{(least recently used)}}$
+
+A timestamp of the last access is kept for each buffer page. The page with the smallest timestamp is the victim.
+
+- **LFU** $\textcolor{gray}{\textnormal{(least frequently used)}}$
+
+  Pages are placed in a circular list. There are two attributes for each buffer page:
+
+  - `pin count` - increments when DB engine process uses the page, decrements when the work is completed. If `pin count == 0` then the page is unpinned and can be removed.
+
+
+  - `usage count` - increments when DB engine process uses the page, decremented by the replacement policy. A pointer scans over *unpinned* pages and decrements `usage count`. The first page with `usage count == 0` is a victim.
+
+
+
+
+**LFU policy: clock-sweep algorithm**
+
+Pages are placed in a circular list. A pointer goes in a clockwise direction. It sequqentially scans over pages (amount of circles can be >1) and decrements `usage count` only for unpinned pages. Once the page with `usage count == 0` found, it is a victim and will be removed. 
+
+If the page is pinned by DB engine (liked pinned forever, to prevent it from eviction), we can make `usage count` equal to $+\infty$. 
+
+In the example below, the blue pages are pinned (`pin count > 0`). Numbers in the boxes are `usage count` values. 
+
+<img src="./pics for conspects/DB/23-09-14 3.png" alt="23-09-14 3" style="zoom:80%;" />
+
+
+
+**LFU: aging algorithm**
+
+There is problem with the clock-sweep algorithm: when a lot of pages are accessed in a short period of time, their `usage count` is very high. Thus, after the work is done, pages will remain useless in the cache for a long time.
+
+The aging algorithm accounts for both frequency and access time. It is like a combination of the clock-sweep algorithm and the LRU policy. 
+
+Every page is assoiated with a binary counter. When the page is accessed, the most significant bit in its counter is set to 1. On every clock tick[^clock tick], all counters are shifted right. The victim is a page with the smallest counter. 
+
+<img src="./pics for conspects/DB/23-09-14 4.png" alt="23-09-14 4" style="zoom:60%;" />
+
+In the example above, pages that were victims during the specific step are marked with the $\textcolor{red}{\textnormal{red}}$ dot. 
+
+
+
+
+
+
+
+
+
+[^clock tick]: A clock tick is when a certain time interval elapses
