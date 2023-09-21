@@ -118,9 +118,29 @@ Here $p$  is a prediction, it is calculated by our model, and $y$ is a label ($1
 
 ### Linear models
 
-[Jupiter notebook practice](https://github.com/de-shyt/CUB_conspects/blob/main/3-fall2023/jupiter/ML-23-09-15.ipynb)
+[Jupiter notebook practice](https://github.com/de-shyt/CUB_conspects/blob/main/3-fall2023/jupiter/ML-23-09-15/ML-23-09-15.ipynb)
 
 
+
+
+
+#### Moore-Penrose inverse method
+
+We want to solve the equation $Xa = y$ => $a = X^{-1}y$. If $X$ is not inverse (not squared), use $a = (X^TX)^{-1}X^Ty$. 
+
+```python
+def solve_pseudo_inverse(X, y):
+    matrix = np.linalg.inv(np.dot(X.T, X))
+    return np.dot(np.dot(matrix, X.T), y)
+
+print(solve_pseudo_inverse(X_train, y_train))
+```
+
+
+
+
+
+#### Stochastic Gradient Descent function
 
 We have $n$ features ($x_0, ..., x_{n-1}$) and want to find coefficients $a_0,..., a_{n-1}$:
 $$
@@ -131,7 +151,27 @@ $$
 L = (y_{pred} - y_{real})^2 = (\sum\limits_0^{n-1}a_ix_i - y_{real})^2 \\
 L \rightarrow \min
 $$
-$\frac{\Delta L}{\Delta a_i} = L'_{a_i} = 2 (a_0x_0+...+a_{n-1}x_{n-1} - y_{real}) x_i$ 
+We are going to use the gradient of the loss function to find coefficients. The gradient is a matrix consisting of derivatives, each of them has a form $\frac{\partial L}{\partial a_i} = L'_{a_i} = 2 (a_0x_0+...+a_{n-1}x_{n-1} - y_{real}) x_i$. 
+
+```python
+def solve_sgd(X, y, iterations, learning_rate):
+    n = X.shape[1]
+    a = np.zeros(n)
+    
+    for i in range(iterations):
+        t = 2 * (np.dot(X, a) - y) * X.T
+        t = np.mean(t, axis = 1)
+        a -= t * learning_rate
+    return a
+    
+print (solve_sgd(X_train, y_train, 1000, 0.01))
+```
+
+The `solve_sgd` function first initializes vector `a` with zeros and iteratively updates it in order to minimize the loss function error. In each iteration, it computes the gradient `t` for the current vector `a` and updates the coefficients.
+
+`np.mean(t, axis = 1)` finds the average over all examples in the dataset. For example, $t_1$ is the average of derivatives' values for the coefficient $a_1$. 
+
+`learning_rate` is a hyperparameter that determines the step size in the direction of the gradient. Typically, it is a positive number between $0$ and $1$ that scales the gradient before applying it to update coefficients.
 
 
 
@@ -141,13 +181,66 @@ $\frac{\Delta L}{\Delta a_i} = L'_{a_i} = 2 (a_0x_0+...+a_{n-1}x_{n-1} - y_{real
 
 ### Decision trees
 
-**Boosting forest**
+Parameters used in a decision tree are features, thresholds and conditions. Every node contains a condition - question of a form like `if feature1 < threshold1`. 
 
-The implementation is `catboost`
+The implementation for decision trees is `catboost`.
 
 
 
-**Random forest**
+
+
+#### Boosting forest
+
+$y = tree_0(x) + ... + tree_{n-1}(x)$.
+
+Trees are not deep (3 to 6 levels). Each tree makes a tiny step towards the goal. When trees from $0$ to $i-1$ are known, the $i$-th tree is found from the equation $y - tree_0(x)-...-tree_{i-1}(x) = tree_i(x)$. 
+
+Unlike decision trees, boosted trees do not overfit quickly, since a tree with thousands of params is more likely to overfit. 
+
+```python
+import catboost
+
+
+def solve_catboost(X, y, iterations, learning_rate, depth):
+    model = catboost.CatBoostRegressor(iterations = iterations, 
+                                       learning_rate = learning_rate, 
+                                       depth = depth)
+    model.fit(X, y, verbose = False)
+    return model
+
+    
+X_train, y_train = generate_data([1, 2, 3], 1000, 0.01)
+X_test, y_test = generate_data([1, 2, 3], 100, 0.01)
+model = solve_catboost(X_train, y_train, 1000, 0.1, 6)
+```
+
+A `CatBoostRegressor` model is trained using the `solve_catboost` function:
+- `iterations` is the amount of decision trees
+- `learning_rate` is used for controlling the step size in the direction of the gradient
+- `depth` - depth of decision trees 
+
+
+
+
+
+#### Random forest
 
 $y = avg(tree_0(x), tree_1(x),...,tree_{n-1}(x))$
+
+Each tree is trained on a sample of the original dataset. 
+
+To avoid overfitting, a technique called *bagging* is used:
+
+- sample bagging: multiple decision trees are trained on random subsets (repeating data points is allowed) of the training data
+- feature bagging: a random subset of features is selected for each tree
+
+
+
+
+
+
+
+
+
+
 
