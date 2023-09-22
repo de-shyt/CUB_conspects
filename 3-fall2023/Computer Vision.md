@@ -354,7 +354,121 @@ Given the $A = \begin{bmatrix} 1&1&0 \\ 0&0&1 \end{bmatrix}$, find its SVD.
 
 
 
-### Gradient \todo
+### Gradient
+
+$$
+f \ : \ R^{n \times m} \rightarrow R \\
+
+\nabla_Af(A) = \begin{bmatrix} 
+	\frac{\partial f(A)}{\partial A_{11}} & \dotsb & \frac{\partial f(A)}{\partial A_{1m}} \\ 
+	\vdots & \ddots & \vdots \\
+	\frac{\partial f(A)}{\partial A_{n1}} & \dotsb & \frac{\partial f(A)}{\partial A_{nm}} \\
+\end{bmatrix}
+$$
+
+
+
+
+
+
+
+
+
+## 23-09-21
+
+### Image representation
+
+Binary - value for each pixel can be 0 or 1. 
+
+Gray-scale - each pixel has a value from 0 to 255 (intensity of black color). The size of one pixel is 1 byte. 
+
+Every pixel in a color images consists of red, green and blue components. One color picture is a combination of red, green abd blue pictures. 
+
+
+
+
+
+### Histogram
+
+Histogram of an image provides the frequency of pixel intensity values in the image. Histogram captures the distribution of gray levels in the image. It analyses the digital image pixel by pixel and displays the graphical representation of the image.
+
+The histogram has two axes. X-axis represents gray levels ranging from 0 to L-1, and Y-axis represents the total number of pixels. 
+
+<img src="./pics for conspects/CV/23-09-21 1.png" alt="23-09-21 1" style="zoom:80%;" />
+
+<img src="./pics for conspects/CV/23-09-21 3.png" alt="23-09-21 3" style="zoom:45%;" />
+
+
+
+
+
+
+
+### Image as a function
+
+
+
+
+
+
+
+### Linear systems and filters 
+
+Filtering is a technique for modifying or enhancing an image. It is a neighborhood operation, meaning the value of the output pixel is determined by applying some algorithm to pixels in the neighborhood of the corresponding input pixel.
+
+ Ways of the filter usage:
+
+- de-noising - removing salt and pepper noise - black and write pixels that create noise in the picture
+- super-resolution - improve resolution of the picture 
+- in-painting - add missing pixels to the image
+
+
+
+
+
+**Example 1: average over a window**
+
+$g[n, m] = \frac{1}{9} \sum \limits_{k=n-1}^{n+1} \sum \limits_{l=m-1}^{m+1} f[k, l]$
+
+The function calculates the average value in a $3\times3$ window, resulting in a blurred  version of the given image. 
+
+<img src="./pics for conspects/CV/23-09-21 2.png" alt="23-09-21 2" style="zoom:67%;" />
+
+\todo add an example with picture
+
+
+
+
+
+**Example 2: image segmentation**
+
+$g[n, m] = \left \{ \begin{array}{l} 255 \textnormal{ if } f[n, m] > 0 \\ 0, \textnormal{ otherwise}  \end{array} \right .$
+
+\todo add an example with picture
+
+
+
+
+
+
+
+### Discrete convolution
+
+Convolution is the main way of filtering. The filter matrix $h$ is flipped both horizontaly and vertically, then moved to the left or to the right. 
+
+
+
+
+
+### Cross correlation
+
+A measure of similarity between the given and the resulting images. 
+
+
+
+
+
+
 
 
 
