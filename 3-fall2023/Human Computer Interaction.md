@@ -110,9 +110,9 @@ A bottom-up analysis starts with the core business figures (number of clients, a
 
 ### Design experiment
 
-<img src="../../../Desktop/studying/CUB_conspects/CUB conspects (Third year)/pics for conspects/HCI/23-09-18 1.png" alt="23-09-18 1" style="zoom:80%;" />
+<img src="./pics for conspects/HCI/23-09-18 1.png" alt="23-09-18 1" style="zoom:80%;" />
 
-<img src="../../../Desktop/studying/CUB_conspects/CUB conspects (Third year)/pics for conspects/HCI/23-09-18 2.png" alt="23-09-18 2" style="zoom:80%;" />
+<img src="./pics for conspects/HCI/23-09-18 2.png" alt="23-09-18 2" style="zoom:80%;" />
 
 
 
@@ -128,7 +128,7 @@ A bottom-up analysis starts with the core business figures (number of clients, a
 
 - Context of Use: Natural, prepared/moderated (e.g. laboratory testing), without usage of products, hybrid
 
-![23-09-18 4](../../../Desktop/studying/CUB_conspects/CUB conspects (Third year)/pics for conspects/HCI/23-09-18 4.png)
+![23-09-18 4](./pics for conspects/HCI/23-09-18 4.png)
 
 
 
@@ -136,9 +136,9 @@ A bottom-up analysis starts with the core business figures (number of clients, a
 
 
 
-### Methodologies
+#### Methodologies
 
-![23-09-18 3](../../../Desktop/studying/CUB_conspects/CUB conspects (Third year)/pics for conspects/HCI/23-09-18 3.png)
+![23-09-18 3](./pics for conspects/HCI/23-09-18 3.png)
 
 You need to know at least one tool from each quadrant, since it is about different types of behaviour and different insights that you get from testing your product. 
 
@@ -148,7 +148,7 @@ You need to know at least one tool from each quadrant, since it is about differe
 
 
 
-### Advice on user interviews
+#### Advice on user interviews
 
 User interviews are aimed on qualitative research. 
 
@@ -168,7 +168,7 @@ User interview template: [Notion](https://www.notion.so/User-Interview-Template-
 
 
 
-### Advice of surveys
+#### Advice of surveys
 
 Surveys and polls are examples of quantitative research.
 
@@ -188,7 +188,65 @@ Surveys and polls are examples of quantitative research.
 
 ## 23-09-22
 
-Field observation and usability testing 
+### Field observation
+
+ **Field observation** is about collecting real-world data by physically visiting and observing the environment, users, situations relevant to the product development process. Instead of spending months trying to adapt your ideas and skills, you can immerse yourself into the process and **quicker understand what is required**. 
+
+Although it is a time-consuming activity, it is necessary to leave your house and **put yourself to the user's comfort zone**. By observing users in their natural environment, you can uncover their needs, behaviors, pain points, and preferences. For example, delivery drivers hack the space to place timing sheets[^timingsheets], simply putting them near the window. So a good idea would be, for example, to create a holder for this stuff. 
+
+First of all, field observation is about **collecting data**. Try to take a recording or how a person interacts with a product/environment itself. It will make it easier to catch important things of people's environment later on the analysis phase. 
+
+Finally, **make a transcript / follow-ups**. Having a transcript[^transcript] allows you to go back and refer to previous conversations. And doing a follow-up at the end of the day involves reviewing the transcript to extract insights. 
+
+
+
+
+
+
+
+### Usability testing 
+
+**Usability testing** involves observing real users as they interact with the real product (not sketches/prototypes). 
+
+It is usually a **1-to-1 meeting** with a participant, but could be a group session as well. The participant **explores the finished interface/prototype** and identifies some bugs, minor and major issues, because you test your product with real devices.
+
+The process of usability testing, again, **includes recording**. It can be a screen recording of using the app or simulation of the environment being recorded (e.g. testing car facilities but without actually driving it). 
+
+
+
+<img src="./pics for conspects/HCI/23-09-22 1.png" alt="23-09-22 1" style="zoom:80%;" />
+
+In comparative testing, it is important to hide which option is yours and which is competitor. Thus, you will get a fair feedback. 
+
+
+
+#### U-testing checklist
+
+Guide: [nngroup.com](https://www.nngroup.com/articles/usability-checklist/)
+
+![23-09-22 2](./pics for conspects/HCI/23-09-22 2.png)
+
+
+
+
+
+
+
+### Guerrilla testing
+
+**Guerrilla testing** is a form of informal and quick usability testing. Conducting small user tests with random lookalike users can quickly reveal valuable insights and allow faster design iterations. 
+
+**No interview is needed.** Approach a stranger, ask if they'd like to participate, give them a few tasks to do, observe their interactions, and ask about their experience.
+
+Keep in mind that guerrilla testing **should not replace formal user testing**. The person may not be a real user (so if they have a negative feedback, it should not influence the research results). 
+
+
+
+
+
+
+
+### Nielsen analysis
 
 
 
@@ -208,3 +266,7 @@ Field observation and usability testing
 
 
 
+
+
+[^timingsheets]: Timing sheet shows a list of stops per route and arrival times.
+[^transcript]: Transcript is a verbatim representation of a conversation. 
