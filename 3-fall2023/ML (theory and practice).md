@@ -242,5 +242,126 @@ To avoid overfitting, a technique called *bagging* is used:
 
 
 
+## 23-09-22
 
+### Language models
+
+Language models are designed to understand and generate human language text. They are used for:
+
+- classification
+  - token classification is the task of assigning a label or category to each individual token or word in a given text sequence. Each token is typically classified independently based on its context within the sequence. 
+  - Sequence classification involves assigning a single label or category to an entire sequence of tokens or words.
+- retrieval (you have a set of tokens and want to extract some data related to the given tokens)
+- translation
+- generation
+  - Q&A: given a question and an article, come up with an answer based on the article
+  - summarization: summarize data from the article 
+  - chat: e.g. ChatGPT
+
+
+
+
+
+
+
+#### Word embeddings
+
+Imagine we have a document, each word from the document has a form $[0, ..., 0, 1, 0, ..., 0]$ as a vector. Depending on the document size and content, the size and amount of vectors can be huge. 
+
+Embeddings are vector representations of words in a continuous vector space. The idea of using embeddings is to transform the word's vector $[0, ..., 0, 1, 0, ..., 0]$ into a $n$-dimensional vector $[e_1, ..., e_n]$. 
+
+Skip-gram and Continuous Bag of Words (CBOW) are two popular algorithms used for training word embeddings. Skip-gram is often better at capturing semantic[^semantic] relationships and is more suitable for tasks like word analogy (e.g. "king - man + woman = queen"). CBOW is faster to train and can perform well on syntactic[^syntactic] tasks. 
+
+
+
+**Skip gram**
+
+The main goal of the Skip-gram model is to predict the context words (surrounding words) given a target word. The input is a target word, and the output is a probability distribution over all the words in the vocabulary.
+
+Example: given the sentence "I love to eat pizza," if the target word is "love," Skip-gram aims to predict the surrounding words like "I," "to," "eat," and "pizza."
+
+
+
+**CBOW** 
+
+CBOW tries to predict the target word given a context (surrounding words). The input is a context (a set of surrounding words), and the output is the target word. The model attempts to maximize the probability of the target word given the context words.
+
+Example: given the same sentence "I love to eat pizza," if the context is "I, to, eat, pizza," CBOW aims to predict the target word "love."
+
+
+
+**Markov chain**
+
+When constructing a phrase, there is a probability for each next word. The probability depends on the previous knowledge. 
+
+
+
+
+
+
+
+#### RNNs
+
+Recurrent neural networks deal with an arbitrary amount of input values. Like any other networks, RNNs have weights, biases, layers and activation functions. The difference is they also have **feedback loops**. The feedback loop makes it possible to use sequential input values to make predictions. 
+
+<img src="./pics for conspects/ML/23-09-22 1.png" alt="23-09-22 1" style="zoom: 40%;" />
+
+
+
+To understand how the feedback loop works, we can **unroll** it. Thus, we end up with a new neural network that has several inputs $x_1,...,x_n$ and several outputs $o_1,...,o_n$. The same weights and biases are shared across every input.
+
+<img src="./pics for conspects/ML/23-09-22 2.png" alt="23-09-22 2" style="zoom:40%;" />
+
+If we need the output $o_n$, intermediate results are simply ignored. 
+
+
+
+The problem with RNNs is that the more we unroll it, the harder it is to train. The problem is called **The Vanishing/Exploding Gradient Problem**. 
+
+When the gradient contains a huge number, relatively large steps are taken in [the Gradient Descent algorithm](####Stochastic Gradient Descent function). Thus, instead of finding the optimal parameter, we will just bounce around it. It explains the Exploding Gradient Problem.
+
+One way to prevent The Exploding Gradient problem is to limit the parameter $w_2$ to values $<1$. We end up taking steps that are too small and hit the maximum number of steps we are allowed to take before finding the optimal value. It explains the Vanishing Gradient Problem.
+
+
+
+
+
+
+
+#### Transformers
+
+**Transformers** represent a newer and more specialized type of neural networks, well-suited for tasks involving sequences of data, such as text, time series, and more. They can process input data in parallel, unlike RNNs, which are sequential. 
+
+**Positional Encoding** is a technique transformers use to keep track of word order. 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[^semantic]: Semantic refers to the meaning of words. It deals with the interpretation of words and their relationship to each other. Example: In the sentence "The cat chased the mouse," the semantic meaning is that the cat is pursuing the mouse, indicating a specific relationship between the two animals.
+[^syntactic]: Syntactic refers to the structure and arrangement of words in sentences and how they form grammatically correct sentences. Example: In the sentence "The cat chased the mouse," the syntactic structure follows the typical subject-verb-object order in English.
 
