@@ -70,7 +70,7 @@ We need to split data between train, validation and test datasets. It can be don
 
 In simple words, the model "overfits" when it is correct on every instance of the training dataset but has poor fit with new, unknown datasets.
 
-<img src="./pics for conspects/ML/23-09-08 2.png" alt="23-09-08 2" style="zoom:40%;" />
+<img src="./pics for conspects/ML/ML 23-09-08 2.png" alt="23-09-08 2" style="zoom:40%;" />
 
 Here, blue and red dots represent different classes, and the model is learning to distinguish between them. The green line is an $\textcolor{green}{\textnormal{overfitted curve}}$, which means the model gives a correct answer on every instance from the training dataset. On the other hand, the black line is more general.  
 
@@ -304,13 +304,13 @@ When constructing a phrase, there is a probability for each next word. The proba
 
 Recurrent neural networks deal with an arbitrary amount of input values. Like any other networks, RNNs have weights, biases, layers and activation functions. The difference is they also have **feedback loops**. The feedback loop makes it possible to use sequential input values to make predictions. 
 
-<img src="./pics for conspects/ML/23-09-22 1.png" alt="23-09-22 1" style="zoom: 40%;" />
+<img src="./pics for conspects/ML/ML 23-09-22 1.png" alt="23-09-22 1" style="zoom: 40%;" />
 
 
 
 To understand how the feedback loop works, we can **unroll** it. Thus, we end up with a new neural network that has several inputs $x_1,...,x_n$ and several outputs $o_1,...,o_n$. The same weights and biases are shared across every input.
 
-<img src="./pics for conspects/ML/23-09-22 2.png" alt="23-09-22 2" style="zoom:40%;" />
+<img src="./pics for conspects/ML/ML 23-09-22 2.png" alt="23-09-22 2" style="zoom:40%;" />
 
 If we need the output $o_n$, intermediate results are simply ignored. 
 

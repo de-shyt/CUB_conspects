@@ -79,7 +79,7 @@ VALUES
     (104, 3, '2023-01-20', 450.20);
 ```
 
-<img src="./pics for conspects/DB/23-09-07 1.png" alt="23-09-07 1" style="zoom:100%;" />
+<img src="./pics for conspects/DB/DB 23-09-07 1.png" alt="23-09-07 1" style="zoom:100%;" />
 
 
 
@@ -195,7 +195,7 @@ There are several data storage characteristics:
 - what happens if electricity switches off (volatility)
 - how much does it cost to store 1Gb (price)
 
-<img src="./pics for conspects/DB/23-09-07 2.png" alt="23-09-07 2" style="zoom:80%;" />
+<img src="./pics for conspects/DB/DB 23-09-07 2.png" alt="23-09-07 2" style="zoom:80%;" />
 
 
 
@@ -215,9 +215,9 @@ The **read/write head** is then capable of detecting the magnetic charges left o
 
 #### SSD
 
-<img src="./pics for conspects/DB/23-09-07 4.png" alt="23-09-07 4" style="zoom: 60%;" />
+<img src="./pics for conspects/DB/DB 23-09-07 4.png" alt="23-09-07 4" style="zoom: 60%;" />
 
-<img src="./pics for conspects/DB/23-09-07 3.png" alt="23-09-07 3" style="zoom:100%;" />
+<img src="./pics for conspects/DB/DB 23-09-07 3.png" alt="23-09-07 3" style="zoom:100%;" />
 
 The **NAND flash memory** is the primary storage medium in the SSD. It's a type of non-volatile memory that stores data as electrical charges in memory cells. 
 
@@ -310,9 +310,10 @@ A timestamp of the last access is kept for each buffer page. The page with the s
   Pages are placed in a circular list. There are two attributes for each buffer page:
 
   - `pin count` - increments when DB engine process uses the page, decrements when the work is completed. If `pin count == 0` then the page is unpinned and can be removed.
-
-
-  - `usage count` - increments when DB engine process uses the page, decremented by the replacement policy. A pointer scans over *unpinned* pages and decrements `usage count`. The first page with `usage count == 0` is a victim.
+  
+  
+    - `usage count` - increments when DB engine process uses the page, decremented by the replacement policy. A pointer scans over *unpinned* pages and decrements `usage count`. The first page with `usage count == 0` is a victim.
+  
 
 
 
@@ -325,7 +326,7 @@ If the page is pinned by DB engine (liked pinned forever, to prevent it from evi
 
 In the example below, the blue pages are pinned (`pin count > 0`). Numbers in the boxes are `usage count` values. 
 
-<img src="./pics for conspects/DB/23-09-14 3.png" alt="23-09-14 3" style="zoom:80%;" />
+<img src="./pics for conspects/DB/DB 23-09-14 3.png" alt="23-09-14 3" style="zoom:80%;" />
 
 
 
@@ -337,7 +338,7 @@ The aging algorithm accounts for both frequency and access time. It is like a co
 
 Every page is assoiated with a binary counter. When the page is accessed, the most significant bit in its counter is set to 1. On every clock tick[^clock tick], all counters are shifted right. The victim is a page with the smallest counter. 
 
-<img src="./pics for conspects/DB/23-09-14 4.png" alt="23-09-14 4" style="zoom:60%;" />
+<img src="./pics for conspects/DB/DB 23-09-14 4.png" alt="23-09-14 4" style="zoom:60%;" />
 
 In the example above, pages that were victims during the specific step are marked with the $\textcolor{red}{\textnormal{red}}$ dot. 
 
@@ -349,4 +350,106 @@ In the example above, pages that were victims during the specific step are marke
 
 
 
+## 23-09-21
+
+### Row-wise vs. columnar storage \todo
+
+There are several storage options, each designed to optimize data storage and retrieval. Row-wise and columnar storage types are used in relational databases. 
+
+<img src="./pics for conspects/DB/DB 23-09-21 1.png" alt="23-09-21 1" style="zoom:80%;" />
+
+**Row-wise storage** is where data for *each row* is stored consecutively on disk. 
+
+- suitable if you need to write and retrieve individual records frequently
+- less efficient for aggregations[^aggregations]: it involves reading more data than necessary, including columns that are not part of the aggregation
+
+In **columnar storage**, data for each column is stored consecutively on disk. This can be efficient for aggregations. 
+
+- highly efficient for aggregations because it allows the database to access and process only the necessary columns, reducing the amount of data read from disk
+
+
+
+
+
+
+
+### Data compression
+
+**Run-length encoding compression**
+
+When there are a lot of identical values in a column/row, they can be replaced by a pair `(value, occurences)`
+
+```text
+foo.com, foo.com, foo.com => (foo.com, 3)
+```
+
+
+
+**Data encoding**
+
+For numeric columns, we can store values as a difference between the current value and the previous one. It is efficient when dealing with large values and small deltas 
+
+<img src="./pics for conspects/DB/DB 23-09-21 2.png" alt="23-09-21 2" style="zoom:60%;" />
+
+
+
+**Bitmap encoding** **\todo**
+
+Applicable to columns where the count of unique values is way less that the total count of values.
+
+
+
+
+
+### Column family
+
+Operations of selecting may require data from more than one column. When dealing with compressed columns, there is the need of reompressing them. To solve these problems, **column families** are used. 
+
+A **column family** is a collection of logically related columns that are accessed and retrieved together. Values of the column family are stored on the same pages.
+
+
+
+
+
+### Log-structured storage \todo 
+
+30 min
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [^clock tick]: A clock tick is when a certain time interval elapses
+[^aggregations]: Aggretaions refer to operations that combine multiple data values into a single summary value. Common aggregation functions include `SUM`, `COUNT`, `AVG`, `MIN`, `MAX`. 

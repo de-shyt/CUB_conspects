@@ -24,7 +24,7 @@
 
   Example: amazon and airbnb - selling items vs. providing accommodation, but both have catalogs, user reviews, online transactions. Analyzing one can provide insights into the other's business strategies.
 
-<img src="./pics for conspects/HCI/23-09-15 1.png" alt="23-09-15 1" style="zoom:80%;" />
+<img src="./pics for conspects/HCI/HCI 23-09-15 1.png" alt="23-09-15 1" style="zoom:80%;" />
 
 
 
@@ -61,7 +61,7 @@ How to predict the amount of users before development? One way is to analyze sta
 
 Basically, the aim of evaluating market size is to calculate the possible income. TAM, SAM and SOM are the main levels of market size analysis.
 
-<img src="../../../Desktop/studying/CUB_conspects/CUB conspects (Third year)/pics for conspects/HCI/23-09-15 2.png" alt="23-09-15 2" style="zoom:100%;" />
+<img src="./pics for conspects/HCI/HCI 23-09-15 2.png" alt="23-09-15 2" style="zoom:100%;" />
 
 
 
@@ -110,9 +110,9 @@ A bottom-up analysis starts with the core business figures (number of clients, a
 
 ### Design experiment
 
-<img src="./pics for conspects/HCI/23-09-18 1.png" alt="23-09-18 1" style="zoom:80%;" />
+<img src="./pics for conspects/HCI/HCI 23-09-18 1.png" alt="23-09-18 1" style="zoom:80%;" />
 
-<img src="./pics for conspects/HCI/23-09-18 2.png" alt="23-09-18 2" style="zoom:80%;" />
+<img src="./pics for conspects/HCI/HCI 23-09-18 2.png" alt="23-09-18 2" style="zoom:80%;" />
 
 
 
@@ -214,7 +214,7 @@ The process of usability testing, again, **includes recording**. It can be a scr
 
 
 
-<img src="./pics for conspects/HCI/23-09-22 1.png" alt="23-09-22 1" style="zoom:80%;" />
+<img src="./pics for conspects/HCI/HCI 23-09-22 1.png" alt="23-09-22 1" style="zoom:80%;" />
 
 In comparative testing, it is important to hide which option is yours and which is competitor. Thus, you will get a fair feedback. 
 

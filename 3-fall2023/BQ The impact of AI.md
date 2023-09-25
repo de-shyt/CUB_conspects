@@ -45,3 +45,67 @@ Later, Asimov added a fourth law, but realized it should have precedence over th
 The term **zeerust** refers to the datedness of smth in the part, that intended in its time to be futuristic, but becomes outdated as time goes on. It is a thing that was predicte to occur in the future, but did not actually come to fruition in the way they were imagined. The example is flying cars (it was a futuristic prediction in the past; nowadays cars are progressing, but they are far from what was imagined). 
 
 The related term is **skeuomorph**. It is a derivative object that retains attributes from earlier iterations of the object, that were necessary in the original but are no longer so. The example is the electric light bulb imitating the shape of candle flames.
+
+
+
+
+
+
+
+
+
+## 23-09-19
+
+### The Turing test
+
+**The Turing test**, proposed by the British mathematician and computer scientist Alan Turing in 1950, is a test of a machine's ability to exhibit human-like intelligence in natural language conversation.
+
+The Turing test has been a fundamental part of the **Loebner Prize competition** (annual competition in AI that awarded prizes to the computer programs considered by the judges to be the most human-like). In the competition, judges engage in text-based conversations with AI chatbots and human participants. They do not know whether they are chatting with a human or a machine. 
+
+**Eugene Goostman** is a chatbot developed in Saint Petersburg in 2001, it is portrayed as a 13-year-old Ukrainian boy. It got the first place in 2021 and the second place in both 2005 and 2008 at the Loebner Prize competition. 
+
+
+
+
+
+
+
+### René Descartes
+
+René Descartes (1596-1650) is a French philosopher and scientist. He made some contributions to physics. Though his solutions came out to be wrong, his ideas were crucial for further development of physics. 
+
+
+
+**"Meditations on First Philosophy"** is one of Descartes' most famous and influential works. The "Meditations" consists of a series of six meditations or reflections, in which Descartes uses the method called **radical doubt** to challenge his beliefs, opinions and knowledge.
+
+The radical doubt leads to the fact that we know nothing, since every thought is constantly in doubt. But we also believe that indisputable thoughts exist. So, in hope of it, the **foundationalism** was developed. Foundationalism holds basic beliefs exist, which are justified without reference to other beliefs, and that nonbasic beliefs must ultimately be justified by basic beliefs.
+
+
+
+The phrase **"I think, therefore I am"** first appeared in Descartes' work "Discourse on the Method". Here, thinking is mostly a confirmation of existence, not a cause for it: Descartes can be certain that if he is thinking, then he must exist. 
+
+
+
+
+
+
+
+Components of thinking (consciousness, emotions, etc) \todo
+
+
+
+### Introspection \todo
+
+**Introspection** = looking inside oneself. 
+
+Rationalism and Empiricism
+
+
+
+
+
+
+
+
+
+ 

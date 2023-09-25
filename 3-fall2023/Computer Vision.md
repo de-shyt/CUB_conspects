@@ -26,7 +26,7 @@ In simple words, **color** is the result of the interaction between physical lig
 
 Cones and rods are the two types of light-sensitive receptors (dwell in the retina). 
 
-<img src="./pics for conspects/CV/23-09-07 1.jpg" alt="23-09-07 1" style="zoom:65%;" />
+<img src="./pics for conspects/CV/CV 23-09-07 1.jpg" alt="23-09-07 1" style="zoom:65%;" />
 
  **Rods** are rod-shaped and highly sensitive to light. They are responsible for the gray-scale (black & white) vision. Rods are bad at detecting colors. They are more suited for detecting motion and shapes under low-light conditions.
 
@@ -34,7 +34,7 @@ Cones and rods are the two types of light-sensitive receptors (dwell in the reti
 
 There are three types of cones: short-wavelength cones (blue), medium-wavelength cones (green), and long-wavelength cones (red). Each type detects the light of definite wavelength (the range can be found in the pic below). Depending on the wavelength, different amounts of cone types are activated. The brain combines the signals from the cones to create our perception of colors.
 
-<img src="./pics for conspects/CV/23-09-07 5.png" alt="23-09-07 5" style="zoom:80%;" />
+<img src="./pics for conspects/CV/CV 23-09-07 5.png" alt="23-09-07 5" style="zoom:80%;" />
 
 You can also notice that cones of different types have different responsivity. If we add three functions together, it gives us a function of a total responsivity. Its maximum is in the range of green and yellow wavelengths. It explains why we see colors around yellow as a lot brighter than others. 
 
@@ -58,7 +58,7 @@ One of the most well-known examples of a linear color space is CIELAB.
 
 #### RGB space
 
-<img src="./pics for conspects/CV/23-09-07 4.png" alt="23-09-07 4" style="zoom:80%;" />
+<img src="./pics for conspects/CV/CV 23-09-07 4.png" alt="23-09-07 4" style="zoom:80%;" />
 
 RGB space describes how to express every color as a combination of red, green and blue. Primaries used in RGB space are monochromatic lights (consist of a single wavelength).
 
@@ -394,9 +394,9 @@ Histogram of an image provides the frequency of pixel intensity values in the im
 
 The histogram has two axes. X-axis represents gray levels ranging from 0 to L-1, and Y-axis represents the total number of pixels. 
 
-<img src="./pics for conspects/CV/23-09-21 1.png" alt="23-09-21 1" style="zoom:80%;" />
+<img src="./pics for conspects/CV/CV 23-09-21 1.png" alt="23-09-21 1" style="zoom:80%;" />
 
-<img src="./pics for conspects/CV/23-09-21 3.png" alt="23-09-21 3" style="zoom:45%;" />
+<img src="./pics for conspects/CV/CV 23-09-21 3.png" alt="23-09-21 3" style="zoom:45%;" />
 
 
 
@@ -432,7 +432,7 @@ $g[n, m] = \frac{1}{9} \sum \limits_{k=n-1}^{n+1} \sum \limits_{l=m-1}^{m+1} f[k
 
 The function calculates the average value in a $3\times3$ window, resulting in a blurred  version of the given image. 
 
-<img src="./pics for conspects/CV/23-09-21 2.png" alt="23-09-21 2" style="zoom:67%;" />
+<img src="./pics for conspects/CV/CV 23-09-21 2.png" alt="23-09-21 2" style="zoom:67%;" />
 
 \todo add an example with picture
 
