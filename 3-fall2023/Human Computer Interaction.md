@@ -246,11 +246,101 @@ Keep in mind that guerrilla testing **should not replace formal user testing**. 
 
 
 
-### Nielsen analysis
+
+
+## 23-09-25
+
+### Data-driven design
+
+**Data-driven design** is an approach when you collect data from users, then analyze it to improve your product. 
+
+Examples of highly data-driven products are Amazon and Booking. They have complex interfaces with lots of functionality, because of many improvements. 
 
 
 
 
+
+#### Statistics analysis
+
+Collecting "in a background" data abouts users and their actions (e.g. how many times the user click the button) is the cheapest way to find problems. Although this type of data does not give ideas how to fix the problem, since you do not get feedback from users themselves. 
+
+
+
+
+
+##### Tools
+
+- [Google Analytics](https://analytics.google.com/analytics/web/provision/?authuser=0#/provision) - shows data about users: how many in total, where they come from, how many stay on the website, on which pages they spend more time. For example, if users leave the same page all the time, maybe the page is broken.
+- [Firebase](https://firebase.google.com/?gad=1&gclid=CjwKCAjw38SoBhB6EiwA8EQVLon4TH955bbYShyQWvoPcuWdEKe_b2MVDCYbs9awwZK3t674taedUBoCcD0QAvD_BwE&gclsrc=aw.ds) - as Google Analytics, but for mobile apps.  
+- [Amplitude](https://amplitude.com/get-started?utm_source=google-ads&utm_medium=cpc&utm_campaign=Search_EMEA_Brand_DE_EN_tier1&utm_content=151439491353&utm_term=amplitude&gad=1&gclid=CjwKCAjw38SoBhB6EiwA8EQVLlW9u7LpVMw1LJdI0_36TjE2zbDRnkkRQ1kLVdAOszisUDqMZIw66hoC01sQAvD_BwE) - you can track events on the websites: movement of cursor, typing, clicking. Provides low-level events. 
+- [Mixpanel](https://mixpanel.com/contact-us/ps-sem-demo-request-emea?utm_source=google&utm_medium=cpc&utm_campaign=EMEA-DACH-Brand-Search-EN-Exact-Desktop&utm_content=Mixpanel-Exact&utm_ad=655263090681&utm_term=mixpanel&matchtype=e&campaign_id=19984354506&ad_id=655263090681&gclid=CjwKCAjw38SoBhB6EiwA8EQVLl2vXkP_5ZKZ-FZ8T9FLBHyLmG8adaa7qWZcBNJo8PKP2emZtRRRlRoCZrIQAvD_BwE&gad=1) - as an Amplitude, but need some setting up. Here you can get a detailed event flow (e.g., what user does next after the page is loaded: purchase item or keep scrolling?)
+- [Piwik (now Matomo)](https://matomo.org/get/matomo-analytics-de-2ad/?mtm_source=google&mtm_medium=paid-ads&mtm_campaign=GE_Search_Brand&mtm_content=659826190929&mtm_kwd=piwik%20matomo&mtm_cid=20195538461&mtm_group=google-ads&mtm_placement=&gclid=CjwKCAjw38SoBhB6EiwA8EQVLjmN_OpGN8srzrV12MI6S47JsZEByN60oz4KOR6x0HaJN33EWhAkQhoCj3cQAvD_BwE) - open-source, but you need to host and maintain it yourself.
+- Play Market and App Store provide some basic analytics, but it is not very insightful. There is data about where users come from, how many installs were done. 
+- [Google Tag Manager](https://tagmanager.google.com/#/home) - integrates with various analytics and marketing platforms.
+
+
+
+
+
+##### Link map and click map
+
+There are such features and **link map** and **click map**. Link map is a ranking of links depending on how many times each link was clicked. Thanks to click map, you can understand if users frequently missclick buttons or think that something is a button while it is actually not. 
+
+Click map example:
+
+<img src="./pics for conspects/HCI/HCI 23-09-25 1.png" alt="HCI 23-09-25 1" style="zoom:80%;" />
+
+
+
+
+
+##### Scrolling map
+
+**Scrolling map** tracks and visualizes how far users scroll down a webpage. Applicable for websites mostly. 
+
+
+
+
+
+##### Smth funnel \todo
+
+min 28-30
+
+
+
+
+
+##### A/B testing
+
+You want to test a hypothesis, so you create different versions of the product, then analyze data received from users. 
+
+Big tech companies are stuck in the continuous A/B testing of small components and screens. For example, Amazon website is different depending on the country. 
+
+
+
+
+
+##### KPI analysis \todo 
+
+min 50-60
+
+<img src="./pics for conspects/HCI/HCI 23-09-25 2.png" alt="HCI 23-09-25 2" style="zoom:80%;" />
+
+
+
+
+
+
+
+#### Creative methodologies
+
+Use **mind-maps** to visualize and share you ideas. It helps to order things and achieve better results. 
+
+
+
+**Individual brainstorm** sessions should be fast, so if you fell you start to slow down, it is time to finish. Also, brainstorm is a process of evaluation, so do not criticize ideas. And do not go too into details, it is still a fast process. 
+
+In the **collaborative brainstorm**, each participant need different time to process things, so they start on the individual brainstorm, then they create a common mind map of all idea. Then goes a group brainstorm, sorting and prioritization of ideas. 
 
 
 
