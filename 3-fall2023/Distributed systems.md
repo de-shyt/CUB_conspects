@@ -388,7 +388,35 @@ The history is linearizable. Now `write(3)` can never be completed or completed 
 
 
 
-If you have two linearizable objects $A$ and $B$ and you have some concurrent history $H$ on them, then $H$ can be seen as a linearizable history of a composition (Cartesian product) of $A$ and $B$. 
+
+
+#### Linearizable composition
+
+If you have two linearizable objects $A$ and $B$ and you have some concurrent history $H$ on them, then $H$ can be seen as a linearizable history of a **composition** (Cartesian product) of $A$ and $B$. 
+
+A composition of registers $A$ and $B$ is a two-field register $(A, B)$. 
+
+<img src="./pics for conspects/DS/DS 23-09-19 6.png" alt="DS 23-09-19 6" style="zoom:60%;" />
+
+<img src="./pics for conspects/DS/DS 23-09-19 7.png" alt="DS 23-09-19 7" style="zoom:60%;" />
+
+
+
+
+
+#### Linearizability is nonblocking
+
+Every incomplete operation in a finite history can be independently completed. 
+
+In other words, if you have an incomplete history in some process, there always exists a way to complete it without affecting other processes. 
+
+<img src="./pics for conspects/DS/DS 23-09-19 8.png" alt="DS 23-09-19 8" style="zoom:60%;" />
+
+
+
+
+
+
 
 
 
