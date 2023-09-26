@@ -18,6 +18,12 @@ In simple words, **color** is the result of the interaction between physical lig
 
 
 
+Electromagnetic spectrum:
+
+<img src="./pics for conspects/CV/CV 23-09-07 6.jpg" alt="CV 23-09-07 6" style="zoom:80%;" />
+
+
+
 
 
 
