@@ -108,4 +108,89 @@ Rationalism and Empiricism
 
 
 
- 
+## 23-09-26
+
+### Tacita Dean
+
+Tacita Dean is a British visual artist. Dean's work often explores themes related to memory, time, and place, and she is considered one of the prominent figures in the field of contemporary art.
+
+In 1990s she was famous as a filmmaker. Her works were done in 16mm and 35mm tape, it was the play of light and shadow. 
+
+In 2015, the painting "Sunset" was created. It is made in chalk on the blackboard. 
+
+![AI 23-09-26 3](./pics for conspects/AI/AI 23-09-26 3.png)
+
+
+
+
+
+
+
+### Behaviourism
+
+Descartes thinks you discover your conscious mind by doing introspection. Insights about oneself happen when people ask each other what is going on in their heads and then compare the results. **Behaviorism** focuses on the idea that all behaviors are learned through interaction.
+
+An **inverted spectrum** is a hypothetical concept in philosophy and psychology. It imagines a situation where two people see colors differently, but they don't realize it because they use the same color names. 
+
+It's a way to explain the idea that people might experience the world differently, even though they use the same language to describe it.
+
+
+
+Behavioral patterns were studied by the Russian psychologist **Ivan Pavlov**. Behavioral patterns include emotional responses, conditioned reflexes (Pavlov's experiment with dogs), habits and routines. This knowledge is used in CBT or Desensitization therapies. 
+
+
+
+
+
+#### Methodological behaviorism
+
+**John B. Watson** was a prominent American psychologist. He was a translator of Pavlov. 
+
+In his approach, known as **methodological behaviorism**, Watson focused only on observable behavior, ignoring internal mental processes. It worked like a "black box" function converting condition into a response. 
+
+One of Watson's most famous and controversial experiments was the **"Little Albert" experiment**. Watson and his collaborator Rosalie Rayner conditioned a toddler to fear a white rat by pairing the rat's presentation with a loud, frightening noise. As a result, Albert started being afraid of objects which remind of the white rat, such as a rabbit and a dog. 
+
+This phenomenon was called **Stimulus Generalization**. It occurs when a conditioned response (CR) to a specific conditioned stimulus (CS) also occurs in the presence of similar stimuli. 
+
+
+
+
+
+#### Radical behaviorism
+
+**B.F. Skinner** was an influential American behaviorist
+
+Skinner believed that psychology should focus on the study of observable behavior rather than unobservable mental processes. This perspective was consistent with works of John. B. Watson. 
+
+What distinguishes Skinner's approach as **radical behaviorism** is his rejection of mentalistic explanations for behavior. He argued that explanations in terms of thoughts, feelings, or mental states were unnecessary and unscientific.
+
+
+
+**Respondent behaviors** are classical responses to stimuli which can be strengthened or weakened by conditioning. **Operant behaviors** are spontaneous behaviors that may or may not become linked to stimuli. 
+
+Skinner conducted extensive research on how behavior is shaped by its consequences. Thus, he developed the theory of **operant conditioning**. In operant conditioning, behavior is influenced by the consequences that follow it, whether those consequences are reinforcing (increasing the likelihood of the behavior) or punishing (decreasing the likelihood of the behavior).
+
+
+
+Skinner introduced the concept of **reinforcement** of a behavior through reward and punishment. Positive reinforcement = the presentation of a stimulus (reward) for a desired behavior. Negative reinforcement = the removal of an aversive stimulus when the desired behavior occurs (punishment).
+
+
+
+
+
+
+
+**Gilbert Ryle** is a philosophical behaviorist. His book *The Concept of Mind* argued against the Cartesian dualism. His main belief was that the mind and the body are logically distinct categories. r
+
+Descartes believed that the mind is a substance. Ryle said this assumption was a **category mistake**. Terms and the mental should refer not to substance but to processes, or performances, or behaviors. 
+
+
+
+
+
+
+
+
+
+
+
