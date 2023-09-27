@@ -72,13 +72,13 @@ RGB space describes how to express every color as a combination of red, green an
 
 
 
-#### HSV space \todo
+#### HSV space
 
-HSV color space is a nonlinear collor space. HSV stands for:
+HSV color space is a cylindrical coordinate representation of points in an RGB color model. `HSV` stands for:
 
-- Hue (0 to 360) - chromaticity angle
-- Saturation (0 to 100) - chromaticity distance from the center of the [chromaticity diagram](https://company235.com/tools/colour/cie.html)
-- Value (0 to 100) - controls luminance. Basically, it is the scale of the RGB cube
+- `Hue` - the dominant color as perceived by an observer. It is a chromaticity angle between 0 and 360.
+- `Saturation` - the intensity of the color. It represents the amount of white light mixed with a Hue. Its value is equal to the radius of the cylinder.
+- `Value` (0 to 100) - controls luminance. Its value is the height of the cylinder. 
 
 
 
@@ -90,6 +90,8 @@ HSV space can be converted into RGB space:
 - $V = m_2 \cdot 100$
 - $S = \frac{m_2 - m_1}{m_2} \cdot 100$
 - \todo
+
+![CV 23-09-07 7](./pics for conspects/CV/CV 23-09-07 7.png)
 
 
 
