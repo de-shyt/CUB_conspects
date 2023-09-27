@@ -352,7 +352,7 @@ In the example above, pages that were victims during the specific step are marke
 
 ## 23-09-21
 
-### Row-wise vs. columnar storage \todo
+### Row-wise vs. columnar storage
 
 There are several storage options, each designed to optimize data storage and retrieval. Row-wise and columnar storage types are used in relational databases. 
 
@@ -363,7 +363,7 @@ There are several storage options, each designed to optimize data storage and re
 - suitable if you need to write and retrieve individual records frequently
 - less efficient for aggregations[^aggregations]: it involves reading more data than necessary, including columns that are not part of the aggregation
 
-In **columnar storage**, data for each column is stored consecutively on disk. This can be efficient for aggregations. 
+In **columnar storage**, data for *each column* is stored consecutively on disk. This can be efficient for aggregations. 
 
 - highly efficient for aggregations because it allows the database to access and process only the necessary columns, reducing the amount of data read from disk
 
@@ -373,29 +373,51 @@ In **columnar storage**, data for each column is stored consecutively on disk. T
 
 
 
-### Data compression
+### Data compression for columns
+
+Cons:
+
+- random access may require uncompressing $\Rightarrow$ takes more time 
+- Retrieving entire rows becomes costly
+- Inserts and updates become more costly 
+
+
+
+
 
 **Run-length encoding compression**
 
 When there are a lot of identical values in a column/row, they can be replaced by a pair `(value, occurences)`
 
 ```text
-foo.com, foo.com, foo.com => (foo.com, 3)
+foo.com, foo.com, foo.com => (3, foo.com)
 ```
 
 
 
 **Data encoding**
 
-For numeric columns, we can store values as a difference between the current value and the previous one. It is efficient when dealing with large values and small deltas 
+For numeric columns, we can store values as a difference between the current value and the previous one. It is efficient when dealing with large values and small deltas.
 
 <img src="./pics for conspects/DB/DB 23-09-21 2.png" alt="23-09-21 2" style="zoom:60%;" />
 
 
 
-**Bitmap encoding** **\todo**
+**Bitmap encoding**
 
-Applicable to columns where the count of unique values is way less that the total count of values.
+Applicable to columns where the count of unique values $N$ is way less that the total count of values $T$.
+
+$N$ bitmaps are created, each with $T$ bits, assigning one bit per row. The $i_{th}$ bit in a bitmap is set if the $i_{th}$ row contains the corresponding value. 
+
+<img src="./pics for conspects/DB/DB 23-09-21 3.png" alt="DB 23-09-21 3" style="zoom:50%;" />
+
+Bitmaps for each unique value are stored separately. Run-length compression can be used:
+
+<img src="./pics for conspects/DB/DB 23-09-21 4.png" alt="DB 23-09-21 4" style="zoom:50%;" />
+
+In the example, compression for `value=112` helps to save some space, whereas compression for `value=114` does not. 
+
+
 
 
 
@@ -403,23 +425,33 @@ Applicable to columns where the count of unique values is way less that the tota
 
 ### Column family
 
-Operations of selecting may require data from more than one column. When dealing with compressed columns, there is the need of reompressing them. To solve these problems, **column families** are used. 
+Operations of selecting may require data from more than one column. When dealing with compressed columns, there is the need of uncompressing them. To solve these problems, **column families** are used. 
 
-A **column family** is a collection of logically related columns that are accessed and retrieved together. Values of the column family are stored on the same pages.
-
-
-
-
-
-### Log-structured storage \todo 
-
-30 min
+A **column family** is a collection of logically related columns that are accessed and retrieved together (e.g. `name` and `surname` columns). Values of the column family are stored on the same pages.
 
 
 
 
 
 
+
+### Log-structured storage 
+
+**Log files** in databases are append-only files stored in the secondary storage and used for recovery purposes. When data is modified, changes are written into a log file, instead of the primary storage. In case of the system crash, the lost data can be reconstructed from the log file.  
+
+
+
+Inserts and updates are handled by the **memtable**, a tree data structure. It is implemented as an in-memory key-value store and stored in RAM (thus, fast read/write operations are ensured). 
+
+Inserts and updates are first added, as a key-value pair, into the memtable, then a log entry is created in the log file. During read operations, data is first checked in the memtable, then – if needed – in SSTables which are stored in the secondary storage.
+
+Basically, the memtable serves as a buffer. Once the memtable reaches a certain size (or when a specific condition is met), its contents are written to the secondary storage as SSTables.
+
+
+
+**SSTables** are files stored in the secondary storage. They are immutable. Once data is written to an SSTable, it cannot be modified or deleted. Instead, a new SSTable is created to reflect any updates.
+
+Each SSTable contains a sorted collection of key-value pairs. Multiple SSTables can be periodically merged, reducing the number of SSTables and removing obsolete data. After the merge, the sorted order is still maintained in the new SSTable. 
 
 
 
