@@ -1,0 +1,8 @@
+* [BQ Global heath.pdf](./BQ Global heath.pdf) [last update: 2023-09-13 17:49:44]
+* [BQ The impact of AI.pdf](./BQ The impact of AI.pdf) [last update: 2023-09-26 19:33:52]
+* [Computer Vision.pdf](./Computer Vision.pdf) [last update: 2023-09-27 16:47:20]
+* [Database Internals.pdf](./Database Internals.pdf) [last update: 2023-09-27 22:49:24]
+* [Distributed systems.pdf](./Distributed systems.pdf) [last update: 2023-09-25 14:08:33]
+* [Frontend.pdf](./Frontend.pdf) [last update: 2023-09-25 14:08:39]
+* [Human Computer Interaction.pdf](./Human Computer Interaction.pdf) [last update: 2023-09-25 14:08:45]
+* [ML (theory and practice).pdf](./ML (theory and practice).pdf) [last update: 2023-09-25 14:08:57]
