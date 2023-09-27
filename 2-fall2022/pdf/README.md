@@ -1,0 +1,7 @@
+* [Algorithms](./Algorithms.pdf) [last update: 2023-02-10 20:55:21]
+* [Computer Artichecture](./Computer Artichecture.pdf) [last update: 2023-02-10 20:55:21]
+* [Databases JUB](./Databases JUB.pdf) [last update: 2023-02-10 20:55:21]
+* [Functional Programming](./Functional Programming.pdf) [last update: 2023-02-10 20:55:21]
+* [Kotlin](./Kotlin.pdf) [last update: 2023-02-10 20:55:21]
+* [Operating Systems JUB](./Operating Systems JUB.pdf) [last update: 2023-02-25 22:21:28]
+* [Prob and Rand Proc JUB](./Prob and Rand Proc JUB.pdf) [last update: 2023-02-10 20:55:21]
