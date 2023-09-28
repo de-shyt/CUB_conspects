@@ -1,13 +1,16 @@
 #!/bin/bash
 
 cur_dir="$1"
-pdf_dir="$cur_dir/pdf"
+cd "$cur_dir/pdf"
+result_file="README.md"
 
-echo -n "" > "$pdf_dir/README.md"
+echo -n "" > $result_file
 
-for pdf_file in "$pdf_dir"/*.pdf; do
-    pdf_name=$(basename "$pdf_file" .pdf)
-    pdf_name_full="$(echo "$pdf_name" | sed 's/ /%20/g').pdf"
-    last_modified=$(date -r "$cur_dir/$pdf_name.md" "+%Y-%m-%d %H:%M:%S")
-    echo "* [$pdf_name](./$pdf_name_full) [last update: $last_modified]" >> "$pdf_dir/README.md"
+for pdf_file in *; do
+    pdf_name=$(basename "$pdf_file" )
+    if [[ "$pdf_name" == *.pdf ]]; then
+        last_modified=$(date -r "$pdf_name" "+%Y-%m-%d %H:%M:%S")
+        pdf_name_encoded="$(echo "$pdf_name" | sed 's/ /%20/g')"
+        echo "* [$pdf_name](./$pdf_name_encoded) [last update: $last_modified]" >> $result_file
+    fi
 done
