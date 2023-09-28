@@ -390,7 +390,7 @@ Binary - value for each pixel can be 0 or 1.
 
 Gray-scale - each pixel has a value from 0 to 255 (intensity of black color). The size of one pixel is 1 byte. 
 
-Every pixel in a color images consists of red, green and blue components. One color picture is a combination of red, green abd blue pictures. 
+Color - every pixel in a color images consists of red, green and blue components. One color picture is a combination of red, green abd blue pictures. 
 
 
 
@@ -414,19 +414,46 @@ The histogram has two axes. X-axis represents gray levels ranging from 0 to L-1,
 
 ### Image as a function
 
+Image can be represented as a 2d matrix of integer values. 
+
+$f \ : \ R^2 \rightarrow R^M$
+
+$(x, y)$ is the position in the image matrix. 
+
+For a color image, $f(x, y) = \begin{bmatrix} r(x, y) \\ g(x, y) \\ b(x, y) \end{bmatrix}$.
 
 
 
 
 
 
-### Linear systems and filters 
 
-Filtering is a technique for modifying or enhancing an image. It is a neighborhood operation, meaning the value of the output pixel is determined by applying some algorithm to pixels in the neighborhood of the corresponding input pixel.
+### Linear systems
+
+We define a **system** as a unit that converts an input function $f[n,m]$ into an output (or response) function $g[n,m]$, where $n, m$ are the independent variables.
+
+Backets are square, since $f$ is a discrete function. 
+
+$S$ is the **system operator**, defined as a mapping of a member of the set of possible outputs $g[n,m]$ to each member of the set of possible inputs $f[n,m]$.
+$$
+g = S[f]; \ \ \ g[n, m] = S\{ f[n, m]\} \\
+f[n, m] \overset{S}{\rightarrow} g[n, m]
+$$
+![CV 23-09-21 6](./pics for conspects/CV/CV 23-09-21 6.png)
+
+
+
+
+
+
+
+### Filtering
+
+**Filtering** is a technique for modifying or enhancing an image. It is a neighborhood operation, meaning the value of the output pixel is determined by applying some algorithm to pixels in the neighborhood of the corresponding input pixel.
 
  Ways of the filter usage:
 
-- de-noising - removing salt and pepper noise - black and write pixels that create noise in the picture
+- de-noising - removing salt and pepper noise (black and write pixels that create noise in the picture)
 - super-resolution - improve resolution of the picture 
 - in-painting - add missing pixels to the image
 
@@ -442,7 +469,7 @@ The function calculates the average value in a $3\times3$ window, resulting in a
 
 <img src="./pics for conspects/CV/CV 23-09-21 2.png" alt="23-09-21 2" style="zoom:67%;" />
 
-\todo add an example with picture
+<img src="./pics for conspects/CV/CV 23-09-21 4.png" alt="CV 23-09-21 4" style="zoom:80%;" />
 
 
 
@@ -452,7 +479,7 @@ The function calculates the average value in a $3\times3$ window, resulting in a
 
 $g[n, m] = \left \{ \begin{array}{l} 255 \textnormal{ if } f[n, m] > 0 \\ 0, \textnormal{ otherwise}  \end{array} \right .$
 
-\todo add an example with picture
+<img src="./pics for conspects/CV/CV 23-09-21 5.png" alt="CV 23-09-21 5" style="zoom:80%;" />
 
 
 
@@ -460,31 +487,115 @@ $g[n, m] = \left \{ \begin{array}{l} 255 \textnormal{ if } f[n, m] > 0 \\ 0, \te
 
 
 
-### Discrete convolution
+#### Discrete convolution
 
-Convolution is the main way of filtering. The filter matrix $h$ is flipped both horizontaly and vertically, then moved to the left or to the right. 
-
-
+Convolution can be considered as an integral that expresses the amount of overlap of one function as it is shifted over another function.
 
 
 
-### Cross correlation
+##### 1D convolution
 
-A measure of similarity between the given and the resulting images. 
+$$
+g[n] = \sum \limits_k f[k] h[n- k]
+$$
 
+$h[k] \rightarrow h[-k]$ means the filter matrix $h$ is flipped horizontaly.
 
-
-
-
-
-
-
+$h[-k] \rightarrow h[n-k]$ means the filter matrix is moved to the left or to the right (depends on the sign of $n$).
 
 
 
+**Example:**
 
+![CV 23-09-21 7](./pics for conspects/CV/CV 23-09-21 7.png)
 
 
 
 
 
+##### 2D convolution
+
+Similar to 1D, but now we iterate over 2 axis instead of 1.
+$$
+g[n, m] = f[n, m] * h[n, m] = \sum \limits_k \sum \limits_l f[k, l] h[n-k, m-l]
+$$
+
+
+
+**Examples**
+
+<img src="./pics for conspects/CV/CV 23-09-21 8.png" alt="CV 23-09-21 8" style="zoom:60%;" />
+
+<img src="./pics for conspects/CV/CV 23-09-21 9.png" alt="CV 23-09-21 9" style="zoom:60%;" />
+
+
+
+<img src="./pics for conspects/CV/CV 23-09-21 10.png" alt="CV 23-09-21 10" style="zoom:60%;" />
+
+![CV 23-09-21 11](./pics for conspects/CV/CV 23-09-21 11.png)
+
+
+
+
+
+##### Details
+
+<img src="./pics for conspects/CV/CV 23-09-21 12.png" alt="CV 23-09-21 12" style="zoom:60%;" />
+
+
+
+
+
+
+
+#### Cross correlation
+
+Cross correlation measures the similarity between two input signals as they are shifted by one another. The correlation result reaches a maximum at the time when the two signals match best.
+
+
+$$
+r_{fg}[k, l] = f ** g \\
+= \sum \limits_n \sum \limits_m f[n, m] \cdot g^*[n-k, m-l] \\
+= \sum \limits_n \sum \limits_m f[n+k, m+l] \cdot g^*[n, m]
+$$
+$g^*$ is a complex conjugate[^complconj] of $g$. In this class, $g[n, m]$ are real numbers, so $g^* = g$.
+
+
+
+
+
+**Properties:**
+
+- associative: $(f ** h_1) **  h_2 = f ** (h_1 ** h_2)$
+
+- ditributive: $f ** (h_1 + h_2) = (f ** h_1) + (f ** h_2)$
+
+- $h_1 ** h_2 = h_2 ** h_1$
+
+- shift property: $f[n, m] ** \delta_2[n-n_0,m-m_0] = f[n-n_0,m-m_0]$. 
+
+  Here $\delta_2$ is a 2D matrix. It is equal to $1$ only at the center point $(0, 0)$:
+
+  $\delta_2[n, m] = \left \{ \begin{array}{l} 1, \textnormal{ if } n=m=0 \\ 0, \textnormal{ otherwise} \end{array} \right.$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[^complconj]: A complex conjugate for $a + bi$ is $a-bi$.
