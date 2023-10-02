@@ -128,7 +128,7 @@ A bottom-up analysis starts with the core business figures (number of clients, a
 
 - Context of Use: Natural, prepared/moderated (e.g. laboratory testing), without usage of products, hybrid
 
-![23-09-18 4](./pics for conspects/HCI/23-09-18 4.png)
+![23-09-18 4](./pics for conspects/HCI/HCI 23-09-18 4.png)
 
 
 
@@ -138,7 +138,7 @@ A bottom-up analysis starts with the core business figures (number of clients, a
 
 #### Methodologies
 
-![23-09-18 3](./pics for conspects/HCI/23-09-18 3.png)
+![23-09-18 3](./pics for conspects/HCI/HCI 23-09-18 3.png)
 
 You need to know at least one tool from each quadrant, since it is about different types of behaviour and different insights that you get from testing your product. 
 
@@ -224,7 +224,7 @@ In comparative testing, it is important to hide which option is yours and which 
 
 Guide: [nngroup.com](https://www.nngroup.com/articles/usability-checklist/)
 
-![23-09-22 2](./pics for conspects/HCI/23-09-22 2.png)
+![23-09-22 2](./pics for conspects/HCI/HCI 23-09-22 2.png)
 
 
 
@@ -302,9 +302,15 @@ Click map example:
 
 
 
-##### Smth funnel \todo
+##### Funnels
 
-min 28-30
+When you think about the product, you get different phases:
+
+<img src="./pics for conspects/HCI/HCI 23-09-25 3.png" alt="HCI 23-09-25 3" style="zoom: 35%;" /><img src="./pics for conspects/HCI/HCI 23-09-25 4.png" alt="HCI 23-09-25 4" style="zoom:35%;" />
+
+The idea is you always lose users on each phase. The example of a possible scenario:
+
+<img src="./pics for conspects/HCI/HCI 23-09-25 5.png" alt="HCI 23-09-25 5" style="zoom:80%;" />
 
 
 
@@ -320,9 +326,9 @@ Big tech companies are stuck in the continuous A/B testing of small components a
 
 
 
-##### KPI analysis \todo 
+##### KPI analysis 
 
-min 50-60
+**KPI** is a measurable metric used to assess the performance and success of the product.  
 
 <img src="./pics for conspects/HCI/HCI 23-09-25 2.png" alt="HCI 23-09-25 2" style="zoom:80%;" />
 
