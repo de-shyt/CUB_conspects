@@ -461,6 +461,13 @@ Each SSTable contains a sorted collection of key-value pairs. Multiple SSTables 
 
 
 
+## 23-09-28
+
+### Sorting records
+
+We have a table that occupies $B$ pages and a buffer which can contain maximum $M$ pages. $B >> M$. We want to sort the table by the value of some attribute. 
+
+When it comes to the algorithm complexity, we are going to measure it in terms of disk oerations.
 
 
 
@@ -468,10 +475,225 @@ Each SSTable contains a sorted collection of key-value pairs. Multiple SSTables 
 
 
 
+#### QuickSort
+
+Reminder: QuickSort involves dividing an array into two subarrays around a pivot $x$ such that the elements in left subarray are $\leqslant x$ and elements in right subarray are bigger, then recursively sorting subarrays.
+
+We may assume that every swap operation needs to read/write a disk page. So, the **complexity** of this approach is $O(B \log B)$ disk I/O, where $B$ = amount of pages the table occupies. 
+
+
+
+The problem with QuickSort is that it does not account for data locality. When we swap elements, for each entry, we load a corresponding disk page into RAM, change data, then write back into the secondary memory. Elements chosen for swap can be far apart in the memory. So, in the worst scenario, we will have to load & write back twice during every swap operation. 
 
 
 
 
+
+
+
+#### MergeSort
+
+Reminder: MergeSort involves recursively sorting $a[0..\frac{n}{2})$ and $a[\frac{n}{2}..n)$, then merging them. 
+
+
+
+
+
+##### Two-way MergeSort 
+
+Sort each page individually (using MergeSort). Then merge pages and save the result as a *sorted run*. Continue merging sorted runs until all runs are consolidated into a single result. 
+
+ $B$ = amount of pages the table occupies. In total, there are $1 + \lceil \log B \rceil$ passes, every pass divides the number or runs by 2. On each pass, the entire input is read and written, resulting in $2B$ disk I/O operations. So, the **complexity** of the two-way MergeSort is $O(2B(1 + \log B))$ disk I/O.
+
+
+
+**Example**
+
+Lets assume a database stores 4 records per page. The pages are:
+
+```
+[13, 89, 22, 58]   [56, 46, 90, 67]   [92, 88, 54, 86]
+[ 8, 96, 83, 97]   [40, 11, 10, 76]   [87, 58, 64, 81]
+[96, 78,  1, 77]   [94, 37, 31, 65]   [20, 12,  5, 14]
+```
+
+In the example only keys for records are written. 
+
+- Sort every page:
+
+  ```
+  [13, 22, 58, 89]   [46, 56, 67, 90]   [54, 86, 88, 92]
+  [ 8, 83, 96, 97]   [10, 11, 40, 76]   [58, 64, 81, 87]
+  [ 1, 77, 78, 96]   [31, 37, 65, 94]   [ 5, 12, 14, 20]
+  ```
+
+- Merge pairs of pages:
+
+  The result of merging is saved on the disk page(s). We allocate place for the result page in the buffer, write result into it, then save it in the secondary memory. 
+
+  ```
+  [13, 22, 58, 89] + [46, 56, 67, 90] => [13, 22, 46, 56]  [58, 67, 89, 90]
+  [54, 86, 88, 92] + [ 8, 83, 96, 97] => [ 8, 54, 83, 86]  [88, 92, 96, 97]
+  [10, 11, 40, 76] + [58, 64, 81, 87] => [10, 11, 40, 58]  [64, 76, 81, 87]
+  [ 1, 77, 78, 96] + [31, 37, 65, 94] => [ 1, 31, 37, 65]  [77, 78, 94, 96]
+  [ 5, 12, 14, 20] => [ 5, 12, 14, 20]
+  ```
+
+  So, we had five sorted runs. Each of them, except for the last one, consists of two pages.
+
+- Continue merging:
+
+  ```
+  [13, 22, 46, 56]  [58, 67, 89, 90] + [ 8, 54, 83, 86]  [88, 92, 96, 97]
+     => [8, 13, 22, 46] [54, 56, 58, 67] [83, 86, 88, 89] [90, 92, 96, 97]
+  
+  [10, 11, 40, 58]  [64, 76, 81, 87] + [ 1, 31, 37, 65]  [77, 78, 94, 96]
+     => [1, 10, 11, 31] [37, 40, 58, 64] [65, 76, 77, 78] [81, 87, 94, 96]
+     
+  [ 5, 12, 14, 20] 
+     => [ 5, 12, 14, 20]
+  
+  ...
+  ```
+
+
+
+
+
+##### Multiple-way MergeSort
+
+The term "multiple-way" refers to the number of input sequences that are merged at each step of the merging process. 
+
+
+
+In the multiple-way MergeSort, during the **sorting phase**:
+
+1. Divide the source array into segments, each containing $M$ or fewer than $M$ pages ($M$ is the cache size).
+2. Sort each segment in memory and save the resulting sorted run to the disk. 
+
+
+
+During the **merging phase**:
+
+1. Allocate one output page in the cache.
+2. Load heads (the first pages) of the sorted runs into the cache.
+3. Merge them using a multiple-way MergeSort. When one of the heads get exhausted, pull the next page from the corresponding sorted run.
+4. Write the result into the output page and flush it into the secondary memory when it fills up.
+
+
+
+$B$ is the total amount of pages. In the sorting phase, the entire input is read, sorted, then written, resulting in $2B$ disk I/O operations. In the merging phase, we read from all sorted runs and write into the output, this again results in $2B$ disk I/O operations. So, in total, the **complexity** of the multiple-way MergeSort is $4B$ disk I/O. 
+
+
+
+The estimation is true if a **specific condition** is satisfied: the amount of sorted runs is $\leqslant M$ ($M$ is the cache size). Otherwise, not all heads of sorted runs will fit into the cache. 
+
+If we have $M$ segments, $\frac{B}{M}$ is the length of each segment. We want the segment's sorting phase to be linear, so $\frac{B}{M} \leqslant M \ \Rightarrow$ the algorithm is linear if $B \leqslant M^2$. 
+
+
+
+In general:
+
+- Sorting produces $\lceil \frac{B}{M} \rceil$ sorted runs, length of each run is $\leqslant M$. 
+- When merging, we divide the number of sorted runs by $M$. Groups are merged independently, then the process repeats until there are $\leqslant M$ sorted runs left. Then the final merging phase starts. 
+- In total, we need $1$ sorting pass and $\log_M \lceil \frac{B}{M} \rceil$ merging passes. On every pass, we read and write each page. The resulting **complexity** is $2B (1 + \log_M \lceil \frac{B}{M} \rceil)$.
+
+
+
+**Exmaple**
+
+$M = 4$. The pages we are going to use are:
+
+```
+[13, 89, 22, 58]   [56, 46, 90, 67]   [92, 88, 54, 86]
+[ 8, 96, 83, 97]   [40, 11, 10, 76]   [87, 58, 64, 81]
+[96, 78,  1, 77]   [94, 37, 31, 65]   [20, 12,  5, 14]
+[ 6, 84, 90, 96]   [16, 42, 45, 52]
+```
+
+- The sorting phase:
+
+  ```
+  [13, 89, 22, 58] [56, 46, 90, 67] [92, 88, 54, 86] [ 8, 96, 83, 97]
+     => [8, 13, 22, 46] [54, 56, 58, 67] [83, 86, 88, 89] [98, 92, 96, 97]
+     
+  [40, 11, 10, 76] [87, 58, 64, 81] [96, 78,  1, 77] [94, 37, 31, 65]
+     => [1, 10, 11, 31] [37, 48, 58, 64] [65, 76, 77, 78] [81, 87, 94, 96]
+     
+  [20, 12, 5, 14] [6, 84, 90, 96] [16, 42, 45, 52]
+     =>  [5, 6, 12, 14] [16, 20, 42, 45] [52, 84, 90, 96]
+  ```
+
+- The merging phase:
+
+  <img src="./pics for conspects/DB/DB 23-09-28 1.png" alt="DB 23-09-28 1" style="zoom:80%;" /> 
+
+  <img src="./pics for conspects/DB/DB 23-09-28 2.png" alt="DB 23-09-28 2" style="zoom:80%;" />
+
+  <img src="./pics for conspects/DB/DB 23-09-28 3.png" alt="DB 23-09-28 3" style="zoom:80%;" />
+
+  etc.
+
+
+
+
+
+
+
+### Hashing records
+
+#### Hash tables
+
+**Hash table** is a data structure that partitions a set of keys into $M$ buckets. Buckets are identified by the index. A **hash function** $h(k)$ maps keys to integer values (bucket indices). If we want to insert a value in the hash table, we compute its hash value and insert it in the bucket at an index equal to the hash value (modulo the size of the array).
+
+
+
+Strategies for resolving collisions:
+
+- **Chaining:** store a list of keys in the dame bucket (linked list or binary tree, consisting of key-value pairs).
+
+- **Open addressing:** when a collision occurs, the hash table looks for the next available bucket in a sequence.
+
+- **Dynamic Hashing Policies:** when a collision occurs, and the current hash table becomes too crowded, new buckets are created and hash values for the old data are reevaluated. 
+
+  The **load factor** of a hash table is a real number $l \in (0, 1)$ that tells how full the hash table is. 
+  $$
+  l = \frac{\# elements}{\#buckets}
+  $$
+  Most hash tables have a **max load factor** $\alpha$, a constant number between $0$ and $1$ that is an upper limit for the load factor. A common value for the max load factor is $0.75$. 
+
+  When we insert a new value to the hash table, we calculate the new load factor $l$. If $l > \alpha$, then we increase the number of buckets in the hash table (usually by creating a new array of twice as many buckets), then recalculate buckets for old values. 
+
+
+
+
+
+
+
+#### Building a hash table
+
+A bucket item is usually a disk page. A disk page may contain multiple hash keys and their associated values. 
+
+Chaining is ussually used to resolve colisions (index of the next page in the linked list is written in the header of the current page). 
+
+
+
+We have a table that occupies $B$ disk pages and a buffer that accomodates up to $M + 1$ pages. $B >> M$. We want to hash the table records by the value of some attribute.
+
+- $1$ buffer slot is used for reading input
+- Other $M$ buffer slots are used for hashing, one slot represents one bucket.
+- Read the input, apply the hash function $h(k) \mod M$, place the recond into the appropriate buffer page. If some buffer page fills up, flush it to the disk. 
+
+
+
+
+
+
+
+#### Hashing drawbacks
+
+- Poor selection of a hash function can result in uneven bucket sizes. It impacts the performance, sometimes we will have to scan for more data in a particular bucket.
+- Non-uniform data distribution among buckets may lead to uneven bucket sizes. The same problem with the performance as stated above (good news: databases check distribution of keys and do search for an efficient algorithm to hash keys).
 
 
 
