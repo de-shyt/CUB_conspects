@@ -336,7 +336,7 @@ There is problem with the clock-sweep algorithm: when a lot of pages are accesse
 
 The aging algorithm accounts for both frequency and access time. It is like a combination of the clock-sweep algorithm and the LRU policy. 
 
-Every page is assoiated with a binary counter. When the page is accessed, the most significant bit in its counter is set to 1. On every clock tick[^clock tick], all counters are shifted right. The victim is a page with the smallest counter. 
+Every page is assoiated with a binary counter. When the page is accessed, the most significant bit in its counter is set to 1. On every clock tick[^clocktick], all counters are shifted right. The victim is a page with the smallest counter. 
 
 <img src="./pics for conspects/DB/DB 23-09-14 4.png" alt="23-09-14 4" style="zoom:60%;" />
 
@@ -672,7 +672,7 @@ Strategies for resolving collisions:
 
 #### Building a hash table
 
-A bucket item is usually a disk page. A disk page may contain multiple hash keys and their associated values. 
+In databases, a bucket element is a disk page. A disk page may contain multiple hash keys and their associated values. 
 
 Chaining is ussually used to resolve colisions (index of the next page in the linked list is written in the header of the current page). 
 
@@ -703,7 +703,69 @@ We have a table that occupies $B$ disk pages and a buffer that accomodates up to
 
 
 
+## 23-10-05
+
+### Linear hashing
+
+The last $i$ bits are taken from the result of the hash function. There are $n < 2^i$ buckets in the table.
 
 
-[^clock tick]: A clock tick is when a certain time interval elapses
+
+#### Inserting keys
+
+We evaluate $h(k)$, we take the last $i$ bits. Assume the value of $\overline{x_{i-1}...x_0}$ in equal to $m$.
+
+- If $m < n$, the $m$-th bucket exists and we put the key into it. 
+
+- If $n \leqslant m < 2^i$, then the bucket with number $m-2^{i-1}$ exists, we put the key there. 
+
+  In simple words, we "turn off" the largest bit and choose the bucket using the updated value. 
+
+
+
+**Example**
+
+<img src="./pics for conspects/DB/DB 23-10-05 1.png" alt="DB 23-10-05 1" style="zoom:60%;" />
+
+The bucket number $11$ is virtual. 
+
+$h(k) = ...100, \ m=0 < n \ \Rightarrow \ \texttt{bucketNumber} = 0$.
+
+$h(k) = ...111, \ m = 3, \ n \leqslant 3 < 2^i \ \Rightarrow \ \texttt{bucketNumber} = 3 - 2 = 1$.
+
+
+
+
+
+
+
+#### Table growth
+
+The hash table should be loaded for not more than $80\%$. If there are $k$ keys and $n$ buckets, we want the amount of records to be $\leqslant r = 0.8nk$.
+
+-  If the amount of keys is larger than $r$, we create a new bucket with the number $n = \overline{0b_{i-1}...b_0}$. Values are moved from the bucket $n-2^{i-1}$ into the bucket $n$.
+
+  $n \rightarrow n+1$.
+
+  <img src="./pics for conspects/DB/DB 23-10-05 2.png" alt="DB 23-10-05 2" style="zoom:80%;" />
+
+- If $n \geqslant 2^i$, then $i \rightarrow i+1$.
+
+  The number of buckets becomes twice bigger. All of added buckets are virtual, except for one.
+
+  Buckets for the old data are reevaluated. 
+
+  <img src="./pics for conspects/DB/DB 23-10-05 3.png" alt="DB 23-10-05 3" style="zoom:80%;" />
+
+
+
+
+
+
+
+
+
+
+
+[^clocktick]: A clock tick is when a certain time interval elapses
 [^aggregations]: Aggretaions refer to operations that combine multiple data values into a single summary value. Common aggregation functions include `SUM`, `COUNT`, `AVG`, `MIN`, `MAX`. 
