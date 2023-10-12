@@ -501,7 +501,7 @@ Reminder: MergeSort involves recursively sorting $a[0..\frac{n}{2})$ and $a[\fra
 
 ##### Two-way MergeSort 
 
-Sort each page individually (using MergeSort). Then merge pages and save the result as a *sorted run*. Continue merging sorted runs until all runs are consolidated into a single result. 
+Sort each page individually (using MergeSort). Then merge each pair of pages and save the result as a *sorted run*. Continue merging sorted runs until all runs are consolidated into a single result. 
 
  $B$ = amount of pages the table occupies. In total, there are $1 + \lceil \log B \rceil$ passes, every pass divides the number or runs by 2. On each pass, the entire input is read and written, resulting in $2B$ disk I/O operations. So, the **complexity** of the two-way MergeSort is $O(2B(1 + \log B))$ disk I/O.
 
@@ -509,7 +509,7 @@ Sort each page individually (using MergeSort). Then merge pages and save the res
 
 **Example**
 
-Lets assume a database stores 4 records per page. The pages are:
+Lets assume a database stores 9 records per page. The pages are:
 
 ```
 [13, 89, 22, 58]   [56, 46, 90, 67]   [92, 88, 54, 86]
@@ -760,6 +760,80 @@ The hash table should be loaded for not more than $80\%$. If there are $k$ keys 
 
 
 
+
+
+
+
+
+## 23-10-12
+
+### Nested Loop Join
+
+<img src="./pics for conspects/DB/DB 23-10-12 1.png" alt="DS 23-10-12 1" style="zoom:50%;" />
+
+$R$ is the outer table, $S$ is the inner one.
+
+Complexity is $B(R) + T(R) \cdot B(S)$ where $B(.)$ is the scan of the whole table and $T(.)$ is a tuple.
+
+<img src="./pics for conspects/DB/DB 23-10-12 2.png" alt="DS 23-10-12 2" style="zoom:50%;" />
+
+
+
+<img src="./pics for conspects/DB/DB 23-10-12 3.png" alt="DS 23-10-12 3" style="zoom:50%;" />
+
+
+
+
+
+
+
+### Hash Join
+
+<img src="./pics for conspects/DB/DB 23-10-12 4.png" alt="DS 23-10-12 4" style="zoom:50%;" />
+
+Naive Hash Join works if the size of each bucket of the build table is $\leqslant M$ where $M$ is the size of the cache (so, the size of the build table should be $\leqslant M^2$). 
+
+
+
+<img src="./pics for conspects/DB/DB 23-10-12 5.png" alt="DS 23-10-12 5" style="zoom:50%;" />
+
+/todo insert Grace Hash Join II
+
+
+
+
+
+#### Complexity
+
+/todo
+
+
+
+
+
+### Sort-Merge Join
+
+`equi` stends for equality. 
+
+<img src="./pics for conspects/DB/DB 23-10-12 6.png" alt="DS 23-10-12 6" style="zoom:50%;" /> <img src="./pics for conspects/DB/DB 23-10-12 7.png" alt="DS 23-10-12 7" style="zoom:50%;" />
+
+
+
+#### Refinement \todo
+
+min 46-47
+
+
+
+
+
+### Summary
+
+<img src="./pics for conspects/DB/DB 23-10-12 8.png" alt="DS 23-10-12 8" style="zoom:50%;" />
+
+
+
+ 
 
 
 
