@@ -179,25 +179,13 @@ Examples:
 
 
 
-#### Implementing an object
-
-Imagine we want to implement a shared queue. The queue is not implemented in the hardware, instead we have base objects (read-write registers, TAS CAS etc).
-
-We have a FIFO order. `NQ` operation puts an element at the end of the queue, and `DQ` operation takes the first element. Each operation is a sequence of commands which involve changing the state and accessing the shared data. 
-
-Both operations need time to finish, and they can overlap in time. So we need to define what it means for an operation to be correct. 
-
-
-
-
-
 
 
 ### Correctness
 
 - **Safety** - you classify states reachable by the algorithm into bad and good states, and you require your algorithm never reaches bad states. 
 
-  reach a bad state = there is a *finite* sequence of step which ends up in that bad state.
+  reach a bad state = there is a *finite* sequence of steps which ends up in that bad state.
 
 - **Liveness** - your require that eventually something good should happen.  
 
@@ -240,7 +228,7 @@ $P$ is a **safety property** if:
 
 $P$ is a **liveness property** if every finite trace $\sigma$ has an extension in $P$. 
 
-$\forall \sigma \ : \ \sigma=e_1,...,e_k \in \Sigma^{\omega} \ \Rightarrow \ \exists \sigma' = \underbrace{e_1,...,e_k,e_{k+1},...}_{\textnormal{extension of } \sigma} \in P$.
+$\forall \sigma \ : \ \sigma=e_1...e_k \in \Sigma^{\omega} \ \exists \sigma' = e_1...e_ke_{k+1}... \in P$.
 
 
 
@@ -250,9 +238,10 @@ $$
 $$
 
 
+
 **How to distinguish safety and liveness**
 
-$P$ is a property (a set of runs)
+$P$ is a property (a set of runs).
 
 - If every run that violates $P$ is *infinite*, then $P$ is liveness.
 - If every run that violates $P$ *has a finite prefix* that violates $P$, then $P$ is safety
@@ -362,6 +351,12 @@ A history $H$ is **linearizable** if there exists a sequential legal history $S$
 
 
 
+An implementation is linearizable if and only if all its finite histories are linearizable.
+
+
+
+
+
 **Example 1:**
 
 <img src="./pics for conspects/DS/DS 23-09-19 3.png" alt="23-09-19 3" style="zoom:60%;" />
@@ -370,11 +365,15 @@ A history $H$ is **linearizable** if there exists a sequential legal history $S$
 
 
 
+
+
 **Example 2:**
 
 <img src="./pics for conspects/DS/DS 23-09-19 4.png" alt="23-09-19 4" style="zoom:60%;" />
 
-The history is not linearizable. `write(3)` is definitely after `write(1)`, but the last `read()` operation should return `1`, which means there is no such $S$ that is equivalent of $H$ and also legal. 
+The history is not linearizable. `write(3)` is definitely after `write(1)`, but the last `read()` operation should return `1`, which means there is no such $S$ that is equivalent of $H$ and legal for read-write policy. 
+
+
 
 
 
@@ -420,7 +419,202 @@ In other words, if you have an incomplete history in some process, there always 
 
 
 
+## 23-09-26
 
+Possible implementations of `enq` and `deq` functions:
+
+<img src="./pics for conspects/DS/DS 23-09-26.png" alt="DS 23-09-26" style="zoom:80%;" />
+
+
+
+
+
+
+
+### Liveness properties
+
+Quick remainder: a process is correct if, taking infinitely many steps, it never fails in the middle of the operation. Liveness properties can be violated only in the infinite execution. 
+
+
+
+- Deadlock-free
+
+  *Provided that every process is correct, at least one process makes progress*
+
+- Starvation-free
+
+  *Provided that every process is correct, every process makes progress*
+
+- Lock-free
+
+  *Some correct process makes progress*
+
+- Wait-free
+
+  *Every correct process makes progress*
+
+- Obstruction-free
+
+  *Every process makes progress if it executes in isolation (starting from some point, it is the only process which takes steps)* 
+
+
+
+![DS 23-09-26 2](./pics for conspects/DS/DS 23-09-26 2.png)
+
+
+
+
+
+#### Relations
+
+Property $P'$ is **stronger** then property $P$ if every run satisfying $P'$ also satisfies $P$ ($P' \subseteq P$).
+
+$P'$ is **strictly stronger** than $P$ id, additionally, some run in $P$ does not satisfy $P'$ ($P' \subset P$).
+
+<img src="./pics for conspects/DS/DS 23-09-26 3.png" alt="DS 23-09-26 3" style="zoom:80%;" />
+
+
+
+
+
+
+
+### Set
+
+- `locate(x) ` - search starting from the head to the
+  first node storing `x’` ≥ `x`, insert `x` before it and fix links.
+- `remove(x)` - if `x’` = `x`, point `prev.next` to `curr.next`
+- `insert(x)` - if `x’` > `x`, set `prev.next` to the new node storing `x` and
+  pointing to `curr`.
+
+
+
+
+
+#### `SetList`
+
+Implementation of the set using a sorted linked list (not thread-safe):
+
+<img src="./pics for conspects/DS/DS 23-09-26 4.png" alt="DS 23-09-26 4 " style="zoom:32%;" />
+
+<img src="./pics for conspects/DS/DS 23-09-26 5.png" alt="DS 23-09-26 5" style="zoom:60%;" />
+
+
+
+
+
+#### `CoarseList`
+
+Concurrent implementation. Assuming that the sequential implementation is correct, we just add locks at the beginning and the end of each operation:
+
+```java
+public class CoarseList{
+    private Node head;
+    private Lock lock = new ReentrantLock();
+    // `ReentrantLock` is starvation-free
+
+    public boolean insert(int item){
+        lock.lock();
+        Node pred=head;
+        try {
+            Node curr=head.next;
+            while (curr.key < item){
+                pred = curr;
+                curr = pred.next;
+            }
+            if (curr.key==item) { return false; }
+            Node node = new Node(item);
+            node.next=curr;
+            pred.next=node;
+            return true;
+        } finally {
+        	lock.unlock();
+    	}
+    }
+}
+```
+
+`try-finally` block is a convenient way to improve code readability (thus there is no need to unlock in line 14). 
+
+
+
+
+
+#### Locking schemes
+
+**Coarse-grained**
+
+A lock is taken for the operation. As a result, the whole set is not available for other processes. The example is in [`CoarseList`](####`CoarseList`).
+
+
+
+
+
+**2-phase locking**
+
+Locks are taken on the way, starting for the head. access an object => take a lock on it, access the next object => take a lock on it. After modifying data, release all the locks. 
+
+It is time-consuming, but works well for database transactions, since it ensures that ACID[^acid] properties are adhered. 
+
+
+
+
+
+**Hand-over-hand locking**
+
+The lock is taken only on elements which are modified. 
+
+```java
+public boolean insert(int item) {
+    head.lock()  // should be locked at the beginning, so that nobody 
+                 // could modify it
+    Node pred = head;  // `head` will be released in lines 9 or 23
+    Node curr = pred.next;
+    try {
+        curr.lock();
+        try {
+            while (curr.key < item) {
+                pred.unlock();
+                pred = curr;
+                curr = pred.next;
+                curr.lock()
+            }
+            if (curr.key == item) { return false; }
+            Node node = new Node(item);
+            node.next = curr;
+            pred.next = node;
+            return true;
+        } finally {
+        	curr.unlock();
+        }
+    } finally {
+    	pred.unlock();
+    }
+}
+```
+
+
+
+Regarding **linearization**, there are two phases for each history: *traverse* and *update*. Both of them are considered as critical sections. 
+
+Regarding **progress**, hand-over-hand locking is
+
+- deadlock-free: locks are always acquired and released in the same order, so a cycle of lock dependencies cannot form.
+- starvation-free. Starvation can occur if one thread keeps acquiring and releasing locks while others are waiting. Again, this cannot happen, because locks are acquired and released in a strict order. 
+
+
+
+
+
+**Optimistic: wait-free traversal + validation**
+
+<img src="./pics for conspects/DS/DS 23-09-26 6.png" alt="DS 23-09-26 6" style="zoom:80%;" />
+
+ The traverse part is free of locks, they are acquired once the needed nodes `pred` and `curr` is found. 
+
+`validate` function is used as a synchronization mechanism. For example, `pred` or `curr` nodes can be removed by the time we reach them. 
+
+Regarding **progress**, this algorithm is not starvation-free. If `validate` returns false, we start again the `while(true)` loop. 
 
 
 
@@ -436,5 +630,5 @@ In other words, if you have an incomplete history in some process, there always 
 
 [^seqspec]: A sequential specification is a detailed description of how a process or system operates step by step. For example, it can be FIFO policy or read-write rule: "Every read returns the last written value".
 
-
+[^acid]: ACID stands for Atomicity, Consistency, Isolation, Durability. 
 
