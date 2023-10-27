@@ -560,7 +560,7 @@ It is time-consuming, but works well for database transactions, since it ensures
 
 
 
-**Hand-over-hand locking**
+##### Hand-over-hand locking
 
 The lock is taken only on elements which are modified. 
 
@@ -606,17 +606,100 @@ Regarding **progress**, hand-over-hand locking is
 
 
 
-**Optimistic: wait-free traversal + validation**
+##### wait-free traversal + validation
 
 <img src="./pics for conspects/DS/DS 23-09-26 6.png" alt="DS 23-09-26 6" style="zoom:80%;" />
 
- The traverse part is free of locks, they are acquired once the needed nodes `pred` and `curr` is found. 
+ The traverse part is free of locks, they are acquired once the needed nodes `pred` and `curr` are found. 
 
 `validate` function is used as a synchronization mechanism. For example, `pred` or `curr` nodes can be removed by the time we reach them. 
 
-Regarding **progress**, this algorithm is not starvation-free. If `validate` returns false, we start again the `while(true)` loop. 
+Regarding **progress**, this algorithm is not starvation-free. If `validate` returns false, we start the `while(true)` loop again.
 
 
+
+
+
+##### Lazy synchronization
+
+The problem with the `traversal + validation` algorithm is we have to traverse the list **twice** in any case (first, inside the `while` loop, then inside `validate` method). 
+
+The idea of `validate` is to check that a predecessor is still present in the list and can be reached from its head. So, to solve the issue, we can add a boolean flag to each node. It will indicate whether the node is still present in the list. 
+
+<img src="./pics for conspects/DS/DS 23-10-10.png" alt="DS 23-10-10" style="zoom:80%;" />
+
+<img src="./pics for conspects/DS/DS 23-10-10 2.png" alt="DS 23-10-10 2" style="zoom:80%;" />
+
+
+
+
+
+
+
+
+
+## 23-10-10
+
+### `AtomicMarkableReference`
+
+`AtomicMarkableReference` is a class in Java that is part of the `java.util.concurrent.atomic` package. It is used for managing references to objects along with a boolean "mark" that can be atomically updated. Thus you maintain a reference to an object along with a mark (boolean flag) to represent some associated information.
+
+`AtomicMarkableReference` provides atomic operations for situations where you want to update the reference and the associated mark in a thread-safe manner, without the need for explicit locking mechanisms.
+
+| Methods                                                      | Description                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `AtomicMarkableReference(V initialRef, boolean initialMark)` | Constructor, creates an `AtomicMarkableReference` with an initial reference and an initial boolean mark. |
+| `getReference()`                                             | Returns the current reference held by the `AtomicMarkableReference`. |
+| `isMarked()`                                                 | Returns the current mark (boolean value) associated with the reference. |
+| `get(boolean[] markHolder)`                                  | Retrieves both the reference and the mark and stores the mark in the provided `markHolder` array. |
+| `compareAndSet(V expectedReference, V newReference, boolean expectedMark, boolean newMark)` | *Atomically* compares the current reference and mark with the expected values. If they match, updates the reference and mark to new values. |
+
+
+
+
+
+
+
+### Nonblocking synchronization
+
+```java
+public boolean remove(int item) {
+    while (true) {
+        // traverse with physical removal of marked nodes
+        // determine pred and curr
+        if (curr.key!=item) return false;
+        Node succ = curr.next.getReference();
+        snip = curr.next.compareAndSet(succ,succ, false, true);
+        if (!snip) continue;
+        pred.next.compareAndSet(curr,succ, false, false);
+        return true;
+        }
+    }
+}
+```
+
+`remove` operation first checks that `curr.next` contains the expected reference (line 7), meaning the reference should be correct and it should not be marked as deleted. If no, the `while` loop starts again.
+
+Then, if `pred.next` and `curr` are the same, it marks the considered node as deleted (line 9).
+
+
+
+```java
+public boolean insert(int item)
+    while (true) {
+   		// traverse with physical removal of marked nodes
+        // determine pred and curr
+        if (curr.key == item) return false;
+        Node node = new Node(item);
+        node.next = new AtomicMarkableReference(curr, false);
+        if (pred.next.compareAndSet(curr, node, false, false)) {
+            return true;
+        }
+    }
+}
+```
+
+In line 8, `insert` operation first checks that `pred` and `pred.next` nodes are not removed. If true, it atomically updates `pred.next` with a reference to a new node. Otherwise, the `while` loop starts again. 
 
 
 

@@ -2,7 +2,7 @@
 * [BQ The impact of AI.pdf](./BQ%20The%20impact%20of%20AI.pdf) [last update: 2023-09-26 19:33:52]
 * [Computer Vision.pdf](./Computer%20Vision.pdf) [last update: 2023-09-28 11:01:42]
 * [Database Internals.pdf](./Database%20Internals.pdf) [last update: 2023-10-12 12:28:58]
-* [Distributed systems.pdf](./Distributed%20systems.pdf) [last update: 2023-10-14 19:36:51]
+* [Distributed systems.pdf](./Distributed%20systems.pdf) [last update: 2023-10-27 14:12:07]
 * [Frontend.pdf](./Frontend.pdf) [last update: 2023-09-25 14:08:39]
 * [Human Computer Interaction.pdf](./Human%20Computer%20Interaction.pdf) [last update: 2023-10-02 13:58:00]
 * [ML (theory and practice).pdf](./ML%20(theory%20and%20practice).pdf) [last update: 2023-09-25 14:08:57]
