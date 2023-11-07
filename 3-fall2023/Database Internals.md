@@ -839,6 +839,218 @@ min 46-47
 
 
 
+## 23-10-19 \todo
+
+
+
+
+
+
+
+## 23-10-26
+
+### What is an index
+
+**Index** is a persistent data structure that may speed up some operations. 
+
+- redundant: using indexes is not compulsory, we can search without them
+- persistent: indexes are not built for every query from scratch but stored separately in the memory
+
+We build an index for the values of a table column. The indexed column values are **index keys**. We need to associate index keys with the appropriate table records (or table pages).
+
+In the context of indexing, we **distinguish between data pages**, where the actual table records are stored,  **and index pages**, where index data structure is maintained.
+
+
+
+Indexes must remain consistent, meaning they need to be updated whenever there are inserts, updates, or deletions in the table. Index maintenance may be quite expensive, particularly when the table experiences frequent updates.
+
+
+
+
+
+
+
+### Sparse indexing
+
+Extract the first value from each page and create a mapping with ”key - page pointer” pairs. This mapping is referred to as a **sparse index**. Records in the sparse index consist of the search key and page pointer, and occupy less space than the table records. It makes using sparse indexing compact and efficient. 
+
+Also, we can create a **second layer** of the sparse index on top of the first, making the operations less time-consuming. 
+
+
+
+Example (with one and two layers):
+
+<img src="./pics for conspects/DB/DB 23-10-26 1.png" alt="DB 23-10-26 1" style="zoom:90%;" />
+
+Here the *sparse* indexing is shown: indexes are assigned only to the first pages in each cluster. *Dense* indexing means indexes are assigned to each record in the table. 
+
+
+
+
+
+
+
+### Dense indexing (secondary indexes)
+
+What if the table is sorted by `id` while we want to search by some other attribute, is e.g. by `name`?
+
+We cannot reorder the table, or make a copy ordered by name, since there is a lot of data in the table. But we can build **dense index** where mappings "key - pointer to table record" are stored.
+
+Dense index now can be sorted. We can also create a second layer (which will be sparse). 
+
+Dense indexes are called **secondary indexes**. We may have as many secondary indexes as we need.
+
+
+
+
+
+
+
+### B-trees
+
+- 'b' stands for nobody knows what. It was developed 50 years ago, by Rudolf **B**ayer and Edward M. McCreight. Both or them were working at the **B**oeing Research Labs. B-tree can be **b**alanced or **b**inary. Data stored in nodes can be considered as a **b**lock of pages. A lot of letters 'b', but it is a mystery what 'b' stands for.
+- Index layers:
+  - dense leaf layer
+  - sparse second layer on top
+  - until we have a 1-page layer
+
+- The resulting structure is a search tree with a large number of branches. Two adjacent nodes define a search range.
+- We will distinguish between **leaf nodes**, **inner nodes**, and the **root node**.
+
+
+
+
+
+
+
+### B+-trees
+
+**B+-tree** is a variation of B-tree. In a B+-tree, only the leaf nodes contain the actual data, while the inner nodes contain keys but no data. This design difference allows for faster searches in practice.
+
+Suppose we’ve got $N$ index keys in total. A disk page can accommodate up to $m$ key-pointer pairs. Each index page will hold $k \leqslant m$ keys and $k + 1$ pointers to other pages. 
+
+<img src="./pics for conspects/DB/DB 23-10-26 2.png" alt="DB 23-10-26 2" style="zoom:50%;" />
+
+**Leaf nodes** form a dense index over the indexed attribute. $k$ pointers are parts of key-pointer pairs, and one more pointer is used to create a linked list from nodes that are on the same level. Thus, we can iterate over them without refering to other parts of the tree. 
+
+**Inner nodes** form a sparse index for leaves. In each inner node, there are $k$ keys and $k+1$ pointers which point to $k+1$ substrees. Keys and pointers are alternated, like in the picture. The pointer between keys $k_i$ and $k_{i+1}$ references to a node with a range $[k_i, k_{i+1})$. For example, the pointer before $10$ leads to $[1, 10)$. The pointer after $26$ leads to $[26, 29)$. 
+
+**Root node** stores one key. Its value is equal to the smallest one from the right subtree. Also, its valus is not used in the second layer.
+
+<img src="./pics for conspects/DB/DB 23-10-26 3.png" alt="DB 23-10-26 3" style="zoom:50%;" />
+
+
+
+
+
+
+
+#### Node occupancy
+
+- There are not less than $\lfloor \frac{m+1}{2} \rfloor$ pointers to table records in leaf nodes. 
+- There are not less than $\lceil \frac{m+1}{2} \rceil$ pointers referencing to nodes of the lower layer. 
+- At least two pointers are used in the root node.
+
+
+
+
+
+**Examples**
+
+Suppose that $m = 3$, we can hold up to $3$ keys and $4$ pointers. Leaf nodes must have at least $2$ data pointers, inner nodes must have at least $2$ pointers to the lower layers.
+
+<img src="./pics for conspects/DB/DB 23-10-26 4.png" alt="DB 23-10-26 4" style="zoom:60%;" />
+
+The example above is not correct. Some leaves store only one data pointer. Also, $m=3$ means not more than $3$ keys can be written into an index page, which is false for the last leaf node. 
+
+<img src="./pics for conspects/DB/DB 23-10-26 3.png" alt="DB 23-10-26 3" style="zoom:60%;" />
+
+The example above is correct. 
+
+
+
+
+
+#### Search
+
+Explore the key ranges starting from the root, follow the pointer that sits in the appropriate range.
+
+Complexity is $\log_m(N)$ where $N$ is a total number of keys and $m$ is a maximum number of keys one index page can store. 
+
+
+
+
+
+#### Insert
+
+- Find a leaf where a new key is supposed to be.
+- If there is enough space in the leaf, insert a new key-pointer pair.
+- If the leaf page is full, we need to [split](####Split for leaf node) it.
+
+Complexity is $O(\log_mN)$.
+
+
+
+
+
+#### Split for leaf node
+
+We inserted a key-pointer value into a leaf node `l`, and the amount of pairs in now $m+1$. Then, the first $\lceil \frac{m+1}{2} \rceil$ pairs remain where they are. A new leaf node `new_l` is created, and the last $\lfloor \frac{m+1}{2} \rfloor$ pairs are relocated into it. 
+
+The first key from `new_l` is going to be inserted into the parent of `l`.  If there is space for it, we insert a new key and pointer referencing `new_l`. Otherwise, see the [split for the inner node](####Split for inner node).
+
+
+
+**Example**
+
+$m = 3$, we insert key $19$ and need to split a leaf node.
+
+<img src="./pics for conspects/DB/DB 23-10-26 5.png" alt="DB 23-10-26 5" style="zoom:50%;" />
+
+<img src="./pics for conspects/DB/DB 23-10-26 6.png" alt="DB 23-10-26 6" style="zoom:50%;" />
+
+
+
+
+
+#### Split for inner node
+
+- We have the inner node `i` where there are $m+1$ keys and $m+2$ pointers. 
+
+- First $\lceil \frac{m+2}{2} \rceil$ pointers and $\lceil \frac{m}{2} \rceil$ keys remain where they are. 
+- Last $\lfloor \frac{m+2}{2} \rfloor$ pointers and $\lfloor \frac{m}{2} \rfloor$ keys are moved into a new inner node `new_i`.
+- One key in the middle is left untouched. It is moved to the parent of `i`. Also, a new pointer in the parent of `i` is created, referencing to the node `new_i`.
+
+
+
+**Example**
+
+$m=3$, we insert key $25$ and, as a result, there are $4$ keys in one inner node. 
+
+<img src="./pics for conspects/DB/DB 23-10-26 7.png" alt="DB 23-10-26 7" style="zoom:50%;" />
+
+<img src="./pics for conspects/DB/DB 23-10-26 8.png" alt="DB 23-10-26 8" style="zoom:50%;" />
+
+
+
+
+
+#### Remove
+
+Возможно, не стоит удалять ключи, а просто использовать флажок. Если удалять, то важно проверять инварианты и, при необходимости, менять всё дерево. Подробно на удалении мы останавливаться не будем. 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 [^clocktick]: A clock tick is when a certain time interval elapses
