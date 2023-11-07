@@ -485,15 +485,27 @@ $g[n, m] = \left \{ \begin{array}{l} 255 \textnormal{ if } f[n, m] > 0 \\ 0, \te
 
 
 
+**Example 3: sharpening**
+
+<img src="./pics for conspects/CV/CV 23-09-21 13.png" alt="CV 23-09-21 13" style="zoom:70%;" />
 
 
-#### Discrete convolution
+
+
+
+
+
+### Discrete convolution
 
 Convolution can be considered as an integral that expresses the amount of overlap of one function as it is shifted over another function.
 
+Convolution is a filtering operation. 
 
 
-##### 1D convolution
+
+
+
+#### 1D convolution
 
 $$
 g[n] = \sum \limits_k f[k] h[n- k]
@@ -513,7 +525,7 @@ $h[-k] \rightarrow h[n-k]$ means the filter matrix is moved to the left or to th
 
 
 
-##### 2D convolution
+#### 2D convolution
 
 Similar to 1D, but now we iterate over 2 axis instead of 1.
 $$
@@ -538,7 +550,7 @@ $$
 
 
 
-##### Details
+#### Details
 
 <img src="./pics for conspects/CV/CV 23-09-21 12.png" alt="CV 23-09-21 12" style="zoom:60%;" />
 
@@ -548,7 +560,7 @@ $$
 
 
 
-#### Cross correlation
+### Cross correlation
 
 Cross correlation measures the similarity between two input signals as they are shifted by one another. The correlation result reaches a maximum at the time when the two signals match best.
 
@@ -585,6 +597,219 @@ $g^*$ is a complex conjugate[^complconj] of $g$. In this class, $g[n, m]$ are re
 
 
 
+
+## 23-10-05
+
+### Image gradient filters
+
+Derivative of a function represents the amount of change in the function. In a 2D space, partial derivatives represent the amount of change along each dimension. 
+
+
+
+
+
+#### Derivatives in 1D
+
+$$
+\frac{\partial f}{\partial x} = f'(x) = \lim \limits_{h \rightarrow 0} \frac{f(x + h) - f(x)}{h} \ \ \textcolor{grey}{\textnormal{(forward)}} \\
+
+\frac{\partial f}{\partial x} = f'(x) = \lim \limits_{h \rightarrow 0} \frac{f(x) - f(x - h)}{h} \ \ \textcolor{grey}{\textnormal{(backward)}} \\
+
+\frac{\partial f}{\partial x} = f'(x) = \lim \limits_{h \rightarrow 0} \frac{f(x + h) - f(x - h)}{2h} \ \ \textcolor{grey}{\textnormal{(central)}}
+$$
+
+
+
+When you want to compute the derivative of an image or a 1D signal, instead of finding the exact value of the derivative, you can apply a convolution operation using one of these filters:
+
+- Backward filter: $\begin{bmatrix} 0 & 1 & -1 \end{bmatrix}$ -- computes the derivative by looking at the difference between a point and the point immediately before it.
+
+- Forward filter: $\begin{bmatrix} -1 & 1 & 0 \end{bmatrix}$ -- computes the derivative by looking at the difference between a point and the point immediately after it.
+
+- Central filter: $\begin{bmatrix} 1 & 0 & -1 \end{bmatrix}$ -- computes the derivative by looking at the difference between points both before and after the current point.
+
+The choice of the filter kernel determines the method used to approximate the derivative.
+
+
+
+
+
+#### Derivatives in 2D
+
+<img src="./pics for conspects/CV/CV 23-10-05 1.png" alt="CV 23-10-05 1" style="zoom:70%;" />
+
+
+
+
+
+
+
+
+
+### Edge detection
+
+Edge detection is a fundamental image processing technique that is used to detect the boundaries or contours of objects within an image. It works by identifying sharp changes in intensity or color between neighboring pixels.
+
+By detecting and analyzing edges, computer vision systems can extract info about **the shapes and structures** of objects, which can be useful for object recognition. 
+
+Edges can also tell about **the geometry and relative positions** of objects in 3D space. The arrangement of edges can help determine the depth, orientation, and viewpoint of objects in the scene. This can be important for 3D reconstruction.
+
+
+
+
+
+
+
+#### Canny edge detection
+
+1. Filter image with $x, y$ derivaties of Gaussan
+2. Find magnitude and orientation of the gradient 
+3. Use **non-maximum suppression**, which makes lines more distinct  
+4. 
+
+
+
+
+
+The larger is $\sigma$, the smoother are the lines of the resulting image. 
+
+
+
+
+
+### Line detection
+
+Line detection is a technique used to identify and locate straight lines within an image or a video frame. 
+
+Only edge detection is not enough for identifying straight lines. Edge detection may add fake lines or represent a straight line as a set of pixels which, in turn, do not form a straight line. 
+
+
+
+#### Hough transform
+
+The Hough Transform can be used for line detection. 
+
+First, edge detection is applied. Then we use **the Hough transform** which goal is to find sets of pixels that form straight lines in the image. 
+
+
+
+Consider a point $p=(x_i, y_i)$. There are lots of possible straight lines which go though $p$. The common thing is all those straight lines have a form $y_i = ax_i + b$. 
+
+So, we get an equation
+$$
+b=-ax_i+y_i
+$$
+where $x_i,y_i$ are parameters and $a,b$ are variables. This is the *line* in **$(a, b)$ space** parameterized with $x_i, y_i$.
+
+
+
+Objects in $(a, b)$ space are not dots but lines. A line of the $(a, b)$ space represents parameters for all possible lines in $(x, y)$ space which pass through the given point. 
+
+Several points define several different lines in the $(a, b)$ space. The lines intersect in the point $(a', b')$ which coordinates are the parameters of the straight line we are looking for. 
+
+
+
+Sometimes you have a point that is very close to a straight line but not exactly on it. There are certain techniques to handle such situations, **Voting Accumulation Threshold** is one of them. 
+
+The $(a, b)$ space is split into cells. The number of votes = number of lines passing through that cell. You can introduce a threshold for the number of votes required to consider a line as detected. If a point is very close to a line but doesn't accumulate enough votes, it will be ignored. 
+
+
+
+
+
+
+
+#### RANSAC
+
+
+
+
+
+
+
+
+
+## 23-10-12
+
+### Corner detection
+
+In the region around the corner, the gradient has two or more dominant directions. 
+
+We should easily recongnize the corner point by looking through a small window. When the window is moved, partial derivatives represent a change in intensity. If the change is large in two or more directions, the corner is detected. 
+
+<img src="./pics for conspects/CV/CV 23-10-12 1.png" alt="CV 23-10-12 1" style="zoom:67%;" />
+
+The explanation for $I_x$: the grey color means the value is low or zero, the white means strong positive values along the $OX$ axis, the black means strong negative valuethes along $OX$. 
+
+
+
+
+
+
+
+#### Harris Corner Detector
+
+We have a window which size is relatively small. $x, y$ are coordinates in the image. $(u, v)$ is a vector which represents the direction. The measure of change is:
+$$
+E(u, v) = \sum \limits_{x, y} w(x, y) \cdot [I(x + u, y + v) - I(x, y)]^2
+$$
+
+- $E(u, v)$ is the sum of squared intensity differences over a local neighborhood in the image.
+- $I(x, y)$ and $I(x + u, y + v)$ represent the intensity at points $(x, y)$ and $(x + u, y + v)$ respectively. 
+
+- $w(x, y)$ is a weight function. It is used to determine whether the point $(x, y)$ is in the window.  
+
+  \todo insert a pic of window function (page 18)
+
+
+
+
+
+$E(u, v)$ can be approzimated to $\begin{bmatrix} u & v \end{bmatrix} M \begin{bmatrix} u \\ v \end{bmatrix}$ where $M$ is a matrix:
+$$
+M = \sum \limits_{x, y} w(x, y) \begin{bmatrix} I_x^2 & I_x I_y \\ I_y I_x & I_y^2 \end{bmatrix}
+$$
+
+
+
+
+Properties of Harris corner detector:
+
+- translation invariance 
+
+- rotation invariance
+
+- no scale invariance
+
+  \todo insert a pic page 33
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=Z_HwkG90Yvw
+
+
+
+[5 Minutes with Cyrill](https://www.youtube.com/playlist?list=PLgnQpQtFTOGSO8HC48K9sPuNliY1qxzV9)
+
+
+
+
+
+
+
+#### Harris-Laplacian detector \todo
+
+
+
+
+
+
+
+### Local descriptors \todo
 
 
 
