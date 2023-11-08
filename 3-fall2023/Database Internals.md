@@ -971,7 +971,11 @@ The example above is correct.
 
 
 
-#### Search
+
+
+#### Operations
+
+**Search**
 
 Explore the key ranges starting from the root, follow the pointer that sits in the appropriate range.
 
@@ -981,11 +985,11 @@ Complexity is $\log_m(N)$ where $N$ is a total number of keys and $m$ is a maxim
 
 
 
-#### Insert
+**Insert**
 
 - Find a leaf where a new key is supposed to be.
 - If there is enough space in the leaf, insert a new key-pointer pair.
-- If the leaf page is full, we need to [split](####Split for leaf node) it.
+- If the leaf page is full, we need to split it (see below).
 
 Complexity is $O(\log_mN)$.
 
@@ -993,7 +997,7 @@ Complexity is $O(\log_mN)$.
 
 
 
-#### Split for leaf node
+**Split for leaf node**
 
 We inserted a key-pointer value into a leaf node `l`, and the amount of pairs in now $m+1$. Then, the first $\lceil \frac{m+1}{2} \rceil$ pairs remain where they are. A new leaf node `new_l` is created, and the last $\lfloor \frac{m+1}{2} \rfloor$ pairs are relocated into it. 
 
@@ -1001,9 +1005,7 @@ The first key from `new_l` is going to be inserted into the parent of `l`.  If t
 
 
 
-**Example**
-
-$m = 3$, we insert key $19$ and need to split a leaf node.
+For example, $m = 3$, we insert key $19$ and need to split a leaf node.
 
 <img src="./pics for conspects/DB/DB 23-10-26 5.png" alt="DB 23-10-26 5" style="zoom:50%;" />
 
@@ -1013,7 +1015,7 @@ $m = 3$, we insert key $19$ and need to split a leaf node.
 
 
 
-#### Split for inner node
+**Split for inner node**
 
 - We have the inner node `i` where there are $m+1$ keys and $m+2$ pointers. 
 
@@ -1023,9 +1025,7 @@ $m = 3$, we insert key $19$ and need to split a leaf node.
 
 
 
-**Example**
-
-$m=3$, we insert key $25$ and, as a result, there are $4$ keys in one inner node. 
+For example, $m=3$, we insert key $25$ and, as a result, there are $4$ keys in one inner node. 
 
 <img src="./pics for conspects/DB/DB 23-10-26 7.png" alt="DB 23-10-26 7" style="zoom:50%;" />
 
@@ -1035,11 +1035,74 @@ $m=3$, we insert key $25$ and, as a result, there are $4$ keys in one inner node
 
 
 
-#### Remove
+**Remove**
 
 Возможно, не стоит удалять ключи, а просто использовать флажок. Если удалять, то важно проверять инварианты и, при необходимости, менять всё дерево. Подробно на удалении мы останавливаться не будем. 
 
 
+
+
+
+
+
+### Index-organized tables
+
+In certain database engines, table records are *heap-organized*, where new records are placed wherever free space is available, and the records are not ordered in any particular way. 
+
+In contrast, an *index-organized* table stores records directly within the index structure. The index key is typically the table’s primary key or an internal record identifier. The key is associated with the record directly (not with the page). 
+
+The drawback of indexing is records may change their address, when the index structure grows and some pages have to be splitted. This may trigger rebuilding of other indexes. 
+
+
+
+
+
+#### Hash index
+
+**The idea** is to hash table records, then use index attribute as the hash key and pointers to the data pages as the values. 
+
+The complexity of operations is $O(1)$ on average, but **with some conditions**: the size of the bucket should have a lower bound. Usually, the amount of buckets is doubled when needed, involving rehashing all keys and rebuilding the whole table which are expensive processes. We want to modify only one bucket and leave other buckets as they are. The example of this approach is [linear hashing](###Linear hashing). 
+
+
+
+
+
+#### Cluster index
+
+When the indexed column of an index-organized table permits duplicating index keys, we describe the index as **clustered** or **clustering**.
+
+A clustering index organizes the indexed table rows so that all rows with the same index key value are stored next to each other, packed to a minimum possible number of pages.
+
+
+
+
+
+#### Indexes and `SELECT`
+
+Notations:
+
+- $R(A, B)$ is a table consisting of two columns $A$ and $B$
+- $B(R)$ is the number of pages holding the records of $R$
+- $T(R)$ is the number of rows in $R$
+- $V_A(R) = T(\pi_A(R))$ is cardinality (мощность) of column $A$ -- the total number of distinct values stored in column $A$. The value is between $1$ and $T(R)$.
+
+
+
+Suppose we have an index built for column A. We need to execute a query that looks like
+
+```sql
+SELECT FROM R WHERE A = ....
+```
+
+Without using the index, we scan through all pages which takes $B(R)$ I/O. 
+
+No suppose we use the index. 
+
+If the index is clustering, rows with the same value are packed to the min possible amount of pages. If the distribution of values is uniform, we need $\lceil \frac{B(R)}{V_A(R)} \rceil$ I/O. 
+
+If the index is not clustering, the worst case is when every row that matches the search condition is stored in its own page. Then we need $\lceil \frac{T(R)}{V_A(R)} \rceil$ I/O. 
+
+<img src="./pics for conspects/DB/DB 23-10-26 9.png" alt="DB 23-10-26 9" style="zoom:50%;" />
 
 
 
