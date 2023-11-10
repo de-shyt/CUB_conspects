@@ -118,7 +118,7 @@ Here $p$  is a prediction, it is calculated by our model, and $y$ is a label ($1
 
 ### Linear models
 
-[Jupiter notebook practice](https://github.com/de-shyt/CUB_conspects/blob/main/3-fall2023/jupiter/ML-23-09-15/ML-23-09-15.ipynb)
+[Jupiter notebook practice](https://github.com/de-shyt/CUB_conspects/blob/main/3-fall2023/jupiter/ML/ML-23-09-15.ipynb)
 
 
 
@@ -268,31 +268,36 @@ Language models are designed to understand and generate human language text. The
 
 Imagine we have a document, each word from the document has a form $[0, ..., 0, 1, 0, ..., 0]$ as a vector. Depending on the document size and content, the size and amount of vectors can be huge. 
 
-Embeddings are vector representations of words in a continuous vector space. The idea of using embeddings is to transform the word's vector $[0, ..., 0, 1, 0, ..., 0]$ into a $n$-dimensional vector $[e_1, ..., e_n]$. 
-
-Skip-gram and Continuous Bag of Words (CBOW) are two popular algorithms used for training word embeddings. Skip-gram is often better at capturing semantic[^semantic] relationships and is more suitable for tasks like word analogy (e.g. "king - man + woman = queen"). CBOW is faster to train and can perform well on syntactic[^syntactic] tasks. 
+**Embeddings** are vector representations of words in a continuous vector space. The idea of using embeddings is to transform the word's vector $[0, ..., 0, 1, 0, ..., 0]$ into a $n$-dimensional vector $[e_1, ..., e_n]$. 
 
 
 
-**Skip gram**
+**Word2vec** is an approach to create word embeddings. It  is based on the idea that a word’s meaning is defined by its context. Except for word2vec there exist other methods to create word embeddings, such as fastText, BERT, GPT-2, etc.
 
-The main goal of the Skip-gram model is to predict the context words (surrounding words) given a target word. The input is a target word, and the output is a probability distribution over all the words in the vocabulary.
+Word2vec model is very simple and has only two layers:
 
-Example: given the sentence "I love to eat pizza," if the target word is "love," Skip-gram aims to predict the surrounding words like "I," "to," "eat," and "pizza."
+- Embedding layer which takes word ID and returns its 300-dimensional vector[^300dim].
+- Linear (Dense) layer with a Softmax activation.
 
-
-
-**CBOW** 
-
-CBOW tries to predict the target word given a context (surrounding words). The input is a context (a set of surrounding words), and the output is the target word. The model attempts to maximize the probability of the target word given the context words.
-
-Example: given the same sentence "I love to eat pizza," if the context is "I, to, eat, pizza," CBOW aims to predict the target word "love."
+<img src="./pics for conspects/ML/ML 23-09-22 3.png" alt="ML 23-09-22 3" style="zoom:60%;" />
 
 
 
-**Markov chain**
 
-When constructing a phrase, there is a probability for each next word. The probability depends on the previous knowledge. 
+
+**Skip-gram** and **CBOW (Continuous Bag of Words)** are two popular word2vec algorithms, used for training word embeddings. Skip-gram is often better at capturing semantic[^semantic] relationships and is more suitable for tasks like word analogy (e.g. "king - man + woman = queen"). CBOW is faster to train and can perform well on syntactic[^syntactic] tasks. 
+
+- **CBOW** 
+
+  CBOW tries to predict the target word given a context. The input is a context (a set of surrounding words), and the output is the target word. The model attempts to maximize the probability of the target word given the context words.
+
+  Example: given the same sentence "I love to eat pizza," if the context is "I, to, eat, pizza," CBOW aims to predict the target word "love."
+
+- **Skip gram**
+
+  The main goal is to predict the context words given a target word. The input is a target word, and the output is a probability distribution over all the words in the vocabulary.
+
+  Example: given the sentence "I love to eat pizza," if the target word is "love," Skip-gram aims to predict the surrounding words like "I," "to," "eat," and "pizza."
 
 
 
@@ -301,6 +306,16 @@ When constructing a phrase, there is a probability for each next word. The proba
 
 
 #### RNNs
+
+**Activation functions** are used to map scores to probabilities. There can be several activation functions, one per each level of the neural network. There are different types of activation functions: 
+
+- sigmoid: $\sigma(x) = \frac{1}{1 + e^{-x}}$. It is a probability for one score. 
+- softmax: $f(x_i) = \frac{e^{x_i}}{\sum e^{x_j}}$ It measures the probability for a group of scores. 
+- ReLU (Rectified Linear Unit): $f(x) = \max(0, x)$
+- log function: $f(x) = \log \frac{1}{e^x}$
+- etc.
+
+
 
 Recurrent neural networks deal with an arbitrary amount of input values. Like any other networks, RNNs have weights, biases, layers and activation functions. The difference is they also have **feedback loops**. The feedback loop makes it possible to use sequential input values to make predictions. 
 
@@ -332,13 +347,299 @@ One way to prevent The Exploding Gradient problem is to limit the parameter $w_2
 
 **Transformers** represent a newer and more specialized type of neural networks, well-suited for tasks involving sequences of data, such as text, time series, and more. They can process input data in parallel, unlike RNNs, which are sequential. 
 
-**Positional Encoding** is a technique transformers use to keep track of word order. 	
+**Positional Encoding** is a technique transformers use to keep track of the word order. Information about the position is added directly into the embedding. 
 
 
 
 
 
 
+
+
+
+## 23-09-29
+
+### Types of tasks 
+
+- classification
+
+  - sequence
+
+    `sequence -> label`
+
+    used for spam classification, misinformation detection, result relevance
+
+  - tokens
+
+    `word/token/symbol -> label`. A sequence is divided into tokens. 
+
+    For example, "Mr. Johnson works in London" -> `[1, 2, 0, 0, 3]`, where `1, 2` = class "Person" (`1` is a beginning, `2` is a continuation of `1`) and `3`  = class "Geo object".
+
+- retrieval 
+
+  We have a query and a candidate for the answer. We want to process if the candidate is relevant. 
+
+  Retrieval is based on the token similarity. So, there are problems with detecting synonyms. 
+
+  The example is search. A query is vectorized, and appropriate responses are looked up in the vectorized space. 
+
+- generation
+
+  `sequence -> sequence`
+
+
+
+
+
+
+
+### Local sensitive hashing
+
+It is a technique to embed sentences. Strings that have a similar symbol representations have close vectors. The meaning of a string is not captured, only symbols matter, so this approach does not solve the problem with synonyms. 
+
+
+
+
+
+
+
+### Word tokenisation
+
+Words have plural forms. The common approach is to split a word by the most common tokens (main part, prefix, postfix, etc). For example, `cat -> [cat]` and `cats -> [cat, s]`. 
+
+This idea is implemented in the [Byte-pair Encoding](https://en.wikipedia.org/wiki/Byte_pair_encoding) algorithm. 
+
+
+
+
+
+
+
+
+
+## 23-10-06
+
+In the example below, the distance between similar items (e.g. `cat` and `kitten`) is small. Also, the distance between `man` and `woman` and the one between `king` and `queen` are the same.
+
+<img src="./pics for conspects/ML/ML 23-10-06 1.png" alt="ML 23-10-06 1" style="zoom:70%;" />
+
+
+
+
+
+
+
+### How to measure similarity of embeddings?
+
+$a$ and $b$ are two vectors. 
+$$
+a \cdot b = \sum a_i b_i = |a| |b| \cos \phi \\
+sim(a, b) = \cos \phi = \frac{a \cdot b}{|a||b|}
+$$
+If we do not want to deal with vectors' magnitudes, we can use a scaled dot product, where $\cos \phi = \frac{a \cdot b}{\sqrt{d}}$ and $d$ is the dimensionality. 
+
+
+
+
+
+
+
+### Capturing context: attention
+
+Computes an attention distribution over the words -- a set of attention weights that determine how much focus or "attention" should be placed on each of the words in the sequence.
+
+$$
+Attention(Q, K, V) = softmax (\frac{QK^T}{\sqrt{d_k}}) V
+$$
+$Q, K, V$ are matrices packing together sets of queries, keys, and values, respectively.
+
+$softmax$ is a function consisting of $f(x_i) = \frac{e^{x_i}}{\sum \limits_j e^{x_j}}$. It transforms unscaled coordinates into probabilities:
+
+For example. we have a sentence `"buy an apple and an orage"`. Similarity between apple and orange is high: `sim(apple, orange) -> 1`.
+
+
+
+
+
+
+
+### Feed forward
+
+In general, the **forward** method defines the forward pass of the neural network. The forward pass is the process of taking the input, passing it through networks layers and then getting the final output. It may contain cycles or loops.  
+
+The **feed forward** provides a linear combination of the given embeddings. Information moves in the forward direction only -- from the input layer, through hidden layers (if any), and finally to the output layer. There are no cycles or loops in the network. 
+
+In transformers, two hidden layers are usually used for the feed forward.
+
+<img src="./pics for conspects/ML/ML 23-10-06 3.png" alt="ML 23-10-06 3" style="zoom:60%;" />
+
+
+
+
+
+
+
+### Architecture of transformers \todo
+
+<img src="./pics for conspects/ML/ML 23-10-06 2.png" alt="ML 23-10-06 2" style="zoom:80%;" />
+
+Transformer consists of two main blocks -- the encoder and the decoder. 
+
+
+
+
+
+
+
+### Positional encoding
+
+It is possible to use only a bag of words. But is you want to get info about the order of words, it is better to use **positional encoding**. Info about positions is added directly to embeddings. As a result, the same word will have different embeddings on different positions. 
+$$
+f(pos, d, i) = \left \{ \begin{array}{l}
+\sin (pos \cdot 1000^{- \frac{i}{d}}), \ \textnormal{if} \ i \mod 2 = 0, \\
+\cos (pos \cdot 1000^{- \frac{i-1}{d}}), \ \textnormal{otherwise}. \\
+\end{array} \right.
+$$
+
+- $pos$ is position of the word in the sentence,
+- $d$ is dimension of the positional encoding,
+- $i$ is the $i$-th component of the result .
+
+
+
+
+
+
+
+### Activation functions
+
+[activations.ipynb](https://github.com/de-shyt/CUB_conspects/blob/main/3-fall2023/jupiter/ML/05_activations.ipynb) 
+
+
+
+Activation functions are used to map scores to probabilities. There can be several activation functions, one per each layer of the neural network.
+
+- sigmoid: $\sigma(x) = \frac{1}{1 + e^{-x}}$. It is a probability for one score. 
+
+- softmax: $f(x_i) = \frac{e^{x_i}}{\sum e^{x_j}}$ It measures the probability for a group of scores. 
+- ReLU (Rectified Linear Unit): $f(x) = \max(0, x)$
+- softplus: $f(x) = \log (1 + e^x)$. A smooth version of ReLU
+
+
+
+
+
+**Example for using softmax function**
+
+Depending on the maximum value in `scores` array, we want to choose the corresponding element from `vectors` array. 
+
+First, we count probabilities with the softmax function. Then we use the probabilities to measure a candidate for each of three places in the `avg` array. 
+
+```python
+# the maximum is `scores[1]`
+scores = np.array([-5, 10, 2, 2, 3, 2])
+
+probs = softmax(scores)
+print(probs)
+
+vectors = np.array([
+    [1, 2, 3],
+    [3, 2, 1],
+    [0, 0, 0],
+    [-1, -1, -1],
+    [2, 2, 2],
+    [2, 4, 8],
+])
+
+avg = np.sum(vectors.T * probs, axis = 1)
+print(avg)
+# the `avg` is close to `vectors[1] = [3, 2, 1]`
+```
+
+```shell
+[0.012752 0.034663 0.000234 0.256127 0.696225]
+[2.99641069 1.99899554 1.00225003]
+```
+
+
+
+
+
+
+
+
+
+
+
+## 23-10-13
+
+### Deep convolutional neural network: VGG
+
+VGG stands for Visual Geometry Group. It is a deep convolutional neural network (CNN) which is effective in image classification tasks. 
+
+<img src="./pics for conspects/ML/ML 23-10-13 1.png" alt="ML 23-10-13 1" style="zoom:80%;" />
+
+The architecture of the VGG neural network consists of 16+ layers of several types:
+
+- **Convolution + ReLU**
+
+  Convolution operation = apply a filter.
+
+  ReLU is an activation function equal to $f(x) = \max(x, 0)$. This helps the network learn complex features and allows for faster convergence during training.
+
+- **Max pooling**
+
+  Used to reduce the computational complexity. This is typically done by taking the maximum value from a small region of the feature map (e.g. $2 \times 2$ or $3 \times 3$). 
+
+- **Fully Connected + ReLU**
+
+  In fully connected layers, each neuron in one layer is connected to every neuron in the previous layer. These layers are typically used for the final stages of feature extraction and decision making.
+
+- **Softmax**
+
+  Used as the final layer. Converts raw, unnormalized values of the previous layer into class probabilities.
+
+
+
+
+
+
+
+### Residual Neural Networks (ResNet)
+
+ ResNets were developed to solve the problem of vanishing gradients in deep networks (which have a large number of layers). The key idea is to use **shortcut connections** that allow the gradient to flow more easily through the network during training. 
+
+They allow the input of the block to bypass one or more layers and be directly added to the output. For example, lets look at the identity shortcut connection. If $x$ is the input to a residual block, and $F(x)$ is the output of the block (after passing through one or more layers), the shortcut connection is $x + F(x)$. 
+
+A **residual block** is the basic building block of ResNets. The key idea behind a residual block is the use of shortcut connections. Several residual blocks can be used in one ResNet. 
+
+The typical structure of a residual block can be described as follows:
+
+- Main Path: consists of one or more convolutional layers. 
+- Shortcut Connection: provides a shortcut so that an input can be directly added to the output of the last layer. 
+
+<img src="./pics for conspects/ML/ML 23-10-13 2.png" alt="ML 23-10-13 2" style="zoom:60%;" />
+
+
+
+
+
+
+
+### Multimodal approach, autoencoders
+
+How can we combine different modalities, like text and image information? One of multimodal approaches is to create a **joint representation** of different modalities. 
+
+Suppose we have parallel corpus of text and images. Parallel means there is a mapping between text and images. 
+
+- We transform a source image and a source text into the same vector. This vector will be a joint representation of the corresponding image and text. 
+- The same is done in the opposite direction. We unpack the vector into the same source image and source text.
+
+
+
+Multimodal approach idea is used in **autoencoders**. Autoencoder is a model which can be used to reduce dimensions of the input data. The compression of data is called a **bottleneck**. We compress input data into a smaller vector space which is called a **latent space representation**. Then we reconstruct data using a decoder and we want the result to be exactly the same as the input. 
+
+<img src="./pics for conspects/ML/ML 23-10-13 3.png" alt="ML 23-10-13 3" style="zoom:60%;" />
 
 
 
@@ -364,4 +665,6 @@ One way to prevent The Exploding Gradient problem is to limit the parameter $w_2
 
 [^semantic]: Semantic refers to the meaning of words. It deals with the interpretation of words and their relationship to each other. Example: In the sentence "The cat chased the mouse," the semantic meaning is that the cat is pursuing the mouse, indicating a specific relationship between the two animals.
 [^syntactic]: Syntactic refers to the structure and arrangement of words in sentences and how they form grammatically correct sentences. Example: In the sentence "The cat chased the mouse," the syntactic structure follows the typical subject-verb-object order in English.
+
+[^300dim]:Word2vec embeddings are 300-dimensional, as authors proved this number to be the best in terms of embedding quality and computational costs.
 
