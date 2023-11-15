@@ -5,4 +5,4 @@
 * [Distributed systems.pdf](./Distributed%20systems.pdf) [last update: 2023-10-27 14:12:07]
 * [Frontend.pdf](./Frontend.pdf) [last update: 2023-09-25 14:08:39]
 * [Human Computer Interaction.pdf](./Human%20Computer%20Interaction.pdf) [last update: 2023-10-02 13:58:00]
-* [ML (theory and practice).pdf](./ML%20(theory%20and%20practice).pdf) [last update: 2023-11-10 18:06:17]
+* [ML (theory and practice).pdf](./ML%20(theory%20and%20practice).pdf) [last update: 2023-11-16 00:52:39]

@@ -181,9 +181,20 @@ The `solve_sgd` function first initializes vector `a` with zeros and iteratively
 
 ### Decision trees
 
-Parameters used in a decision tree are features, thresholds and conditions. Every node contains a condition - question of a form like `if feature1 < threshold1`. 
+A **threshold** is a value that is used to make a decision or classification. For example, we want to assign a category for instances. The decision rule can be as follows:
+$$
+Predicted \ class = \left \{ \begin{array}{l}
+Class \ 1 \ if \ Probability \geqslant Threshold \\
+Class \ 0 \ if \ Probability < Threshold
+\end{array} \right.
+$$
+
+
+Parameters used in a **decision tree** are features, thresholds and conditions. Every node contains a condition - question of a form like `if feature1 < threshold1`. 
 
 The implementation for decision trees is `catboost`.
+
+
 
 
 
@@ -223,6 +234,8 @@ A `CatBoostRegressor` model is trained using the `solve_catboost` function:
 
 
 
+
+
 #### Random forest
 
 $y = avg(tree_0(x), tree_1(x),...,tree_{n-1}(x))$
@@ -233,6 +246,8 @@ To avoid overfitting, a technique called *bagging* is used:
 
 - sample bagging: multiple decision trees are trained on random subsets (repeating data points is allowed) of the training data
 - feature bagging: a random subset of features is selected for each tree
+
+
 
 
 
@@ -519,8 +534,8 @@ $$
 
 Activation functions are used to map scores to probabilities. There can be several activation functions, one per each layer of the neural network.
 
+- threshold: $f(x) = 1 \ if \ x > T \ else \ 0$ $\textcolor{grey}{(T \textnormal{ is threshold})}$
 - sigmoid: $\sigma(x) = \frac{1}{1 + e^{-x}}$. It is a probability for one score. 
-
 - softmax: $f(x_i) = \frac{e^{x_i}}{\sum e^{x_j}}$ It measures the probability for a group of scores. 
 - ReLU (Rectified Linear Unit): $f(x) = \max(0, x)$
 - softplus: $f(x) = \log (1 + e^x)$. A smooth version of ReLU
@@ -585,7 +600,7 @@ The architecture of the VGG neural network consists of 16+ layers of several typ
 
   Convolution operation = apply a filter.
 
-  ReLU is an activation function equal to $f(x) = \max(x, 0)$. This helps the network learn complex features and allows for faster convergence during training.
+  ReLU is an activation function $f(x) = \max(x, 0)$. This helps the network learn complex features and allows for faster convergence during training.
 
 - **Max pooling**
 
@@ -647,6 +662,218 @@ Multimodal approach idea is used in **autoencoders**. Autoencoder is a model whi
 
 
 
+## 23-10-20 \todo
+
+
+
+
+
+
+
+## 23-10-27
+
+### Perceptron
+
+A **perceptron** is a fundamental building block in artificial neural networks. It is a simple binary classifier.
+
+The basic **idea** of a perceptron is inspired by the way biological neurons work in the human brain. It takes multiple binary inputs (usually 0 or 1), each multiplied by a weight, and produces a binary output (1 or 0) based on a weighted sum and a threshold[^threshold]. 
+
+
+
+The output $y$ of a perceptron for inputs $x_1,..., x_n$ with weights $w_1,..., w_n$ can be expressed as:
+$$
+y = \left \{ \begin{array}{l}
+1 \ if \ \sum \limits_1^n w_i x_i > threshold \\ 
+0 \ otherwise
+\end{array} \right.
+$$
+The threshold is a predefined value. The perceptron makes decision based on whether the sum exceeds the threshold. 
+
+
+
+For example, a set of inputs $x_1, x_2$ is given.
+
+- First layer: $h_1 = a x_1 - b x_2 > 0.5$
+- Second layer: $h_2 = c x_2 - d x_1 > 0.5$
+- Third layer: $y = e h_1 + f h_2 > 0.5$
+
+- Used weights are: $a=1, b=-1, c=-1, d=1, e=1, f=1$
+- The threshold is $[t_1, t_2, t_3] = [0.5, 0.5, 0.5]$
+
+
+
+**IMPORTANT:** functions used at layers of a perceptron should be activation functions. Otherwise it is simply a multiplication of matrices $\Rightarrow$ linear $\Rightarrow$ it is actually only one-layered perceptron. We want it to be multilayered. 
+
+Section about activation functions can be found [here](###Activation functions).
+
+
+
+
+
+
+
+### Backpropagation
+
+**Backpropagation**, short for "backward propagation of errors," is an algorithm used to update weights of the model in order to minimize the error between predicted and target outputs. The algorithm allows a neural network to learn from its mistakes and adjust its weights accordingly. 
+
+Backpropagation is a part of the training process. In whole, the sequence of actions is as follows:
+
+- **Forward Pass:** 
+
+  The input data is fed into the neural network, and the network computes a predicted output. The predicted output is then compared to the target output, and the **error is calculated**. 
+
+- **Backward Pass (Backpropagation)**
+
+  The error calculated in the previous step needs to be quantified into a single scalar value. That is where the **loss function** is used: it computes a numerical value that represents the error between the predicted and target outputs.
+
+  The algorithm then **calculates the gradient** of the error. This is done using the chain rule[^chainrule] of calculus.
+
+- **Weight update:** 
+
+  The weights of the network are updated using the **gradient descent**. The gradient shows the direction where the loss function grows the most. So we move weights into the opposite direction -- towards the anti-gradient. 
+
+  The learning rate is a hyperparameter that determines the size of the step taken during the weight update. 
+
+  The code example can be found [here](####Stochastic Gradient Descent function). 
+
+- **Iterations:**
+
+  Steps 1-3 are repeated for multiple iterations (epochs) until the neural network converges to a state where the error is minimized, and the weights have been adjusted to produce accurate predictions.
+
+
+
+
+
+
+
+### Momentum
+
+The **learning rate** determines the size of the step taken during the weight update. If the step is too large, we may end up in bouncing around the correct answer (Exploding Gradient problem). If it is too small, we may run out of steps allowed to be taken for finding the answer (Vanishing Gradient problem).
+
+There are techniques that can speed up the training process. One of such optimizing algorithms is called **momentum**. The idea behind it: suppose we took several small steps. If all the steps go towards the same direction, then we can continue going with a higher speed. If the direction changed, we want to decrease the speed.
+
+So, the momentum algorithm, we look on the previous gradient.
+$$
+shift(k) = B \cdot shift(k-1) + (1-B) \cdot grad(k)
+$$
+
+- $B \in (0, 1)$ is a momentum coefficient -- a predefined constant,
+- $shift(k)$ represents the update to be applied to the current weights at iteration $k$,
+- $grad(k)$ is the gradient of loss function at the iteration $k$.
+
+$shift(k)$ plays as role of a modified learning rate used during the $k$-th iteration. 
+
+
+
+
+
+
+
+## 23-11-03
+
+### Dimensionality reduction
+
+Embeddings are usually high-dimensional vectors, so it is hard to visualize them. There are some methods that can reduce dimensionality. 
+
+
+
+
+
+
+
+#### Principal Component Analysis (PCA)
+
+The goal is to transform high-dimensional data into a new coordinate system. This transformation is achieved by finding the principal components (like main directions) of the data.
+
+- The transformation process is linear.
+-  New data can be easily adapted. Once the principal components are calculated, the transformation matrix remains fixed. 
+
+
+
+ Suppose we have data with $n$ exaples, each example has $p$ features. Thus, we get a matrix $X$ of size $n \times p$. Step-by-step explanation of PCA:
+
+- **Data Standardization:** Before applying PCA, it's common practice to standardize the data. It ensures that all variables are on a similar scale, preventing variables with larger magnitudes from dominating the analysis.
+- **Covariance Matrix** $X^TX$ (size if $p \times p$). It shows how the features are correlated with each other. 
+- **Eigenvalue Decomposition**: eigenvectors (of size $p \times 1$) are principal components we are looking for, they form a new basis for the data. Eigenvalues represent the magnitude of variance[^variance] in the data along the corresponding eigenvector: the higher the eigenvalue, the more important the eigenvector is in explaining the variance.
+- **Selecting Principal Components:** The eigenvectors are ranked based on their corresponding eigenvalues. Top $k$ eigenvectors are chosen ($k$ is the desired dimensionality of the reduced data), they are used as a new basis for the data. 
+- **Projection:** The selected eigenvectors are used to create a transformation matrix $V$, its size is $p \times k$. The original data is projected onto the new basis: $X_{new} = X \cdot V$.
+
+
+
+
+
+
+
+#### T-distributed Stochastic Neighbor Embedding (t-SNE)
+
+The goal is to take high-dimensional data and represent it in a lower-dimensional space, often with two or three dimensions, while preserving the pairwise similarities between data points.
+
+- The transformation is non-linear, allowing to capture some interesting cases. 
+- It is hard to integrate new data. 
+
+
+
+Step-by-step explanation of t-SNE:
+
+- **Pairwise Similarities:** 
+
+  The algorithm starts by calculating pairwise similarities between all data points in the high-dimensional space. It uses a Gaussian distribution as a similarity function. The higher the probability, the more similar the points are.
+
+  On the lecture, the magic function is used to measure similarity:
+  $$
+  p(j|i) = \frac{e^{-dist^2(x_i, x_j) \ / \ s}}{\sum e^{-dist^2(x_i, x_k) \ / \ s}}
+  $$
+  In the formula, the resulting probability is the similarity between points $x_i$ and $x_j$, normalized by the sum of similarities between $x_i$ and all other points $x_k$. 
+
+- **Probabilities in Low-Dimensional Space:** 
+
+  Next, t-SNE defines a similar set of pairwise probabilities in the lower-dimensional space. The similarity function is the same as in the previous step.
+
+  The goal is to find a mapping that minimizes the divergence between the pairwise probabilities in the high-dimensional space and the pairwise probabilities in the low-dimensional space.
+
+- **Optimization:** 
+
+  For each vector from the high-dimensional vector space, we want to find the best match from the low-dimensional vector space, such that the pairwise probabilities in the low-dimensional space approximate the pairwise similarities in the high-dimensional space.
+
+  The choice of the best match is done by minimizing the Kullback-Leibler divergence between the two sets of probabilities.
+
+
+
+
+
+
+
+#### Uniform manifold for approximation and projection (UMAP)
+
+UMAP focuses on identifying the underlying **manifold**—a lower-dimensional space that captures the essential features and relationships within the high-dimensional data. 
+
+- New data can be easily integrated. UMAP constructs a weighted graph in high-dimensional space and its **projection** in the low-dimensional one. 
+
+  When a new point is added to the high-dimensional space, its relationship with existing points (neighbors) is computed. Then its projection in the low-dimensional space is found based on the neighbors' projections. 
+
+
+
+Step-by-step description of UMAP:
+
+- **Define similarity based on topology**. For each data point, identify its nearest neighbors based on a distance metric. Then create a weighted graph, edges between nodes represent the strength of their similarity. 
+- **Do the same in lower-dimensional space**. UMAP creates an initial layout in the lower-dimensional space (often randomly) and builds a weighted graph. The algorithm then optimizes this layout, adjusting the positions of points iteratively. 
+- **Optimize lower-dimensional embedding**. After the configuration in lower-dimensional space was randomly chosen, we optimize it using stochastic gradient descent. As a result, we get a configuration that minimizes cross-entropy[^crossentropy] between high-dimensional and lower-dimensional graph representations. 
+
+
+
+
+
+
+
+### Variational autoencoder
+
+The basic idea of the **autoencoder** is to create a [latent space representation](###Multimodal approach, autoencoders) -- a vector space with reduced dimensionality. There is also an encoder and a decoder to work with the mentioned representation. 
+
+A **variational autoencoder** (VAE) is a specific type of autoencoder that also learns the **probability distribution** of the data. Inputs are mapped to a probability distribution in the latent space. 
+
+Variational autoencoders are powerful for generating new data that resembles the training data. The encoder of the VAE evaluates distribution and produces mean params, variance params and **samples** from it. The encoder takes the samples to reconstruct data. 
+
+<img src="./pics for conspects/ML/ML 23-11-03 1.png" alt="ML 23-11-03 1" style="zoom:50%;" />
 
 
 
@@ -660,11 +887,15 @@ Multimodal approach idea is used in **autoencoders**. Autoencoder is a model whi
 
 
 
-
-
-
+[^threshold]: A value used to make a classification. 
 [^semantic]: Semantic refers to the meaning of words. It deals with the interpretation of words and their relationship to each other. Example: In the sentence "The cat chased the mouse," the semantic meaning is that the cat is pursuing the mouse, indicating a specific relationship between the two animals.
 [^syntactic]: Syntactic refers to the structure and arrangement of words in sentences and how they form grammatically correct sentences. Example: In the sentence "The cat chased the mouse," the syntactic structure follows the typical subject-verb-object order in English.
 
 [^300dim]:Word2vec embeddings are 300-dimensional, as authors proved this number to be the best in terms of embedding quality and computational costs.
+
+[^chainrule]: Chain rule describes how to find derivative of the composition of two (or more) functions. If $y = f(g(x))$, then $\frac{\partial y}{\partial x} = \frac{\partial f}{\partial g} \cdot \frac{\partial g}{\partial x}$.
+
+[^variance]: Variance (отклонение) of data shows how much individual data points in deviate from the mean (average) value.
+
+[^crossentropy]: Cross-entropy is a difference between probability distributions (in ML, between predicted and actual ones).
 
