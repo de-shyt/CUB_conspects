@@ -773,7 +773,9 @@ $shift(k)$ plays as role of a modified learning rate used during the $k$-th iter
 
 ### Dimensionality reduction
 
-Embeddings are usually high-dimensional vectors, so it is hard to visualize them. There are some methods that can reduce dimensionality. 
+Embeddings are usually high-dimensional vectors, and there are some methods that can reduce dimensionality. One of possible reasons why we need dimensionality reduction is about visualizing embeddings. High-dimensional vectors can be reduced to two-dimensional ones which, in turn, can be represented on the graph.
+
+Dimensionality reduction is also used in [Autoencoders](###Multimodal approach, autoencoders). 
 
 
 
