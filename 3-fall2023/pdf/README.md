@@ -4,5 +4,5 @@
 * [Database Internals.pdf](./Database%20Internals.pdf) [last update: 2023-11-08 16:27:10]
 * [Distributed systems.pdf](./Distributed%20systems.pdf) [last update: 2023-10-27 14:12:07]
 * [Frontend.pdf](./Frontend.pdf) [last update: 2023-09-25 14:08:39]
-* [Human Computer Interaction.pdf](./Human%20Computer%20Interaction.pdf) [last update: 2023-10-02 13:58:00]
+* [Human Computer Interaction.pdf](./Human%20Computer%20Interaction.pdf) [last update: 2023-11-23 23:14:05]
 * [ML (theory and practice).pdf](./ML%20(theory%20and%20practice).pdf) [last update: 2023-11-16 00:52:39]

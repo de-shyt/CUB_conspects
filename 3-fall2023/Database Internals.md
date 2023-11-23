@@ -935,7 +935,7 @@ Suppose we’ve got $N$ index keys in total. A disk page can accommodate up to $
 
 **Inner nodes** form a sparse index for leaves. In each inner node, there are $k$ keys and $k+1$ pointers which point to $k+1$ substrees. Keys and pointers are alternated, like in the picture. The pointer between keys $k_i$ and $k_{i+1}$ references to a node with a range $[k_i, k_{i+1})$. For example, the pointer before $10$ leads to $[1, 10)$. The pointer after $26$ leads to $[26, 29)$. 
 
-**Root node** stores one key. Its value is equal to the smallest one from the right subtree. Also, its valus is not used in the second layer.
+**Root node** stores one key. Its value is equal to the smallest one from the right subtree. Also, its value is not used in the second layer.
 
 <img src="./pics for conspects/DB/DB 23-10-26 3.png" alt="DB 23-10-26 3" style="zoom:50%;" />
 
@@ -1067,11 +1067,27 @@ The complexity of operations is $O(1)$ on average, but **with some conditions**:
 
 
 
-#### Cluster index
+#### Cluster index (dublicate keys)
 
 When the indexed column of an index-organized table permits duplicating index keys, we describe the index as **clustered** or **clustering**.
 
 A clustering index organizes the indexed table rows so that all rows with the same index key value are stored next to each other, packed to a minimum possible number of pages.
+
+
+
+If we allow for storing duplicate keys in the leaves, we need to modify the meaning of keys in the inner nodes:
+
+- *New key* is the one which occurs at least once in some subtree but never occurs  to the left of that subtree
+- If we have keys $k_1, ..., k_n$ in the inner node then $k_i$ is the smallest *new* key that appears in $(i+1)$-th subtree (the one with boundaries $[k_i, k_{i+1})$). 
+- Some inner nodes may have `null` values
+
+
+
+**Examples**
+
+
+
+
 
 
 
@@ -1103,6 +1119,18 @@ If the index is clustering, rows with the same value are packed to the min possi
 If the index is not clustering, the worst case is when every row that matches the search condition is stored in its own page. Then we need $\lceil \frac{T(R)}{V_A(R)} \rceil$ I/O. 
 
 <img src="./pics for conspects/DB/DB 23-10-26 9.png" alt="DB 23-10-26 9" style="zoom:50%;" />
+
+
+
+
+
+
+
+
+
+
+
+## 23-11-02
 
 
 

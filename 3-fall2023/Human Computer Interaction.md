@@ -356,6 +356,183 @@ In the **collaborative brainstorm**, each participant need different time to pro
 
 
 
+## 23-09-29
+
+### Design references
+
+**Design references** are products that already exist. They are used as inspiring examples. We do not steal ideas. We look at *several* references and, thanks to them, develop and improve our own idea. 
+
+
+
+<img src="./pics for conspects/HCI/HCI 23-09-29 1.png" alt="HCI 23-09-29 1" style="zoom:50%;" />
+
+<img src="./pics for conspects/HCI/HCI 23-09-29 2.png" alt="HCI 23-09-29 2" style="zoom:60%;" />
+
+
+
+When you collect references, use a mood board. A **mood board** is a place to organize and work out your ideas. It is a collaborative space.
+
+**Take a picture of the product** (for clarity)  and **leave comments**: what you like/dislike about particular elements, what is important or redundant, what makes you feel comfortable/awkward, etc. Use mood boards to **highlight your emotions** from the references.
+
+**Group pictures** by some parameters (design concepts, structure, content, features & controls, visual style). Parameters can be found in the picture above. 
+
+
+
+[Miro](https://miro.com/app/dashboard/) is an example of a mood board. How to work with Miro:
+
+- Create a frame (`F`). Thus, references will be grouped by some parameter. 
+- Put a picture of the product and create a link to the product (`Alt+Ctrl+K`). Always put the link. 
+- Put a sticker on the picture (`N`). If you work in a team, sign the sticker. Use a drawing marker to highlight something you mentioned in the sticker. Oh, yeah, and lock the sticker so that other users cannot move your work. 
+
+
+
+
+
+#### Examples of references
+
+- a cool visual part: https://www.siteinspire.com/
+- controls, “features”, motion and interaction: 
+  - https://www.hoverstat.es/
+  - https://littlebigdetails.com/ -- shows small details which have a big value 
+  - https://collectui.com/ -- sorted by the interface type (sign-in window, main screen, etc)
+  - https://mobbin.com/browse/web/apps
+- design concepts, content:
+  - https://ru.pinterest.com/
+  - https://www.behance.net/
+
+
+
+
+
+
+
+
+
+## 23-10-06
+
+### Goals vs Tasks
+
+A goal is an expectation of an end condition, whereas tasks are intermediate steps that help someone to reach a goal. The User’s goals remain constant, while the way of achieving it (tasks) may vary. 
+
+E.g. John's goal is to get to his office the fastest possible.  Intermediary tasks that he has to perform are toothbrushing, dressing up, taking his briefcase, opening the garage, stopping on red light.
+
+
+
+
+
+### Emotional Design
+
+<img src="./pics for conspects/HCI/HCI 23-10-06 1.png" alt="HCI 23-10-06 1" style="zoom:50%;" />
+
+<img src="./pics for conspects/HCI/HCI 23-10-06 2.png" alt="HCI 23-10-06 2" style="zoom:50%;" />
+
+<img src="./pics for conspects/HCI/HCI 23-10-06 3.png" alt="HCI 23-10-06 3" style="zoom:50%;" />
+
+<img src="./pics for conspects/HCI/HCI 23-10-06 4.png" alt="HCI 23-10-06 4" style="zoom:50%;" />
+
+
+
+
+
+### Value proposition
+
+**Value proposition** is what you propose to the customer. Sometimes it can be found on the website, i.e. in a form of slogan "cheapest flights!" or "healthy food!"
+
+
+
+**Customer profile** consists of gains, customer jobs and pains. **Gains** describe outcomes customers want to achieve or benefits they are looking for. **Customer jobs** describe what customers are trying to get done in their work and in their lives. **Pains** describe bad outcomes, risks and obstacles related to customer jobs.
+
+**Value map** consists of **gain creators** (describe how your products and services achieve customer gains), **pain relievers** (describe how your products and services relieve customer pains) and a list of **products and services** (value proposition is built around them).
+
+You achieve good results when your value map meets your customer profile = when your products and services produce pain relievers or gain creators that match gains and pains important for the customer. 
+
+
+
+
+
+### UX strategy
+
+Usually, you need to answer two questions:
+
+- **Why are you doing that?** What problem are you solving, who has this problem, why are you better than someone who solves this problem. Methods like primary research (surveys, interviews), competitor analysis, field observations, usability testing are used here.
+- **What are you doing?** How does the system work, how is it related to the environment. It is about the solution itself. 
+
+
+
+UX strategy is a comprehensive plan that outlines how a product or service will meet the needs of its users. It's a roadmap that guides the design and development process.
+
+Components of a UX strategy might include:
+
+1. **User Research:** Understanding the target audience through methods like interviews, surveys, [personas](###Personas).
+2. **Competitor Analysis:** Analyzing competitors to understand their strengths, weaknesses, and how to make your product "one-of-a-kind".
+3. **UX Principles and Guidelines:** Establish guidelines and principles that will be maintained during the whole process. They help keep the focus on the crucial tasks and ideas. 
+4. **Prototyping and Iterative Design:** Create prototypes and refine the product based on user feedback.
+5. **Metrics and Measurement:** Define KPIs to track and measure the product success.
+6. **Implementation Plan:** Outlining the development process, considering resources and timelines.
+7. **Accessibility and Inclusivity:** Ensuring that the design is accessible to all users, including those with disabilities, and that all user needs are satisfied. 
+8. **UX Testing and Validation**: usability testing, A/B testing, etc.
+9. **Feedback and Further Improvement**: Establishing mechanisms to collect user feedback continuously and integrating it into the design process for ongoing improvements.
+
+
+
+
+
+
+
+
+
+## 23-10-09
+
+### Design Methodologies
+
+- Human Centered Design:
+
+  Organizes the interface according to the human logic and needs. Service offers a solution to the users to satisfy their goals.
+
+  - Suppose a customer is looking for a snack. Organizing crisps in the "snacks" section meets user expectations, making it easier for a customer to find and buy them.
+  - In Spotify, recommendations are based on what music you are listening to.
+  - Ebay is mostly a HCD app.
+
+- Activity Centered Design:
+
+  Organizes the interface according to the activity flow that users perform within a system or environment. 
+
+  Works well if you do not know your target audience. So you better focus on the activity, not the user. 
+
+  - Suppose a customer wants to chill and buy beer & snacks. Snacks are placed near beer.
+  - In Spotify, music is sorted into sections rock, pop, meditations, podcasts, etc. 
+  - Google Translator and Google Calendar are purely ACD apps.
+
+
+
+
+
+
+
+### Personas
+
+**Persona** is approximate representation of a user. In simple words, it is a collective image for group of users. Personas are discovered based on field observations, interviews and research.
+
+Characteristics of a good persona:
+
+- Name, photo (real or stock), demographics, place of residence, occupation, life style, environment, quote to make them live.
+- Outlook on life, attitudes, motivations, gains, existing experience, skills. Everything what explains who they are and what they feel. 
+- Daily activities, behavioral characteristics, environment.
+- The final image is realistic, not idealized.
+- It helps you understand users' behaviours, needs, pain points.
+
+
+
+Do not make personas boring. [Here]() is a good example:
+
+<img src="./pics for conspects/HCI/HCI 23-10-06 5.png" alt="HCI 23-10-06 5" style="zoom:70%;" />
+
+
+
+
+
+
+
 
 
 
