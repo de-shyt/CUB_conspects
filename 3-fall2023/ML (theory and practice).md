@@ -885,6 +885,157 @@ Variational autoencoders are powerful for generating new data that resembles the
 
 
 
+## 23-11-10
+
+### Recommender systems
+
+**Recommender systems** in are algorithms and techniques designed to predict a content a user might like, based on their preferences and behavior.
+
+The basic idea of using recommender systems is to make recommendations personal. We extract some features from items, ask users about their preferences and then define similarity between items and users. After this we can rank items according to this similarity. 
+
+
+
+**Examples** of recommender systems are:
+
+- e-commerce platforms: Amazon
+- streaming services: Netflix, YouTube, Spotify
+- social media: Facebook, Twitter
+- Learning platforms: Coursera, Stepik
+- Search engines: Google
+- etc
+
+
+
+**Feedback**
+
+- Explicit (like/dislike, reviews, comments)
+- Implicit
+  - watching/listening a significant part of the video
+  - subscription to the channels
+  - adding to the playlist
+  - buying the product
+  - sharing a link
+
+
+
+**Measurement**
+
+- RMSE on ratings
+- BCE on likes
+- User behaviour metrics
+  - long interactions
+  - purchases
+  - establishing connections
+
+
+
+
+
+
+
+### Content-based filtering
+
+#### Expert choice
+
+Expert choice is the algorithm used in content-based filtering.
+
+1. **Expert Selection** -- choose people who are experts in a particular field.
+2. **Item Evaluation**: Experts assess items based on various criteria such as quality, relevance, novelty, etc. This evaluation could be subjective (based on personal judgment) or objective (using predefined criteria).
+3. **Aggregation**: Once experts have assessed items, their opinions are aggregated to form an overall assessment of each item. Aggregation may involve averaging scores, weighted voting, etc.
+4. **Recommendation Generation**: The items with the highest overall scores from the aggregated expert evaluations are recommended to users.
+
+
+
+The main disadvantages are 1) the result is non-personal and 2) the result is biased, since it is based on the experts' opinions. 
+
+
+
+
+
+
+
+#### `tf*idf`
+
+When we have a text, our goal is to extract the most informative words. `tf*idf` is a method of formalizing the words according to their "meaningfulness". It is used to evaluate the importance of a word in a document relative to a collection of documents. TF measures how often a word appears in a document, while IDF measures how unique or rare a word is across multiple documents. 
+
+
+
+`tf(word, document)` - **term frequency** - number of occurrences of the word in the document. Usually normalized by max occurrence in some other doc. 
+
+`idf(word)` - **inverse document frequency** - number of documents containing the word. Usually normalized by $\log$. 
+
+
+
+Document representation `emb(doc) = [tf(word, doc) * idf(word) for word in doc]`.
+
+Similarity of two docs = `cos(emb(doc1), emb(doc2))`.
+
+Similarity of query and doc = `cos(emb(query), emb(doc2))`.
+
+
+
+
+
+
+
+### Collaborative filtering
+
+This technique makes predictions about the interests of a user by collecting preferences from many users. It doesn't require any information about the items, only data about item-user interactions.
+
+There are two main types of collaborative filtering:
+
+1. **User-Based:** recommends items to a user based on preferences of similar users. For example, if User A and User B have similar tastes and User A liked a certain item, the system will recommend that item to User B.
+
+2. **Item-Based:** recommends items similar to the ones a user liked in the past. If a user liked Item X, the system will recommend items similar to Item X.
+
+   `score(user, item) = avg(rank(user, k) * sim(k, item))` for all items `k` ranked by the user.
+
+
+
+
+
+
+
+#### User-item similarity
+
+In collaborative filtering, predictions are based on user-item interactions. The idea of the **matrix factorization** method is to configure a latent representation (embeddings) for users and items from these interactions.
+
+
+
+Training:
+
+- Suppose we have `N` users and `M` items. `A[N, M]` is the interaction matrix. Rows correspond to users, columns correspond to items, values represent the interaction metric.
+
+- `L` is the dimensionality of the latent representation.
+
+  `U[N, L]` - matrix of user embeddings, `I[M, L] `- matrix of items embeddings.
+
+- Factorize matrix `A` into the product of matrices `U` and `I^T`, so that `A = U * I^T`.
+
+  During the training process, matrices `U` and `I` are optimized using techniques like gradient descent. The aim is to minimize the difference between the predicted interactions (`U x I^T`) and the actual interactions in matrix `A`.
+
+
+
+Prediction: 
+
+To make recommendations for a user, you first find the user's embedding in the latent space which is formed by matrices `U` and `I`. Then, you calculate the similarity between the user's embedding and other embeddings.
+
+Once you've calculated similarities, you create a ranked list of items. The top-N items are recommended to the user.
+
+For recommendation purposes, you might look for the most similar items to the ones the user has interacted with previously. For example, a user interacted with items A, B, and C. You find the embeddings for A, B, and C in the latent space then calculate similarity between A, B, C and all other items. The items with the highest similarity scores to A, B, C would form the recommendations for the user.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
