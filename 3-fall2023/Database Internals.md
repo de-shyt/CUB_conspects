@@ -1077,15 +1077,35 @@ A clustering index organizes the indexed table rows so that all rows with the sa
 
 If we allow for storing duplicate keys in the leaves, we need to modify the meaning of keys in the inner nodes:
 
-- *New key* is the one which occurs at least once in some subtree but never occurs  to the left of that subtree
+- *New key* is the key which value occurs at least once in the right subtree but never occurs  in the left subtree 
+
+  $\textcolor{grey}{\textnormal{ \small In inner node, there are k keys and (k+1) pointers.}} $ $\textcolor{grey}{\textnormal{ \small Thus, for each key, there is a left and a right subtree.}}$
+
 - If we have keys $k_1, ..., k_n$ in the inner node then $k_i$ is the smallest *new* key that appears in $(i+1)$-th subtree (the one with boundaries $[k_i, k_{i+1})$). 
+
 - Some inner nodes may have `null` values
 
 
 
-**Examples**
+**Example 1:  replace 26 with 13, 30 with 29, and {38, 40} with 36**
+
+<img src="./pics for conspects/DB/DB 23-11-02 1.png" alt="DB 23-11-02 1" style="zoom:67%;" />
+
+$29$ is in the inner node now, since it occurs in the right subtree and does not occur in the left one. 
+
+The root is not $29$ but $36$, since $29$ is in the left subtree and $36$ is not. 
+
+There is a `null` value instead of $38$, since $36$ occurs in both left and right subtrees.
 
 
+
+**Example 2: look for keys when value in some inner node is `null`**
+
+If the value is `null`, it means all keys from the right subtree can be also found in the left subtree. So, when looking for entries with a specific key, we should start from the left subtree. 
+
+For example, we are looking for entries with the key $36$. From the root we go to the right subtree. The value in the inner node is `null` there. It means $36$ is in both left and right subtrees of that inner node.
+
+Now lets look for entries with key $29$. From the root we go to the left subtree, then to the right. In the end, we get both entries, since leaf nodes have sibling pointers to construct a linked list.   
 
 
 
@@ -1131,6 +1151,34 @@ If the index is not clustering, the worst case is when every row that matches th
 
 
 ## 23-11-02
+
+### Voclano Framework
+
+Volcano is a theoretical framework for building efficient query processors. Some key aspects:
+
+- Operator-Based Processing: query execution is a tree of operators. Operators can be selection/filtering, joins, projection, etc., each performing some specific operation on data.
+
+- Pipelined Processing: data flows through the operators in a pipeline fashion. An operator output is fed to the parent operator in a query plan.
+
+- Lazy materialization: operator output is calculated lazily if possible.
+
+- For pipelined processing and laziness iterator-like interface is used: `open()`, `next()`, `close()`.
+
+  `open()` prepares the operation and opens iterators down to the plan leaves at least in one branch of the query tree.
+
+  `close()` releases the acquired resources and closes all iterators in the subtree.
+
+
+
+
+
+
+
+
+
+## 23-11-09
+
+
 
 
 
