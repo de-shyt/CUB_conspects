@@ -713,13 +713,7 @@ Sometimes you have a point that is very close to a straight line but not exactly
 
 The $(a, b)$ space is split into cells. The number of votes = number of lines passing through that cell. You can introduce a threshold for the number of votes required to consider a line as detected. If a point is very close to a line but doesn't accumulate enough votes, it will be ignored. 
 
-
-
-
-
-
-
-#### RANSAC
+<img src="./pics for conspects/CV/CV 23-10-05 2.png" alt="CV 23-10-05 2" style="zoom:80%;" />
 
 
 
@@ -739,7 +733,7 @@ We should easily recongnize the corner point by looking through a small window. 
 
 <img src="./pics for conspects/CV/CV 23-10-12 1.png" alt="CV 23-10-12 1" style="zoom:67%;" />
 
-The explanation for $I_x$: the grey color means the value is low or zero, the white means strong positive values along the $OX$ axis, the black means strong negative valuethes along $OX$. 
+The explanation for $I_x$: the grey color means the value is low or zero, the white means strong positive values along the $OX$ axis, the black means strong negative values along the $OX$. 
 
 
 
@@ -759,7 +753,7 @@ $$
 
 - $w(x, y)$ is a weight function. It is used to determine whether the point $(x, y)$ is in the window.  
 
-  \todo insert a pic of window function (page 18)
+  <img src="./pics for conspects/CV/CV 23-10-12 2.png" alt="CV 23-10-12 2" style="zoom:50%;" />
 
 
 
@@ -781,15 +775,7 @@ Properties of Harris corner detector:
 
 - no scale invariance
 
-  \todo insert a pic page 33
-
-
-
-
-
-
-
-https://www.youtube.com/watch?v=Z_HwkG90Yvw
+  <img src="./pics for conspects/CV/CV 23-10-12 3.png" alt="CV 23-10-12 3" style="zoom:50%;" />
 
 
 
@@ -801,7 +787,15 @@ https://www.youtube.com/watch?v=Z_HwkG90Yvw
 
 
 
-#### Harris-Laplacian detector \todo
+#### Non-maximal suppression
+
+It might happen that there are several points with high values in the erea of the corner. We need to choose one peak, and thus we will get a sharp corner. 
+
+<img src="./pics for conspects/CV/CV 23-10-12 4.png" alt="CV 23-10-12 4" style="zoom:50%;" />
+
+<img src="./pics for conspects/CV/CV 23-10-12 5.png" alt="CV 23-10-12 5" style="zoom:52.5%;" />
+
+Move the window in the positive or negative direction of the gradient. 
 
 
 
@@ -810,6 +804,12 @@ https://www.youtube.com/watch?v=Z_HwkG90Yvw
 
 
 ### Local descriptors \todo
+
+
+
+
+
+
 
 
 
