@@ -370,9 +370,7 @@ Some key principles and techniques associated with defensive programming:
 
 #### Software Testing
 
-
-
-Testing levels
+**Testing levels:**
 
 Acceptance testing
 
@@ -382,17 +380,51 @@ System testing
 
 ↑
 
-Integration testing (test interactions among units)
+Integration testing  — a phase where individual units are combined and tested as a group. The purpose is to check interactions between units. 
 
-- test driver = заглушка для модуля/класса
-- test stub = заглушка для методов 
+- test driver = simulates behaviour of higher-level module/component (e.g. a temporary class used as a database)
+- test stub = simulates behaviour of lower-level module/component (e.g. a temporary class that writes info into console instead of sending it to a real server)
 
 ↑
 
-Unit testing
+Unit testing — testing individual units (e.g. components) in isolation from the rest of the system. 
 
-- test unit =  one or more test module
-- test case = test of an assertion
+- test unit =  a collection of tests targeting a specific unit of code
+- test case = a set of conditions under which the tester determines whether the the system works correctly
+
+
+
+**Regression testing** — confirms that implemented changes have not negatively impacted the existing functionality.
+
+
+
+
+
+
+
+#### Test Coverages
+
+<img src="./pics for conspects/SDS/SDS 24-02-15 2.png" alt="SDS 24-02-15 2" style="zoom:60%;" />
+
+**Test coverage** metrics (%) express to which degree the source code of a program is executed by a particular test suite.
+
+Regarding **condition coverage**, if you have a compound boolean expression, you can either have simple condition coverage where each condition is (independently) once true or false. For multiple condition coverage, all combinations of the conditions have to be tested.
+
+**Path coverage** requires that all possible paths have been execute. Programs with loops can have many or even infinitely many control flow paths. Hence, path coverage can be further refined for loops:
+
+- Complete path coverage (CpF): All possible paths are tested. This may be a large or even infinite number of paths.
+- Boundary interior path coverage (CpBI): The path not executing a loop body is executed and paths are executed that execute a loop body one and two times. 
+- Structured path coverage (CpBIn): A generalization of CpBI where the number of loop body iterations is controlled by a parameter $n$​.
+
+
+
+A **control flow graph** represents the flow of control within a program. It's a graphical representation of all possible paths that can be taken during the execution of a program. Test coverage metrics are often computed based on the paths through the control flow graph that are exercised by the tests.
+
+<img src="./pics for conspects/SDS/SDS 24-02-15 1.png" alt="SDS 24-02-15 1" style="zoom:60%;" />
+
+
+
+
 
 
 
