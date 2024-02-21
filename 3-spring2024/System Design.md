@@ -8,9 +8,7 @@
 
 
 
-## 24-02-01
-
-### Architecture 
+## 01 - Architecture 
 
 First, the system is decomposed into some components. We need to understand how the components interact with each other (e.g. how they share resources). Then we define structures that are necessary for the implementation. 
 
@@ -34,7 +32,13 @@ In the real world, architecture is not a static image. It constantly changes in 
 
 
 
-## 24-02-07
+## 02 - Decomposition
+
+The idea is to break a complex system into more simple ones, then iterate the process again and again until the pieces become atomic.  
+
+
+
+
 
 ### Approaches to decomposition
 
@@ -311,6 +315,145 @@ public class InternetPaymentService implements WebMoneyPayment,
      
 
   4. Draw diagrams describing how the API<img src="./pics for conspects/SD/SD 24-02-08 4.png" alt="SD 24-02-08 4" style="zoom:70%;" /> works. 
+
+
+
+
+
+
+
+
+
+## 03 - Architectural patterns and styles
+
+An **architectural style** is a set of decisions that
+
+1. are applicable in the selected development context
+2. set restrictions on the architectural solutions specific to certain systems in this context
+3. lead to the desired positive qualities of the resulting system
+
+An **architectural pattern** is a named set of key design decisions for the efficient organization of subsystems, applicable to repeatable technical design tasks in various contexts and domains.
+
+Styles are more like guidelines - they are very abstract, - while patterns are usually much more concrete. One style can be implemented using different patterns. 
+
+
+
+
+
+
+
+### Patterns
+
+- **Three-tier architecture**<img src="./pics for conspects/SD/SD 24-02-20 1.png" alt="SD 24-02-20 1" style="zoom:80%;" />
+
+
+
+- **Model-View-Controller**
+
+  We have an application which knows how to handle, store and show data. Instead of creating one class responsible for all logic (which violates Single Responsibility principle), we separate the logic between three main classes. <img src="./pics for conspects/SD/SD 24-02-20 2.png" alt="SD 24-02-20 2" style="zoom: 50%;" />
+
+
+
+
+
+
+
+### Styles
+
+- **Main procedure and subroutines (Master-Slave)**
+
+  This style is suitable for procedural languages (C, Pascal, etc). It has the master component and a bunch of identical slave components that are called to execute specific tasks.
+
+  The master component knows about the slave components. They, in turn, do not know about each other. The master component implements the algorithm and distributes the work between slave components.<img src="./pics for conspects/SD/SD 24-02-20 3.png" alt="SD 24-02-20 3" style="zoom:50%;" />
+
+  This approach is popular, since it is simple and straightforward. The drawback is it does to scale. If you need several leading components, you need to think of a super parent for them. And it makes the system too complex.
+
+
+
+- **Object-oriented design**
+
+  Here we build a system from standalone components which communicate with each other but does not depend on each other. <img src="./pics for conspects/SD/SD 24-02-20 4.png" alt="SD 24-02-20 4" style="zoom:80%;" />
+
+
+
+- **Layered architecture**
+
+  The system is separated into several layers. Each layer represents specific responsibility and provides services to the next higher layers. The layers with lower logic do not know about the higher ones. There can be modifications like each layer knows only about the next layer and not about layers beneath. 
+
+  The only remark is when you have a lot of layers and decide to send a message from the top one to the bottom one, the system becomes highly ineffective. 
+
+  This approach is widely used for desktop and web applications. A common example is when the app has four layers: 
+  
+  - Presentation (UI layer)
+  - Application (service layer)
+  - Business logic (domain layer)
+  - Data access (persistence layer)
+
+
+
+- **Client-server**
+
+  Consists of a server and multiple clients. A server component provides services to client components. 
+
+  <img src="./pics for conspects/SD/SD 24-02-20 5.png" alt="SD 24-02-20 5" style="zoom: 60%;" />
+
+  This approach is widely used in online applications. 
+
+  
+
+- **Batch-processing**
+
+  The algorithm is split into specific parts, and data is moved between the parts in order to be handled. 
+
+  <img src="./pics for conspects/SD/SD 24-02-20 6.png" alt="SD 24-02-20 6" style="zoom:60%;" />
+
+  It works only for linear execution where there is not a lot of interactions. 
+
+  
+
+- **Pipes and filters**
+
+  This approach is used to structure systems which produce and process a stream of data. 
+
+  Data is moved between different components called *fields*. Channels of communication between fields are called *pipes* (or *streams*). Pipes are used for buffering or synchronization. 
+
+  <img src="./pics for conspects/SD/SD 24-02-20 7.png" alt="SD 24-02-20 7" style="zoom:60%;" />
+
+  The idea is to enable parallel execution. Fields and pipes construct a graph of execution. Things can be done in parallel, because components are independent. 
+
+  
+
+- **Blackboard**
+
+  Blackboard is a structured global memory containing some objects. 
+
+  All components have access to the blackboard. Components may produce new objects which are added to the blackboard (that is where the pattern name comes from). 
+
+  <img src="./pics for conspects/SD/SD 24-02-20 8.png" alt="SD 24-02-20 8" style="zoom:50%;" />
+
+  
+
+- **Interpreter**
+
+  This approach is used to design a component that interprets programs written in a dedicated language.
+
+  <img src="./pics for conspects/SD/SD 24-02-20 9.png" alt="SD 24-02-20 9" style="zoom:50%;" />
+  
+  
+  
+- **Event-driven**
+
+  There are four main entities: event source, event listener, channel and event bus. 
+
+  <img src="./pics for conspects/SD/SD 24-02-20 10.png" alt="SD 24-02-20 10" style="zoom: 50%;" />
+
+  The source publishes message into particular channels on an event bus. Listeners subscribe to particular channels. Therefore, they are notified of messages that are published to channels they have subscribed to. 
+
+  This approach is used in android development and notification services. 
+
+
+
+
 
 
 
