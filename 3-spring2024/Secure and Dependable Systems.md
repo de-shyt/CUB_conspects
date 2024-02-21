@@ -430,6 +430,121 @@ A **control flow graph** represents the flow of control within a program. It's a
 
 
 
+## 24-02-20
+
+#### Longest palindromic sequence
+
+Given a string, find the longest sequence which is palindromic. For example, `anana` is the answer for `bXYanXaYna`.
+
+
+
+Solution using recursive dynamic programming:
+
+```go
+func LpsNaive(s string) int {
+	return LpsRange(s, 0, len(s) - 1)
+}
+
+func LpsRange(s string, start int, end int) int {
+	if start > end {
+		return 0
+	}
+	if start == end {
+		return 1
+	}
+	if s[start] == s[end] {
+		return 2 + LpsRange(s, start + 1, end - 1)
+	}
+	return max(LpsRange(s, start + 1, end), LpsRange(s, start, end - 1))
+}
+```
+
+<img src="./pics for conspects/SDS/SDS 24-02-20 1.png" alt="SDS 24-02-20 1" style="zoom: 80%;" />
+
+
+
+Using only recursion leads to redundant allocations on the stack, so we can add memorization to speed up the algorithm:
+
+```go
+func LpsNaive(s string) int {
+    n := len(s)
+    if n == 0 {
+        return 0
+    }
+    
+    // Allocate and initialize a dp array and set diagonal to 1
+    dp := make([][]int, n)
+    for i := range dp {
+        dp[i] = make([]int, n)
+        dp[i][i] = 1
+    }
+    
+	return LpsRange(s, 0, len(s) - 1, dp)
+}
+
+func LpsRange(s string, start int, end int, dp[][]int) int {
+	if start > end {
+		return 0
+	}
+    if dp[start][end] == 0 {
+        if s[start] == s[end] {
+            dp[start][end] := 2 + LpsRange(s, start + 1, end - 1)
+        } else {
+            dp[start][end] := max(LpsRange(s, start + 1, end), LpsRange(s, start, end - 1))
+        }
+    }
+    return sp[start][end]
+}
+```
+
+
+
+Finally, we can get rid of recursion:
+
+```go
+func LpsDp(s string) int {
+    n := len(s)
+    if n == 0 {
+        return 0
+    }
+    
+    // Allocate and initialize a dp array and set diagonal to 1
+    dp := make([][]int, n)
+    for i := range dp {
+        dp[i] = make([]int, n)
+        dp[i][i] = 1
+    }
+    
+    // Compute the rest of dp array in the bottom-up fashion
+    for len := 2; len <= n; len++ {
+        for i := 0; i < n-len+1; i++ {
+            j := i + len - 1
+            if s[i] == s[j] {
+                if len == 2 {
+                    dp[i][j] = 2
+                } else {
+                    dp[i][j] = 2 + dp[i+1][j-1]
+                }
+            } else {
+                dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+            }
+        }
+    }
+    
+    return dp[0][n-1]
+}
+```
+
+<img src="./pics for conspects/SDS/SDS 24-02-20 2.png" alt="SDS 24-02-20 2" style="zoom:80%;" />
+
+
+
+
+
+
+
+
+
 
 
 
