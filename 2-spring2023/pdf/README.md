@@ -5,7 +5,6 @@
 * [Intro to RIS](./Intro%20to%20RIS.pdf) [last update: 2023-08-25 09:47:53]
 * [Intro to Spring Boot](./Intro%20to%20Spring%20Boot.pdf) [last update: 2023-07-31 22:57:48]
 * [Java](./Java.pdf) [last update: 2023-07-23 14:31:20]
-* [Kotlin Ecosystems](./Kotlin%20Ecosystems.pdf) [last update: 2023-02-28 09:05:10]
 * [Numerical methods](./Numerical%20methods.pdf) [last update: 2023-05-15 22:58:48]
 * [Rust](./Rust.pdf) [last update: 2023-05-07 23:51:27]
 * [Software engineering](./Software%20engineering.pdf) [last update: 2023-07-22 20:53:59]
