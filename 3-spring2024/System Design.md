@@ -459,5 +459,139 @@ Styles are more like guidelines - they are very abstract, - while patterns are u
 
 
 
+## 04 - Diagrams for Documenting & Modeling Software
+
+### Code
+
+- **UML classes**
+
+  <img src="./pics for conspects/SD/SD 24-03-05 1.png" alt="SD 24-03-05 1" style="zoom:60%;" />
+
+  Each UML class has a name, fields and methods. Access modifiers for the methods are reflected by `+` and `-` (`+getname: String` = method is public). 
+
+  A black line shows relations between objects. For example, `OrderLine` $\rightarrow$ `Product` means the `OrderLine` class uses the `Product` class. 
+
+  An arrow with white ending = "extends" in Java. In the example above, `Dog` class extends `Mammal` class.
+
+  A dotted arrow with white ending = "implements" in Java. In the example above, `Dog` class implements `Nameable` interface. 
+
+  
+
+- **UML Activity Diagrams**
+
+  A **flowchart** represents a process. It looks like a control flow graph where there is some condition in the diamond and, depending on the answer, some activities from rectangles are completed. 
+
+  **UML Activity diagram** is a more structured flowchart which is used to describe processes. It has a starting (black circle) and ending (white circle) points. Solid black lines mean activities can be run in parallel. 
+
+  <img src="./pics for conspects/SD/SD 24-03-05 2.png" alt="SD 24-03-05 2" style="zoom:50%;" />
+
+  
+
+- **Entity-Relationship Diagrams**
+
+  <img src="./pics for conspects/SD/SD 24-03-05 3.png" alt="SD 24-03-05 3" style="zoom:50%;" />
+
+  Crow's Foot notation is mostly used for describing relationships between tables in the database. 
+
+
+
+
+
+
+
+### Architecture
+
+- **UML Component Diagram**
+
+  <img src="./pics for conspects/SD/SD 24-03-05 4.png" alt="SD 24-03-05 4" style="zoom:80%;" />
+
+  
+
+- **UML Deployment Diagram**
+
+  <img src="./pics for conspects/SD/SD 24-03-05 5.png" alt="SD 24-03-05 5" style="zoom:70%;" />
+
+
+
+- **C4 hierarchy**
+
+  A **system context** is made up of one or more **containers** (application and data stores), each of which contains one or more **components**, which in turn are implemented by one or more **code** elements (classes, interfaces, functions, etc).
+
+
+
+
+
+
+
+### Business
+
+- **UML Sequence diagram**
+
+  Shows objcets involved in a process and interactions in time sequence. 
+
+  <img src="./pics for conspects/SD/SD 24-03-05 6.png" alt="SD 24-03-05 6" style="zoom:60%;" />
+
+  
+
+- **Event modeling**
+
+  Represents a process in a colorful way. Orange means events, green - result of the event, blue - something which triggers the event. 
+
+  All events are put on the timeline. They can also be split between domains (i.e., "Lesson", "Account", "Payment" in the picture). 
+
+  <img src="./pics for conspects/SD/SD 24-03-05 7.png" alt="SD 24-03-05 7" style="zoom:70%;" />
+
+  
+
+- **UML Timing Diagram**
+
+  <img src="./pics for conspects/SD/SD 24-03-05 8.png" alt="SD 24-03-05 8" style="zoom:50%;" />
+
+
+
+
+
+
+
+
+
+## 05 - Structural design patterns
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
