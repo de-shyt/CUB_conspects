@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Path to the directory which is a "root" for MD files and their pdfs (i.e. "3-spring2024")
 cur_dir="$1"
 cd "$cur_dir/pdf"
 result_file="README.md"
