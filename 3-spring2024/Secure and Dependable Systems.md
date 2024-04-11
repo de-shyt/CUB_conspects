@@ -545,6 +545,183 @@ func LpsDp(s string) int {
 
 
 
+## 24-02-22
+
+### Software vulnerabilities
+
+**Malware** (short for malicious software) is software intentionally designed to cause damage to a computer system or a computer network. 
+
+- A *virus* depends on a host and when activated replicates itself by modifying other computer programs. A host is a "mandatory" condition, it can be a USB.
+- A *worm* is self-contained malware replicating itself in order to spread to other computers. A host is not needed for it (this is the main difference from a virus).
+- A *trojan* horse is malware misleading users of its true intent. 
+- *Ransomware* blocks access to computers or data until a ransom has been paid. 
+- *Spyware* gathers information about a person or organization, without their knowledge.
+
+
+
+**Social engineering** is the psychological manipulation of people into performing actions or divulging confidential information. Examples:
+
+- An attacker sends a document that appears to be legitimate in order to attract the victim to a fraudulent web page requesting access codes (phishing). 
+- An attacker pretends to be another person with the goal of gaining access physically to a system or building (impersonation). 
+- An attacker drops devices that contain malware and look like USB sticks in spaces visited by a victim (USB drop).
+
+
+
+A **backdoor** is a method of bypassing normal authentication systems in order to gain access to a computer program or a computing system. Backdoors might be created by malicious software developers, by malicious tools, or by other forms of malware. 
+
+- Well-known default passwords effectively function as backdoors. 
+- Backdoors may be inserted by a malicious compiler or linker. 
+- Cryptographic algorithms may have backdoors. 
+- Debugging features used during development phases can act as backdoors.
+
+Systems may accidentally have backdoors. It occasionally happens when debugging features enabled in development builds are not properly removed in production builds. Advanced backdoors that are implanted automatically by tools of a development environment are difficult to deal with. 
+
+
+
+A **rootkit** is a collection of tools that is installed by unauthorized users on systems in order to hide the existence of attackers and to allow attackers to come back at a later point in time.
+
+Rootkits often try to hide their existence by going deep into the software stack. Ideal places are the operating system kernel since the kernel can easily hide the existence of files or processes run by an attacker.
+
+ Some rootkits have been developed to target hypervisors, which gives them access to a collection of virtual machines and even more hardware resources. Some rootkits hide in the bootloader (sometimes called bootkits) in order to leave very little traces on storage systems and making forensics harder.
+
+
+
+An **advanced persistent threat (APT)** is a threat actor (an attacker) using advanced goal-oriented attack techniques, often staying undetected over a long period of time.
+
+- APTs are often associated with nation states or state sponsored attack groups. 
+- APTs often aim at gaining long-term control of computing systems. 
+- APTs use extensive intelligence gathering techniques to achieve their goals.
+
+APTs are often carried out using significant resources and thus often associated with the interests of nation states. A common pattern with APTs is that attackers take time to study their victim well and actions taken usually have the goal to obtain access to systems for a long period of time, minimizing the chances that the attack is discovered.
+
+
+
+**Common Vulnerabilities and Exposures (CVE)** are widely used as identifiers for vulnerabilities. Their [website](https://cve.mitre.org/).
+
+CVEs can be reserved before they get published. This is often used to implement responsible disclosures where vendors are given information about a vulnerability before the vulnerability is made public. This enables vendors to prepare or even rollout fixes before a vulnerability is widely known. 
+
+<img src="./pics for conspects/SDS/SDS 24-02-22 2.png" alt="SDS 24-02-22 2" style="zoom:60%;" />
+
+
+
+**Common Vulnerability Scoring System (CVSS)** attempts to assign severity scores to vulnerabilities.<img src="./pics for conspects/SDS/SDS 24-02-22 3.png" alt="SDS 24-02-22 3" style="zoom:60%;" />
+
+
+
+ Software producers create software products by assembling software components. Assessing whether software products are vulnerable requires to know which software components were used to build the products. The **software bill of materials (SBOM)** documents the components used by a product. 
+
+Creating SBOMs during the development process is relatively simple if the necessary information is identified and appropriately marked. However, for already shipped products, the costs of creating accurate SBOMs is often high since relevant information is often necessary.
+
+
+
+
+
+
+
+### Control Flow Attacks
+
+Intel’s `x86_32` processor architecture has eight general-purpose registers (`eax`, `ebx`, `ecx`, `edx`, `ebp`, `esp`, `esi`, `edi`). The `x86_64` architecture extends them to 64 bits (prefix ”r” instead of ”e”) and adds another eight registers (`r8`, `r9`, `r10`, `r11`, `r12`, `r13`, `r14`, `r15`). 
+
+Note that the stack grows downwards on the `x86` architecture.
+
+Some of `x86` registers have special meanings and are not really used as general-purpose registers. The `ebp` (`rbp`) register is used to point to the beginning of a stack frame (**base pointer**) while the `esp` (`rsp`) register is used to point to the top of the stack (**stack pointer**). There are additional special purpose registers, most important for us is the `eip` (`rip`) register, which points to the current instruction (**instruction pointer**). 
+
+Note that the base pointer `ebp` (`rbp`) is optional. It helps to debug programs but costs a few additional instructions on every function call.
+
+
+
+
+
+#### Taking advantage of a segmentation fault
+
+```c
+#include <stdio.h>
+#define DEBUG
+
+int main(void) {
+    char name[64];
+    
+#ifdef DEBUG
+    fprintf(stderr, "character array name is ar %p\n", name);
+#endif
+    
+    puts("What's your name?");
+    gets(name);
+    printf("Hello, %s!\n", name);
+    return 0;
+}
+```
+
+
+
+The corresponding machine code:
+
+<img src="./pics for conspects/SDS/SDS 24-02-22 4.png" alt="SDS 24-02-22 4" style="zoom:60%;" />
+
+When the function is called, the return address is put on the stack.
+
+The function starts with the so called **function prologue**: the `push` instruction pushes the old frame pointer (stored in `rbp`) to the stack and afterwards the current stack pointer (stored in `rsp`) is setup as the new frame pointer (by copying `rsp` into `rbp`). Finally, the stack pointer is moved 64 bytes by subtracting 0x40 from `rsp`. This subtraction essentially allocates the space for the char array `name[64]`.
+
+The **function epilogue** consists of the `leaveq` and `retq` instructions. The `leaveq` instruction essentially cleans up the stack by setting the stack pointer (`rsp`) to the frame pointer (`rbp`) and then restoring the old frame pointer by popping `rbp` from the stack.
+
+The code between the prologue and epilogue is the code preparing the library function calls. For each call, the registers used to pass arguments have to be prepared. The library function calls are denoted using their `@plt` address. These are the functions' addresses in the procedure link table (plt), which is used to make dynamic linking “faster”.
+
+
+
+The corresponding stack content (the stack grows downwards):
+
+<img src="./pics for conspects/SDS/SDS 24-02-22 1.png" alt="SDS 24-02-22 1" style="zoom:60%;" />
+
+If the given name is longer than 64, we access the memory we are not supposed to and start writing into forbidden area. As a result, segmentation fault happens during `gets(name)` invocation: the frame pointer `rbp` is overwritten and the stack frame is damaged. 
+
+Now the hacker can change the return address with the start address of some malicious code, and your system is dead. 
+
+
+
+
+
+
+
+## 24-02-27
+
+todo Format String Attacks (from page 80)
+
+
+
+
+
+
+
+
+
+## 24-03-05
+
+### Code Injection Attacks
+
+A **code injection attack** is an attack where input is passed to a program that is internally generating executable code and where the input is adding code into the generated code.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
